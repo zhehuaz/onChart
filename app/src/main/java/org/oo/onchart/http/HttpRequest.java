@@ -1,0 +1,165 @@
+package org.oo.onchart.http;
+
+import android.os.AsyncTask;
+import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+/*
+ *    Copyright 2015 Zhehua Chang
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
+ /** A http request for response.
+ * HttpRequest must be configured when being created to be sent to a specific host.
+ * Instances of HttpRequest are not reusable; you must use a different instance for
+ * each request to a host.
+ */
+public class HttpRequest {
+
+    private HttpResponse.ResponseListener responseListener;
+    private HttpResponse.ErrorListener errorListener;
+    private URL requestUrl;
+    private RequestMethod method;
+    //private Map<String, String> params;
+
+    /**
+     * Constructs a new HttpRequest instance pointing to the host/program specified
+     * by the url in method of {@link #method}.
+     * @param url the URL.
+     * @param method the method GET or POST.
+     * @param responseListener the listener to the asynchronous response.
+     * @param errorListener the listener to error information.
+     * @throws MalformedURLException the exception thrown by the constructor of {@link URL}.
+     */
+    public HttpRequest(String url,
+                       RequestMethod method,
+                       HttpResponse.ResponseListener responseListener,
+                       HttpResponse.ErrorListener errorListener)
+            throws MalformedURLException {
+        requestUrl = new URL(url);
+        this.responseListener = responseListener;
+        this.errorListener = errorListener;
+        if(method != null)
+            this.method = method;
+        else
+            this.method = RequestMethod.GET;
+    }
+
+    /**
+     * Constructs a new HttpRequest instance pointing to the host/program specified
+     * by the url in method of GET as default.
+     * @param url the URL.
+     * @param responseListener the listener to the asynchronous response.
+     * @param errorListener the listener to error information.
+     * @throws MalformedURLException the exception thrown by the constructor of {@link URL}.
+     */
+    public HttpRequest(String url,
+                       HttpResponse.ResponseListener responseListener,
+                       HttpResponse.ErrorListener errorListener)
+            throws MalformedURLException {
+        this(url, RequestMethod.GET, responseListener, errorListener);
+    }
+
+    /**
+     * Send a request asynchronously.
+     * The response will be passed to the {@link #responseListener}, and the error
+     * message passed to the {@link #errorListener} as the unexpected occurs.
+     */
+    public void asyncSend() {
+        new AsyncTask<URL, String, HttpResponse>() {
+
+            @Override
+            protected HttpResponse doInBackground(URL... params) {
+                URL url = params[0];
+                try {
+                    // setup connection
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    // set necessary params
+                    connection.setDoOutput(true);
+                    connection.setRequestMethod(method2String(method));
+                    // set headers
+                    Map<String, String> propParams = getParams();
+                    for (Map.Entry<String, String> m : propParams.entrySet()) {
+                        connection.setRequestProperty(m.getKey(), m.getValue());
+                    }
+                    // post data
+                    if(method == RequestMethod.POST) {
+                        OutputStream outputStream = connection.getOutputStream();
+                        outputStream.write(getSentData().getBytes());
+                    }
+                    // get response
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    Log.i(HttpTestActivity.TAG, connection.getURL().toString());// get redirected url
+                    String buffer = null;
+                    String content = "";
+                    while((buffer = reader.readLine()) != null) {
+                        content += buffer;
+                    }
+                    HttpResponse response = new HttpResponse(connection.getURL().toString(), content);
+                    // get response header
+                    response.setHeader(connection.getHeaderFields());
+                    connection.disconnect();
+                    return response;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    errorListener.onError(new HttpError(HttpError.ERROR_CODE_IO));
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(HttpResponse response) {
+                super.onPostExecute(response);
+                responseListener.onResponse(response);
+            }
+        }.execute(requestUrl);
+    }
+
+    private String method2String(RequestMethod method) {
+        if(method == RequestMethod.GET)
+            return "GET";
+        else if(method == RequestMethod.POST)
+            return "POST";
+        else
+            return null;
+    }
+
+    /**
+     * Override getParams() to customize param in the header of request.
+     * The params are stored as key-value pairs.
+     * @return the params to be sent in the header of request.
+     */
+    protected Map<String, String> getParams() {
+        return new HashMap<>();
+    }
+
+    /**
+     * Override getSentData() to customize data to be POSTed to the host.
+     * The params are stored as String, so you have to organize you data in
+     * "xx=xx&xx=xx" formation.
+     * @return the data to be sent in POST request.
+     */
+    protected String getSentData() {
+        return "";
+    }
+}
