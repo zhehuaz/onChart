@@ -1,5 +1,6 @@
 package org.oo.onchart.http;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +25,11 @@ import java.util.Map;
  * for a request.
  */
 public class HttpResponse {
-    private String requestUrl;
+    private URL requestUrl;
     private String responseContent;
     private Map<String, List<String>> header;
 
-    public HttpResponse(String requestUrl, String responseContent) {
+    public HttpResponse(URL requestUrl, String responseContent) {
         this.responseContent = responseContent;
         this.requestUrl = requestUrl;
     }
@@ -37,7 +38,7 @@ public class HttpResponse {
         this.header = header;
     }
 
-    public String getRequestUrl() {
+    public URL getRequestUrl() {
         return requestUrl;
     }
 
