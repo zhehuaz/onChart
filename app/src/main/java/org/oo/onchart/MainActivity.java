@@ -12,9 +12,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.jsoup.Jsoup;
 import org.oo.onchart.http.HttpRequest;
 import org.oo.onchart.http.HttpResponse;
 import org.oo.onchart.http.RequestMethod;
+import org.oo.onchart.parser.StudentInfoParser;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     protected void onPostExecute(String response) {
                         contentText.setText(response);
+                        StudentInfoParser.parseChart(response);
                     }
                 }.execute();
                 inputLayout.setVisibility(View.GONE);
