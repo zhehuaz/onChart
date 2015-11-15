@@ -41,7 +41,8 @@ import java.util.Map;
  * each request to a host.
  */
 public class HttpRequest {
-
+    // TODO Builder pattern
+    private int sequence;
     private HttpResponse.ResponseListener responseListener;
     private HttpResponse.ErrorListener errorListener;
     private URL requestUrl;
@@ -192,6 +193,14 @@ public class HttpRequest {
             return "POST";
         else
             return null;
+    }
+
+    public int getSequence() {
+     return sequence;
+    }
+
+    public void setSequence(int sequence) {
+     this.sequence = sequence;
     }
 
     /**
