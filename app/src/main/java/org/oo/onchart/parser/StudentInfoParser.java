@@ -18,6 +18,8 @@
 
 package org.oo.onchart.parser;
 
+import android.util.Log;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -26,15 +28,18 @@ import org.jsoup.select.Elements;
 import org.oo.onchart.student.Lesson;
 
 import java.util.ArrayList;
+import java.util.DuplicateFormatFlagsException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * parser for student information parser.
  */
 public class StudentInfoParser {
+    private final static String TAG = "StudentInfoParser";
 
-
-    public static void parseChart(String htmlText)
+    public static List<Lesson> parseChart(String htmlText)
     {
         Document doc = Jsoup.parse(htmlText);
         Element chartTable = doc.select("table#dgrdKb").first();
@@ -43,54 +48,68 @@ public class StudentInfoParser {
 
         List<Lesson> dupLessons = new ArrayList<>();
         for(Element e : lessonEles) {
+            dupLessons.clear();
             if(!e.className().equals("datagridhead")) {
                 Lesson baseLesson = new Lesson();
                 //dupLessons.add(newLesson);
                 Elements lessonInfo = e.getAllElements();
-                Lesson newLesson = new Lesson();
-                int i = 0;
-                String text;
-                String[] texts;
-                for(Element info : lessonInfo) {
-                    switch (i) {
-                        case 1:
-                            baseLesson.setName(info.text());
-                            break;
-                        case 2:
-                            baseLesson.setCredit(Float.parseFloat(info.text()));
-                            break;
-                        case 5:
-                            baseLesson.setDepartment(info.text());
-                            break;
-                        case 7:
-                            baseLesson.setTeacher(info.text());
-                            break;
-                        case 8:
-                            text = info.text();
-                            texts = text.split(";");
-                            for(String s : texts) {
-                                //dupLessons.add(new Lesson(baseLesson));
-                                // TODO parse time string
-                                newLesson = new Lesson(baseLesson);
-                                newLesson.setClassroom(s);
-                                dupLessons.add(newLesson);
-                            }
-                            break;
-                        case 9:
-                            text = info.text();
-                            texts = text.split(";");
-                            int j = 0;
-                            for(String s : texts) {
-                                dupLessons.get(j).setClassroom(s);
-                                j ++;
-                            }
-                            break;
+
+                baseLesson.setName(lessonInfo.get(1).text());
+                baseLesson.setCredit(Float.parseFloat(lessonInfo.get(2).text()));
+                baseLesson.setDepartment(lessonInfo.get(5).text());
+                baseLesson.setTeacher(lessonInfo.get(7).text());
+
+                String textTime = lessonInfo.get(8).text();
+                String[] textsTime = textTime.split(";");
+                String textClassroom = lessonInfo.get(9).text();
+                String[] textsClassroom = textClassroom.split(";");
+                int j = 0;
+                for (String s : textsClassroom) {
+                    dupLessons.add(new Lesson(baseLesson));
+                    dupLessons.get(j).setClassroom(s);
+
+                    //Log.d(TAG, textsTime[j]);
+                    if(textsTime[j].length() == 1)
+                        dupLessons.get(j).setWeekDay('0');
+                    else
+                        dupLessons.get(j).setWeekDay(textsTime[j].charAt(1));
+
+                    String pattern = "(\\d)+(?=,)|(\\d+)*(?=节)";
+                    Pattern reg = Pattern.compile(pattern);
+                    Matcher m = reg.matcher(textsTime[j]);
+                    if(m.find()) {
+                        Log.d(TAG, m.group());
+                        dupLessons.get(j).setStartTime(Integer.parseInt(m.group()));
                     }
-                    i ++;
+                    String endTime = null;
+                    while(m.find() && m.group().length() > 0) {
+                        endTime = m.group();
+                    }
+                    if(endTime == null) {
+                        dupLessons.get(j).setEndTime(dupLessons.get(j).getStartTime());
+                    } else {
+                        Log.d(TAG, endTime);
+                        dupLessons.get(j).setEndTime(Integer.parseInt(endTime));
+                    }
+
+                    pattern = "\\d(?=-)|\\d+(?=周)";
+                    reg = Pattern.compile(pattern);
+                    m = reg.matcher(textsTime[j]);
+                    if(m.find()) {
+                        dupLessons.get(j).setStartWeek(Integer.parseInt(m.group()));
+                    } else {
+                        dupLessons.get(j).setStartWeek(0);
+                    }
+                    if(m.find()) {
+                        dupLessons.get(j).setEndWeek(Integer.parseInt(m.group()));
+                    } else {
+                        dupLessons.get(j).setEndTime(dupLessons.get(j).getStartTime());
+                    }
+                    j++;
                 }
             }
+            lessons.addAll(dupLessons);
         }
-
-        return ;
+        return lessons;
     }
 }

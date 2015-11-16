@@ -45,12 +45,23 @@ public abstract class Session implements HttpResponse.ResponseListener, HttpResp
     protected String sessioId;
     protected HttpRequest loginRequest;
     protected HttpResponse response;
+    protected SessionListener listener;
     //Queue<HttpRequest> requestQueue;
     //Queue<HttpResponse> responseQueue;
 
     public Session(HttpRequest request) {
         this.loginRequest = request;
     }
+    public Session() {}
+    public Session(SessionListener listener) {
+        this.listener = listener;
+    }
+
 
     public abstract HttpRequest start();
+
+    public interface SessionListener {
+        void onStartOver();
+    }
+
 }

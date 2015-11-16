@@ -42,8 +42,13 @@ public class BitJwcSession extends Session{
     private String psw;
     private URL loginUrl;
 
+
     public BitJwcSession(HttpRequest request) {
         super(request);
+    }
+
+    public BitJwcSession(SessionListener listener) {
+        super(listener);
     }
 
     @Override
@@ -75,15 +80,13 @@ public class BitJwcSession extends Session{
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                BitJwcSession.this.onStartOver();
+                listener.onStartOver();
             }
         }.execute();
         return null;
     }
 
-    protected void onStartOver() {
 
-    }
 
     public String fetchLessionChart() {
         String path = "/xskbcx.aspx?xh=" + usrNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121603";
@@ -123,7 +126,19 @@ public class BitJwcSession extends Session{
         return url.getPath().substring(2,2 + 12);
     }
 
-    public void requestChart() {
+    public String getUsrNum() {
+        return usrNum;
+    }
 
+    public void setUsrNum(String usrNum) {
+        this.usrNum = usrNum;
+    }
+
+    public String getPsw() {
+        return psw;
+    }
+
+    public void setPsw(String psw) {
+        this.psw = psw;
     }
 }

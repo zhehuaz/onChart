@@ -3,7 +3,6 @@ package org.oo.onchart;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,19 +11,14 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.jsoup.Jsoup;
-import org.oo.onchart.http.HttpRequest;
-import org.oo.onchart.http.HttpResponse;
-import org.oo.onchart.http.RequestMethod;
 import org.oo.onchart.parser.StudentInfoParser;
+import org.oo.onchart.session.BitJwcSession;
+import org.oo.onchart.session.Session;
+import org.oo.onchart.student.Lesson;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Session.SessionListener{
 
     private String TAG = "MainActivity";
     private TextView contentText;
@@ -32,16 +26,15 @@ public class MainActivity extends AppCompatActivity {
     private EditText pswInput;
     private Button fetchButton;
     private LinearLayout inputLayout;
-    private String usrNum;
-    private String psw;
 
+    private BitJwcSession session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        session = new BitJwcSession(this);
         contentText = (TextView) findViewById(R.id.tv_content);
         usrInput = (EditText) findViewById(R.id.et_num);
         pswInput = (EditText) findViewById(R.id.et_pwd);
@@ -52,52 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                usrNum = usrInput.getText().toString();
-                psw = pswInput.getText().toString();
-                new AsyncTask<String, String, String>() {
-                    @Override
-                    protected String doInBackground(String... strings) {
-                        try {
-                            HttpRequest homeRequest = new HttpRequest("http://10.5.2.80");
-
-                            final URL loginUrl = homeRequest.send().getRequestUrl();
-
-                            HttpRequest loginRequest = new HttpRequest(loginUrl.toString(), RequestMethod.POST) {
-                                @Override
-                                protected String getSentData() {
-                                    return "__VIEWSTATE=dDwtMjEzNzcwMzMxNTs7Pj9pP88cTsuxYpAH69XV04GPpkse&TextBox1=" + usrNum + "&TextBox2=" + psw + "&RadioButtonList1=%D1%A7%C9%FA&Button1=+%B5%C7+%C2%BC+\n" +
-                                            "Name\t\n";
-                                }
-                            };
-                            loginRequest.send();
-
-                            String path = "/xskbcx.aspx?xh=" + usrNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121603";
-                            HttpRequest chartRequest = new HttpRequest(loginUrl.toString().substring(0, 43) + path) {
-                                @Override
-                                protected Map<String, String> getParams() {
-                                    Map<String, String> param = new HashMap<>();
-                                    param.put("Referer", loginUrl.toString());
-                                    return param;
-                                }
-                            };
-                            HttpResponse chartResponse = chartRequest.send();
-                            String htmlRes = chartResponse.getResponseContent();
-                            Log.i(TAG, "Response : " + chartResponse.getResponseContent());
-                            return htmlRes;
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(String response) {
-                        contentText.setText(response);
-                        StudentInfoParser.parseChart(response);
-                    }
-                }.execute();
+                session.setUsrNum(usrInput.getText().toString());
+                session.setPsw(pswInput.getText().toString());
+                session.start();
                 inputLayout.setVisibility(View.GONE);
             }
         });
@@ -123,5 +73,31 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStartOver() {
+        new AsyncTask<String, String, List<Lesson>>() {
+            @Override
+            protected List<Lesson> doInBackground(String... strings) {
+                return StudentInfoParser.parseChart(session.fetchLessionChart());
+            }
+
+            @Override
+            protected void onPostExecute(List<Lesson> lessons) {
+                for(Lesson l : lessons) {
+                    contentText.append(l.getName()
+                        + "\n" + l.getTeacher()
+                        + "\n" + l.getStartWeek()
+                        + "\n" + l.getEndWeek()
+                        + "\n" + l.getWeekDay()
+                        + "\n" + l.getDepartment()
+                        + "\n" + l.getStartTime()
+                        + "\n" + l.getEndTime()
+                        + "\n" + "==================\n");
+                }
+            }
+        }.execute();
+
     }
 }

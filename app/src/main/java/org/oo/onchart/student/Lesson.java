@@ -27,7 +27,7 @@ public class Lesson{
     private float credit;
     private String teacher;
     private String classroom;
-    private String weekDay;
+    private char weekDay;
     private int startTime;
     private int endTime;
     private int startWeek;
@@ -48,8 +48,7 @@ public class Lesson{
             this.classroom = new String(lesson.classroom);
 
         this.credit = lesson.credit;
-        if(lesson.weekDay != null)
-            this.weekDay = lesson.weekDay;
+        this.weekDay = lesson.weekDay;
         this.startTime = lesson.startTime;
         this.endTime = lesson.endTime;
         this.startWeek = lesson.startTime;
@@ -96,11 +95,11 @@ public class Lesson{
         this.classroom = classroom;
     }
 
-    public String getWeekDay() {
+    public char getWeekDay() {
         return weekDay;
     }
 
-    public void setWeekDay(String weekDay) {
+    public void setWeekDay(char weekDay) {
         this.weekDay = weekDay;
     }
 
