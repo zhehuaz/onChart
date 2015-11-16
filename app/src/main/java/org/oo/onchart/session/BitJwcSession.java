@@ -21,7 +21,6 @@ package org.oo.onchart.session;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.oo.onchart.MainActivity;
 import org.oo.onchart.http.HttpError;
 import org.oo.onchart.http.HttpRequest;
 import org.oo.onchart.http.HttpResponse;

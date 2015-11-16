@@ -1,8 +1,10 @@
-package org.oo.onchart;
+package org.oo.onchart.ui;
 
+import android.app.DialogFragment;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.oo.onchart.R;
 import org.oo.onchart.parser.StudentInfoParser;
 import org.oo.onchart.session.BitJwcSession;
 import org.oo.onchart.session.Session;
@@ -18,14 +21,12 @@ import org.oo.onchart.student.Lesson;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements Session.SessionListener{
+public class MainActivity extends AppCompatActivity
+        implements Session.SessionListener, LoginTestFragment.LoginListner{
 
     private String TAG = "MainActivity";
     private TextView contentText;
-    private EditText usrInput;
-    private EditText pswInput;
-    private Button fetchButton;
-    private LinearLayout inputLayout;
+    private Toolbar mainToolbar;
 
     private BitJwcSession session;
 
@@ -36,21 +37,9 @@ public class MainActivity extends AppCompatActivity implements Session.SessionLi
 
         session = new BitJwcSession(this);
         contentText = (TextView) findViewById(R.id.tv_content);
-        usrInput = (EditText) findViewById(R.id.et_num);
-        pswInput = (EditText) findViewById(R.id.et_pwd);
-        fetchButton = (Button) findViewById(R.id.bt_fetch);
-        inputLayout = (LinearLayout) findViewById(R.id.ll_input);
+        mainToolbar = (Toolbar) findViewById(R.id.tb_main);
 
-        fetchButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                session.setUsrNum(usrInput.getText().toString());
-                session.setPsw(pswInput.getText().toString());
-                session.start();
-                inputLayout.setVisibility(View.GONE);
-            }
-        });
+        setSupportActionBar(mainToolbar);
     }
 
     @Override
@@ -70,6 +59,10 @@ public class MainActivity extends AppCompatActivity implements Session.SessionLi
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_fetch) {
+            LoginTestFragment dialog = new LoginTestFragment();
+            dialog.setListner(this);
+            dialog.show(getSupportFragmentManager(), TAG);
         }
 
         return super.onOptionsItemSelected(item);
@@ -99,5 +92,13 @@ public class MainActivity extends AppCompatActivity implements Session.SessionLi
             }
         }.execute();
 
+    }
+
+
+    @Override
+    public void onFinish(String usrNum, String psw) {
+        session.setUsrNum(usrNum);
+        session.setPsw(psw);
+        session.start();
     }
 }
