@@ -62,6 +62,11 @@ public abstract class Session implements HttpResponse.ResponseListener, HttpResp
 
     public interface SessionListener {
         void onStartOver();
+        void onError(ErrorCode ec);
+    }
+
+    public enum ErrorCode {
+        SESSION_EC_FAIL_TO_CONNECT
     }
 
 }

@@ -78,7 +78,7 @@ public class StudentInfoParser {
                     Pattern reg = Pattern.compile(pattern);
                     Matcher m = reg.matcher(textsTime[j]);
                     if(m.find()) {
-                        Log.d(TAG, m.group());
+                        //Log.d(TAG, m.group());
                         dupLessons.get(j).setStartTime(Integer.parseInt(m.group()));
                     }
                     String endTime = null;
@@ -88,7 +88,7 @@ public class StudentInfoParser {
                     if(endTime == null) {
                         dupLessons.get(j).setEndTime(dupLessons.get(j).getStartTime());
                     } else {
-                        Log.d(TAG, endTime);
+                        //Log.d(TAG, endTime);
                         dupLessons.get(j).setEndTime(Integer.parseInt(endTime));
                     }
 

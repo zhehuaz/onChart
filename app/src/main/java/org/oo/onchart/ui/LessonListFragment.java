@@ -1,6 +1,7 @@
 package org.oo.onchart.ui;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,14 +24,16 @@ public class LessonListFragment extends Fragment {
 
     RecyclerView lessonList;
     LessonListAdapter adapter;
+    List<Lesson> lessons;
 
     public LessonListFragment() {
+        lessons = new ArrayList<>();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        adapter = new LessonListAdapter(getActivity(), new ArrayList<Lesson>());
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        adapter = new LessonListAdapter(getActivity(), lessons);
     }
 
     @Override
@@ -40,13 +43,20 @@ public class LessonListFragment extends Fragment {
         lessonList = (RecyclerView) rootView.findViewById(R.id.rv_lessons);
         lessonList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        //adapter.addLesson(lesson)
+        adapter.setLessons(lessons);
         lessonList.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        //adapter.notifyDataSetChanged();
         return rootView;
     }
 
+    public void addLesson(Lesson lesson) {
+        if(lesson != null)
+            lessons.add(lesson);
+    }
 
-
-
+    public void updateList() {
+        //adapter.setList();
+        if(adapter != null)
+            adapter.notifyDataSetChanged();
+    }
 }

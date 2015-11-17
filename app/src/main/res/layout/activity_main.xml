@@ -7,7 +7,7 @@
                 tools:context=".ui.MainActivity">
     <android.support.v7.widget.Toolbar
         android:layout_width="fill_parent"
-        android:layout_height="120dp"
+        android:layout_height="@dimen/toolbar_height"
         android:id="@+id/tb_main"
         android:elevation="10dp"
         android:background="@mipmap/main_tb_bg"

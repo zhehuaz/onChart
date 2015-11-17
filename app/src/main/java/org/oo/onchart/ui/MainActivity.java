@@ -9,9 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import org.oo.onchart.R;
 import org.oo.onchart.parser.StudentInfoParser;
+import org.oo.onchart.parser.Utils;
 import org.oo.onchart.session.BitJwcSession;
 import org.oo.onchart.session.Session;
 import org.oo.onchart.student.Lesson;
@@ -96,14 +98,22 @@ public class MainActivity extends AppCompatActivity
             protected void onPostExecute(List<Lesson> lessons) {
               //  LessonListAdapter adapter = new LessonListAdapter(MainActivity.this, lessons);
                 for(Lesson l : lessons) {
-                   if(l.getWeekDay() == '一') {
-                       fragments.get(0).adapter.addLesson(l);
+                   int index = Utils.parseIndexFromWeekday(l.getWeekDay());
+                   if(index >= 0) {
+                       fragments.get(index).addLesson(l);
+                   }
+                   for(LessonListFragment f : fragments) {
+                       f.updateList();
                    }
                 }
-                fragments.get(0).adapter.notifyDataSetChanged();
             }
         }.execute();
 
+    }
+
+    @Override
+    public void onError(Session.ErrorCode ec) {
+        Toast.makeText(this, "Fail to connect JWC", Toast.LENGTH_SHORT).show();
     }
 
 

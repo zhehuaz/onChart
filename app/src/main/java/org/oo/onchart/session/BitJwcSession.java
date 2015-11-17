@@ -52,9 +52,9 @@ public class BitJwcSession extends Session{
 
     @Override
     public HttpRequest start() {
-        new AsyncTask<String, String, Void>() {
+        new AsyncTask<String, String, Boolean>() {
             @Override
-            protected Void doInBackground(String... strings) {
+            protected Boolean doInBackground(String... strings) {
                 try {
                     HttpRequest homeRequest = new HttpRequest("http://10.5.2.80");
 
@@ -70,17 +70,19 @@ public class BitJwcSession extends Session{
                     loginRequest.send();
 
                     sessioId = loginUrl.toString().substring(11,42);
-
+                    return true;
                 } catch (IOException e) {
                     e.printStackTrace();
+                    listener.onError(ErrorCode.SESSION_EC_FAIL_TO_CONNECT);
                     Log.e(TAG, "Can't connect to JWC");
                 }
-                return null;
+                return false;
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
-                listener.onStartOver();
+            protected void onPostExecute(Boolean result) {
+                if(result)
+                    listener.onStartOver();
             }
         }.execute();
         return null;
