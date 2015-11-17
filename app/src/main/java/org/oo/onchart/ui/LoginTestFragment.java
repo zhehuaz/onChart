@@ -4,7 +4,6 @@ package org.oo.onchart.ui;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.app.DialogFragment;
-import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import org.oo.onchart.R;
  */
 public class LoginTestFragment extends DialogFragment {
 
-    private LoginListner listner = null;
+    private LoginListener listener = null;
     private EditText usrNumInput;
     private EditText pswInput;
     private Button fetchBtn;
@@ -28,8 +27,8 @@ public class LoginTestFragment extends DialogFragment {
 
     }
 
-    public void setListner(LoginListner listner) {
-        this.listner = listner;
+    public void setListener(LoginListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -44,8 +43,8 @@ public class LoginTestFragment extends DialogFragment {
         fetchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(listner != null) {
-                    listner.onFinish(usrNumInput.getText().toString(), pswInput.getText().toString());
+                if(listener != null) {
+                    listener.onFinish(usrNumInput.getText().toString(), pswInput.getText().toString());
                     dismiss();
                 }
             }
@@ -56,7 +55,7 @@ public class LoginTestFragment extends DialogFragment {
     }
 
 
-    public interface LoginListner {
+    public interface LoginListener {
         void onFinish(String usrNum, String psw);
     }
 }

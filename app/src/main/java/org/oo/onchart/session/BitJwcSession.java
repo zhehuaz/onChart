@@ -73,6 +73,7 @@ public class BitJwcSession extends Session{
 
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.e(TAG, "Can't connect to JWC");
                 }
                 return null;
             }
@@ -91,18 +92,21 @@ public class BitJwcSession extends Session{
         String path = "/xskbcx.aspx?xh=" + usrNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121603";
         HttpRequest chartRequest = null;
         try {
-            chartRequest = new HttpRequest(loginUrl.toString().substring(0, 43) + path) {
-                @Override
-                protected Map<String, String> getParams() {
-                    Map<String, String> param = new HashMap<>();
-                    param.put("Referer", loginUrl.toString());
-                    return param;
-                }
-            };
-            HttpResponse chartResponse = chartRequest.send();
-            String htmlRes = chartResponse.getResponseContent();
-            Log.i(TAG, "Response : " + chartResponse.getResponseContent());
-            return htmlRes;
+            if(loginUrl != null) {
+                chartRequest = new HttpRequest(loginUrl.toString().substring(0, 43) + path) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> param = new HashMap<>();
+                        param.put("Referer", loginUrl.toString());
+                        return param;
+                    }
+                };
+                HttpResponse chartResponse = chartRequest.send();
+                String htmlRes = chartResponse.getResponseContent();
+                Log.i(TAG, "Response : " + chartResponse.getResponseContent());
+                return htmlRes;
+            }
+            return "null";
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

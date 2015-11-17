@@ -1,32 +1,35 @@
 package org.oo.onchart.ui;
 
-import android.app.DialogFragment;
 import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import org.oo.onchart.R;
 import org.oo.onchart.parser.StudentInfoParser;
 import org.oo.onchart.session.BitJwcSession;
 import org.oo.onchart.session.Session;
 import org.oo.onchart.student.Lesson;
+import org.oo.onchart.ui.adapter.LessonListAdapter;
+import org.oo.onchart.ui.adapter.LessonPagerAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements Session.SessionListener, LoginTestFragment.LoginListner{
+        implements Session.SessionListener, LoginTestFragment.LoginListener {
 
     private String TAG = "MainActivity";
-    private TextView contentText;
+    //private TextView contentText;
     private Toolbar mainToolbar;
+    private ViewPager mainListPager;
+    private LessonPagerAdapter mainListAdapter;
+    private List<LessonListFragment> fragments;
 
     private BitJwcSession session;
 
@@ -36,16 +39,29 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         session = new BitJwcSession(this);
-        contentText = (TextView) findViewById(R.id.tv_content);
+        //contentText = (TextView) findViewById(R.id.tv_content);
         mainToolbar = (Toolbar) findViewById(R.id.tb_main);
-
         setSupportActionBar(mainToolbar);
+        mainListPager = (ViewPager) findViewById(R.id.vp_lessons);
+
+//        ViewGroup.LayoutParams layoutParams = mainListPager.getLayoutParams();
+//        TypedValue value = new TypedValue();
+//        getTheme().resolveAttribute(R.attr.actionBarSize, value, true);
+//        layoutParams.height -= value.data;
+//        mainListPager.setLayoutParams(layoutParams);
+
+        fragments = new ArrayList<>();
+        for(int i = 0;i < 5;i ++) {
+            fragments.add(new LessonListFragment());
+        }
+        mainListAdapter = new LessonPagerAdapter(getSupportFragmentManager(), fragments);
+        mainListPager.setAdapter(mainListAdapter);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().  inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -61,7 +77,7 @@ public class MainActivity extends AppCompatActivity
             return true;
         } else if (id == R.id.action_fetch) {
             LoginTestFragment dialog = new LoginTestFragment();
-            dialog.setListner(this);
+            dialog.setListener(this);
             dialog.show(getSupportFragmentManager(), TAG);
         }
 
@@ -78,17 +94,13 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             protected void onPostExecute(List<Lesson> lessons) {
+              //  LessonListAdapter adapter = new LessonListAdapter(MainActivity.this, lessons);
                 for(Lesson l : lessons) {
-                    contentText.append(l.getName()
-                        + "\n" + l.getTeacher()
-                        + "\n" + l.getStartWeek()
-                        + "\n" + l.getEndWeek()
-                        + "\n" + l.getWeekDay()
-                        + "\n" + l.getDepartment()
-                        + "\n" + l.getStartTime()
-                        + "\n" + l.getEndTime()
-                        + "\n" + "==================\n");
+                   if(l.getWeekDay() == '一') {
+                       fragments.get(0).adapter.addLesson(l);
+                   }
                 }
+                fragments.get(0).adapter.notifyDataSetChanged();
             }
         }.execute();
 

@@ -4,24 +4,24 @@
                 android:paddingRight="0dp"
                 android:paddingTop="0dp"
                 android:paddingBottom="0dp"
-                tools:context=".MainActivity">
+                tools:context=".ui.MainActivity">
     <android.support.v7.widget.Toolbar
         android:layout_width="fill_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="120dp"
         android:id="@+id/tb_main"
-        android:elevation="8dp"
+        android:elevation="10dp"
+        android:background="@mipmap/main_tb_bg"
         >
 
     </android.support.v7.widget.Toolbar>
 
-    <ScrollView
+    <android.support.v4.view.ViewPager
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/tb_main">
-        <TextView
-            android:id="@+id/tv_content"
-            android:text="@string/hello_world" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </ScrollView>
+        android:id="@+id/vp_lessons"
+        android:layout_alignParentBottom="true">
+
+    </android.support.v4.view.ViewPager>
+
 
 </RelativeLayout>
