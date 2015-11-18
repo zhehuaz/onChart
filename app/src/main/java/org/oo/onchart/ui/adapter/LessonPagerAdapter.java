@@ -1,5 +1,6 @@
 package org.oo.onchart.ui.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,9 +17,11 @@ import java.util.List;
  */
 public class LessonPagerAdapter extends FragmentPagerAdapter {
     private List<LessonListFragment> fragments;
+    private Context context;
 
-    public LessonPagerAdapter(FragmentManager fm, List<LessonListFragment> fragments) {
+    public LessonPagerAdapter(Context context, FragmentManager fm, List<LessonListFragment> fragments) {
         super(fm);
+        this.context = context;
         this.fragments = fragments;
     }
 
@@ -45,6 +48,6 @@ public class LessonPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "周" + Utils.parseWeekdayFromIndex(position);
+        return context.getResources().getString(Utils.weekdayFromIndex[position]);
     }
 }

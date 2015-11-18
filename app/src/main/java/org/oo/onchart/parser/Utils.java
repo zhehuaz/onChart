@@ -1,5 +1,7 @@
 package org.oo.onchart.parser;
 
+import org.oo.onchart.R;
+
 /**
  * Created by langley on 11/17/15.
  */
@@ -25,26 +27,13 @@ public class Utils {
         }
     }
 
-    public static char parseWeekdayFromIndex(int index) {
-        switch (index) {
-            case 0:
-                return '一';
-            case 1:
-                return '二';
-            case 2:
-                return '三';
-            case 3:
-                return '四';
-            case 4:
-                return '五';
-            case 5:
-                return '六';
-            case 6:
-                return '日';
-            default:
-                return '\0';
-        }
-    }
-
-
+    public final static int weekdayFromIndex[] = {
+            R.string.weekday_Mon,
+            R.string.weekday_Tue,
+            R.string.weekday_Wed,
+            R.string.weekday_Thi,
+            R.string.weekday_Fri,
+            R.string.weekday_Sat,
+            R.string.weekday_Sun
+    };
 }

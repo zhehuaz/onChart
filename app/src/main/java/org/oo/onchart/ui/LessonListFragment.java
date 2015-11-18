@@ -60,7 +60,11 @@ public class LessonListFragment extends Fragment {
     public void addLesson(Lesson lesson) {
         if(lesson != null) {
             lessons.add(lesson);
+            if(adapter != null) {
+                adapter.notifyItemInserted(lessons.size());
+            }
         }
+
     }
 
     public void updateList() {

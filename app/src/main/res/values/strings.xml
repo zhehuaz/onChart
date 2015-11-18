@@ -1,10 +1,21 @@
 <resources>
     <string name="app_name">onChart</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world" translatable="false">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_http_test">HttpTestActivity</string>
+    <string name="title_activity_http_test" translatable="false">HttpTestActivity</string>
 
 <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
+    <string name="weekday_Mon">Mon.</string>
+    <string name="weekday_Tue">Tue.</string>
+    <string name="weekday_Wed">Wed.</string>
+    <string name="weekday_Thi">Thi.</string>
+    <string name="weekday_Fri">Fri.</string>
+    <string name="weekday_Sat">Sat.</string>
+    <string name="weekday_Sun">Sun.</string>
 </resources>

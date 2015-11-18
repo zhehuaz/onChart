@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">onChart</string>
+    <string name="weekday_Fri">周五</string>
+    <string name="weekday_Mon">周一</string>
+    <string name="weekday_Sat">周六</string>
+    <string name="weekday_Sun">周日</string>
+    <string name="weekday_Thi">周四</string>
+    <string name="weekday_Tue">周二</string>
+    <string name="weekday_Wed">周三</string>
+</resources>
