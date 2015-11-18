@@ -58,8 +58,9 @@ public class LessonListFragment extends Fragment {
     }
 
     public void addLesson(Lesson lesson) {
-        if(lesson != null)
+        if(lesson != null) {
             lessons.add(lesson);
+        }
     }
 
     public void updateList() {

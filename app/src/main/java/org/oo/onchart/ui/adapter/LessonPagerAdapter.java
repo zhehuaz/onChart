@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.oo.onchart.parser.Utils;
 import org.oo.onchart.ui.LessonListFragment;
 
 import java.util.List;
@@ -40,5 +41,10 @@ public class LessonPagerAdapter extends FragmentPagerAdapter {
     @Override
     public boolean isViewFromObject(View view, Object object) {
         return super.isViewFromObject(view, object);
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return "周" + Utils.parseWeekdayFromIndex(position);
     }
 }

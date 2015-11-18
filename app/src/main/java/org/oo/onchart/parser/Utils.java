@@ -25,5 +25,26 @@ public class Utils {
         }
     }
 
+    public static char parseWeekdayFromIndex(int index) {
+        switch (index) {
+            case 0:
+                return '一';
+            case 1:
+                return '二';
+            case 2:
+                return '三';
+            case 3:
+                return '四';
+            case 4:
+                return '五';
+            case 5:
+                return '六';
+            case 6:
+                return '日';
+            default:
+                return '\0';
+        }
+    }
+
 
 }

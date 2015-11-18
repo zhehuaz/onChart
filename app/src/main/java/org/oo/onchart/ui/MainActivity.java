@@ -1,6 +1,7 @@
 package org.oo.onchart.ui;
 
 import android.os.AsyncTask;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -34,9 +38,10 @@ public class MainActivity extends AppCompatActivity
     //private TextView contentText;
     private Toolbar mainToolbar;
     private ViewPager mainListPager;
+    private TabLayout weekdayTabs;
     private LessonPagerAdapter mainListAdapter;
     private List<LessonListFragment> fragments;
-
+    private ImageView stuffImage;
     private BitJwcSession session;
 
     @Override
@@ -49,7 +54,12 @@ public class MainActivity extends AppCompatActivity
         mainToolbar = (Toolbar) findViewById(R.id.tb_main);
         setSupportActionBar(mainToolbar);
         mainListPager = (ViewPager) findViewById(R.id.vp_lessons);
+        weekdayTabs = (TabLayout) findViewById(R.id.tl_weekday);
+        stuffImage = (ImageView) findViewById(R.id.iv_stuff);
 
+        ViewGroup.LayoutParams params = stuffImage.getLayoutParams();
+        params.height = getStatusBarHeight();
+        stuffImage.setLayoutParams(params);
 //        ViewGroup.LayoutParams layoutParams = mainListPager.getLayoutParams();
 //        TypedValue value = new TypedValue();
 //        getTheme().resolveAttribute(R.attr.actionBarSize, value, true);
@@ -62,6 +72,9 @@ public class MainActivity extends AppCompatActivity
         }
         mainListAdapter = new LessonPagerAdapter(getSupportFragmentManager(), fragments);
         mainListPager.setAdapter(mainListAdapter);
+
+        weekdayTabs.setupWithViewPager(mainListPager);
+        weekdayTabs.setTabsFromPagerAdapter(mainListAdapter);
     }
 
     @Override
@@ -129,5 +142,20 @@ public class MainActivity extends AppCompatActivity
         session.setUsrNum(usrNum);
         session.setPsw(psw);
         session.start();
+    }
+
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        //fragments.get(mainListPager.getCurrentItem()).
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }
