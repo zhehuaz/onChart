@@ -21,7 +21,7 @@ package org.oo.onchart.student;
 /**
  * Entity class representative of a block in lesson chart.
  */
-public class Lesson{
+public class Lesson implements Comparable {
     private String name;
     private String department;
     private float credit;
@@ -133,5 +133,11 @@ public class Lesson{
 
     public void setEndWeek(int endWeek) {
         this.endWeek = endWeek;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Lesson l = (Lesson)o;
+        return this.getStartTime() - l.getStartTime();
     }
 }

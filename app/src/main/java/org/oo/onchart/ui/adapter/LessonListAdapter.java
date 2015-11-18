@@ -11,6 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -53,8 +56,13 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if(holder instanceof ViewHolder) {
-            ((ViewHolder) holder).nameText.setText(lessons.get(position - 1).getName());
-            ((ViewHolder) holder).roomText.setText(lessons.get(position - 1).getClassroom());
+            Lesson l = lessons.get(position - 1);
+            ((ViewHolder) holder).nameText.setText(l.getName());
+            ((ViewHolder) holder).roomText.setText(l.getClassroom());
+
+            ViewGroup.LayoutParams params = ((ViewHolder) holder).frame.getLayoutParams();
+            params.height =(((ViewHolder) holder).cardHeigth >> 1 ) * (l.getEndTime() - l.getStartTime() + 1);
+            ((ViewHolder) holder).frame.setLayoutParams(params);
         }
     }
 
@@ -64,16 +72,28 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        FrameLayout frame;
         CardView cardView;
         TextView nameText;
         TextView roomText;
         ImageView nabImg;
+
+        int cardHeigth;
         public ViewHolder(View itemView) {
             super(itemView);
+            frame = (FrameLayout) itemView.findViewById(R.id.fl_frame);
             cardView = (CardView) itemView.findViewById(R.id.cd_lesson_item);
             nameText = (TextView) itemView.findViewById(R.id.tv_lesson_name);
             roomText = (TextView) itemView.findViewById(R.id.tv_lesson_room);
             nabImg = (ImageView) itemView.findViewById(R.id.iv_nab);
+
+            cardHeigth = frame.getLayoutParams().height;
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //ScaleAnimation animation = new ScaleAnimation()
+                }
+            });
 
             Drawable nab = nabImg.getDrawable();
             if(nab != null) {

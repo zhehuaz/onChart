@@ -7,9 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.oo.onchart.R;
 import org.oo.onchart.parser.StudentInfoParser;
@@ -97,6 +101,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void onPostExecute(List<Lesson> lessons) {
               //  LessonListAdapter adapter = new LessonListAdapter(MainActivity.this, lessons);
+                String storage = new Gson().toJson(lessons);
+                Log.d(TAG, storage);
+
                 for(Lesson l : lessons) {
                    int index = Utils.parseIndexFromWeekday(l.getWeekDay());
                    if(index >= 0) {

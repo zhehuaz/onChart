@@ -28,6 +28,8 @@ import org.jsoup.select.Elements;
 import org.oo.onchart.student.Lesson;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.DuplicateFormatFlagsException;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -109,6 +111,7 @@ public class StudentInfoParser {
                 }
             }
             lessons.addAll(dupLessons);
+            Collections.sort(lessons);
         }
         return lessons;
     }

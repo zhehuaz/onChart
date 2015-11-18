@@ -24,6 +24,14 @@ public class LessonListFragment extends Fragment {
 
     RecyclerView lessonList;
     LessonListAdapter adapter;
+
+    /**
+     * This lesson list is handled by Fragment and shared with adapter
+     * for lifecycle consideration.As the data is generated before Fragment attached,
+     * the moment the adapter is not instantiated, the data should be stored in
+     * Fragment to be passed to adapter later.What's more, the list's pointer
+     * points to one area of memory so that you need to maintain this list only.
+     */
     List<Lesson> lessons;
 
     public LessonListFragment() {
@@ -33,7 +41,7 @@ public class LessonListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        adapter = new LessonListAdapter(getActivity(), lessons);
+        adapter = new LessonListAdapter(context, lessons);
     }
 
     @Override
@@ -59,4 +67,7 @@ public class LessonListFragment extends Fragment {
         if(adapter != null)
             adapter.notifyDataSetChanged();
     }
+
+
+
 }
