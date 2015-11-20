@@ -9,10 +9,8 @@
     android:layout_width="280dp"
     android:layout_height="fill_parent"
     android:id="@+id/cd_lesson_item"
-    android:layout_marginRight="10dp"
-    android:layout_marginEnd="10dp"
-    android:layout_marginBottom="15dp"
-    android:layout_marginTop="5dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginBottom="8dp"
     android:layout_gravity="end"
     card_view:cardElevation="5dp"
     android:clickable="true"
@@ -30,21 +28,23 @@
         android:scaleType="centerCrop"/>
 
     <LinearLayout
-        android:layout_width="158dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp">
             <TextView
                 android:textStyle="bold"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Hello"
                 android:id="@+id/tv_lesson_name"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 android:paddingBottom="3dp"/>
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:text="Hello, again"
                 android:id="@+id/tv_lesson_room"/>
     </LinearLayout>

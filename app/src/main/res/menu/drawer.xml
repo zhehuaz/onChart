@@ -4,6 +4,21 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:title="Hello"/>
+            android:title="@string/action_chart"
+            android:icon="@drawable/ic_assignment_black_24dp"/>
+        <item
+            android:title="@string/action_exam"
+            android:icon="@drawable/ic_book_open_variant_black_24dp"
+            />
+    </group>
+
+    <group android:id="@+id/g_bottom">
+
+        <item
+            android:title="@string/action_share"
+            android:icon="@drawable/ic_share_black_24dp"/>
+        <item
+            android:title="@string/action_about"
+            android:icon="@drawable/ic_info_black_24dp" />
     </group>
 </menu>

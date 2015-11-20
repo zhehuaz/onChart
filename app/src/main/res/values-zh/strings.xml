@@ -10,4 +10,8 @@
     <string name="weekday_Wed">周三</string>
     <string name="title_login">点击登录</string>
     <string name="action_settings">设置</string>
+    <string name="action_share">分享</string>
+    <string name="action_about">关于</string>
+    <string name="action_chart">课表</string>
+    <string name="action_exam">考试 (敬请期待)</string>
 </resources>

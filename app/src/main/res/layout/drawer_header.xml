@@ -3,8 +3,7 @@
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
             android:background="@mipmap/drawer_header_bg"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingBottom="8dp">
+            >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,13 +12,16 @@
         android:orientation="horizontal"
         android:clickable="true"
         android:id="@+id/rl_login_click"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
         >
         <ImageView
             android:id="@+id/iv_avatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_account_circle_white_24dp"
-            android:layout_margin="10dp"/>
+            android:layout_marginRight="10dp"/>
         <TextView
             android:layout_toEndOf="@+id/iv_avatar"
             android:layout_centerVertical="true"
@@ -33,8 +35,4 @@
             android:textSize="14sp"
             android:alpha="0.87"/>
     </RelativeLayout>
-
-
->>>>>>> origin/ui
-
 </FrameLayout>
