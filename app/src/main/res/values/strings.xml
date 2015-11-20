@@ -8,8 +8,8 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
+    <string name="drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="drawer_close" translatable="false">Close navigation drawer</string>
 
     <string name="weekday_Mon">Mon.</string>
     <string name="weekday_Tue">Tue.</string>
@@ -18,4 +18,5 @@
     <string name="weekday_Fri">Fri.</string>
     <string name="weekday_Sat">Sat.</string>
     <string name="weekday_Sun">Sun.</string>
+    <string name="title_login">Login</string>
 </resources>

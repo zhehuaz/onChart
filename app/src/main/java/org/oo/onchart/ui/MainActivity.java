@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     private BitJwcSession session;
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
+    private RelativeLayout loginArea;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,16 @@ public class MainActivity extends AppCompatActivity
         weekdayTabs = (TabLayout) findViewById(R.id.tl_weekday);
         stuffImage = (ImageView) findViewById(R.id.iv_stuff);
         drawerLayout = (DrawerLayout) findViewById(R.id.dl_drawer);
+        loginArea = (RelativeLayout) findViewById(R.id.rl_login_click);
+
+        loginArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LoginTestFragment dialog = new LoginTestFragment();
+                dialog.setListener(MainActivity.this);
+                dialog.show(getSupportFragmentManager(), TAG);
+            }
+        });
 
         ViewGroup.LayoutParams params = stuffImage.getLayoutParams();
         params.height = getStatusBarHeight();
@@ -117,15 +129,6 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.action_fetch) {
-            LoginTestFragment dialog = new LoginTestFragment();
-            dialog.setListener(this);
-            dialog.show(getSupportFragmentManager(), TAG);
-        }
 
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;

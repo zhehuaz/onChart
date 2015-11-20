@@ -8,4 +8,6 @@
     <string name="weekday_Thi">周四</string>
     <string name="weekday_Tue">周二</string>
     <string name="weekday_Wed">周三</string>
+    <string name="title_login">点击登录</string>
+    <string name="action_settings">设置</string>
 </resources>
