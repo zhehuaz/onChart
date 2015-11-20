@@ -23,4 +23,7 @@
     <string name="action_about">About</string>
     <string name="action_chart">Chart</string>
     <string name="action_exam">Exam (Coming)</string>
+    <string name="subtitle_morning">Morning</string>
+    <string name="subtitle_afternoon">Afternoon</string>
+    <string name="subtitle_evening">Evening</string>
 </resources>

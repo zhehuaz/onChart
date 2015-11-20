@@ -14,4 +14,7 @@
     <string name="action_about">关于</string>
     <string name="action_chart">课表</string>
     <string name="action_exam">考试 (敬请期待)</string>
+    <string name="subtitle_afternoon">下午</string>
+    <string name="subtitle_evening">晚上</string>
+    <string name="subtitle_morning">早上</string>
 </resources>

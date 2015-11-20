@@ -168,9 +168,9 @@ public class MainActivity extends AppCompatActivity
                    if(index >= 0) {
                        fragments.get(index).addLesson(l);
                    }
-                   for(LessonListFragment f : fragments) {
-                       f.updateList();
-                   }
+                }
+                for(LessonListFragment f : fragments) {
+                    f.updateList();
                 }
             }
         }.execute();

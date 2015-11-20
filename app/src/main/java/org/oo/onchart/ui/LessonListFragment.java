@@ -9,8 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.oo.onchart.R;
+import org.oo.onchart.exception.LessonStartTimeException;
 import org.oo.onchart.student.Lesson;
 import org.oo.onchart.ui.adapter.LessonListAdapter;
 
@@ -41,7 +43,12 @@ public class LessonListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        adapter = new LessonListAdapter(context, lessons);
+        try {
+            adapter = new LessonListAdapter(context, lessons);
+        } catch (LessonStartTimeException e) {
+            Toast.makeText(getActivity(), "Unknown lesson time", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -51,7 +58,12 @@ public class LessonListFragment extends Fragment {
         lessonList = (RecyclerView) rootView.findViewById(R.id.rv_lessons);
         lessonList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        adapter.setLessons(lessons);
+        try {
+            adapter.setLessons(lessons);
+        } catch (LessonStartTimeException e) {
+            Toast.makeText(getActivity(), "Unknown lesson time", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
         lessonList.setAdapter(adapter);
         //adapter.notifyDataSetChanged();
         return rootView;
@@ -60,17 +72,21 @@ public class LessonListFragment extends Fragment {
     public void addLesson(Lesson lesson) {
         if(lesson != null) {
             lessons.add(lesson);
-            if(adapter != null) {
-                adapter.notifyItemInserted(lessons.size());
-            }
         }
 
     }
 
     public void updateList() {
         //adapter.setList();
-        if(adapter != null)
+        if(adapter != null) {
+            try {
+                // TODO　bad logic
+                adapter.processLessons();
+            } catch (LessonStartTimeException e) {
+                e.printStackTrace();
+            }
             adapter.notifyDataSetChanged();
+        }
     }
 
 
