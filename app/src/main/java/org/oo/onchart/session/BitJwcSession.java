@@ -139,14 +139,13 @@ public class BitJwcSession extends Session{
     }
 
     public int fetchWeek() throws IOException {
-        String path = "jwc.bit.edu.cn";
+        String path = "http://10.0.6.51";
         HttpRequest weekRequest = null;
 
         try {
             weekRequest = new HttpRequest(path);
             HttpResponse response = weekRequest.send();
             return StudentInfoParser.parseWeek(response.getContent());
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

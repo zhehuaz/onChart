@@ -171,7 +171,7 @@ public class HttpRequest {
             outputStream.write(getSentData().getBytes());
         }
         // get response
-        InputStream inputStream = connection.getInputStream();
+        //InputStream inputStream = connection.getInputStream();
         Log.i(HttpTestActivity.TAG, "Redirected:" + connection.getURL().toString());// get redirected url
         String buffer = null;
         String content = "";

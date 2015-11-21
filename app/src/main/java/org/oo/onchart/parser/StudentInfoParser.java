@@ -111,7 +111,7 @@ public class StudentInfoParser {
                         dupLessons.get(j).setEndTime(Integer.parseInt(endTime));
                     }
 
-                    pattern = "\\d(?=-)|\\d+(?=周)";
+                    pattern = "\\d+(?=-)|\\d+(?=周)";
                     reg = Pattern.compile(pattern);
                     m = reg.matcher(textsTime[j]);
                     if(m.find()) {

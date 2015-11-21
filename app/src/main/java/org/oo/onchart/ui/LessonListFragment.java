@@ -139,6 +139,11 @@ public class LessonListFragment extends Fragment {
         return rootView;
     }
 
+    public void clearLesson() {
+        if(lessons != null)
+            lessons.clear();
+    }
+
     public void addLesson(Lesson lesson) {
         if(lesson != null) {
             lessons.add(lesson);

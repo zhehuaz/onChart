@@ -33,7 +33,6 @@ public class PreferenceManager {
         gson = new Gson();
     }
 
-
     public void saveChart(List<Lesson> lessons) throws IOException {
         String json = gson.toJson(lessons);
         FileOutputStream fos = context.openFileOutput(CHART_FILE_NAME, Context.MODE_PRIVATE);
@@ -45,7 +44,6 @@ public class PreferenceManager {
         Reader reader = new InputStreamReader(context.openFileInput(CHART_FILE_NAME));
         return gson.fromJson(reader, new TypeToken<List<Lesson>>(){ }.getType());
     }
-
 
     public void saveName(String name) {
         if(name != null) {
@@ -66,7 +64,7 @@ public class PreferenceManager {
 
     public int getWeek() {
         SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
-        return sp.getInt(PREF_KEY_WEEK, 0);
+        return sp.getInt(PREF_KEY_WEEK, 1);
     }
 
 }

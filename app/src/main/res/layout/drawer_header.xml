@@ -27,7 +27,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/iv_avatar"
             android:id="@+id/tv_stu_name"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_login"
             android:textStyle="bold"
@@ -35,5 +35,13 @@
             android:textSize="14sp"
             android:alpha="0.87"
             android:layout_marginLeft="22dp"/>
+        <TextView
+            android:id="@+id/tv_weekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Hello"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"/>
     </RelativeLayout>
 </FrameLayout>

@@ -2,6 +2,7 @@ package org.oo.onchart.ui;
 
 import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.os.PersistableBundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,8 +67,12 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawerLayout;
     private RelativeLayout loginArea;
     private TextView nameText;
+    private ProgressBar refreshProgress;
+    private TextView weekdayText;
 
     private PreferenceManager preferenceManager;
+
+    private int curWeek;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,12 +85,18 @@ public class MainActivity extends AppCompatActivity
         mainToolbar = (Toolbar) findViewById(R.id.tb_main);
         setSupportActionBar(mainToolbar);
 
+        curWeek = preferenceManager.getWeek();
+
         mainListPager = (ViewPager) findViewById(R.id.vp_lessons);
         weekdayTabs = (TabLayout) findViewById(R.id.tl_weekday);
         stuffImage = (ImageView) findViewById(R.id.iv_stuff);
         drawerLayout = (DrawerLayout) findViewById(R.id.dl_drawer);
         loginArea = (RelativeLayout) findViewById(R.id.rl_login_click);
         nameText = (TextView) findViewById(R.id.tv_stu_name);
+        refreshProgress = (ProgressBar) findViewById(R.id.pb_refresh);
+        weekdayText = (TextView) findViewById(R.id.tv_weekday);
+        if (weekdayText != null)
+            weekdayText.setText("" + curWeek);// an int would be considered as a resource id
 
         loginArea.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +112,7 @@ public class MainActivity extends AppCompatActivity
         stuffImage.setLayoutParams(params);
 
         fragments = new ArrayList<>();
-        for(int i = 0;i < 5;i ++) {
+        for (int i = 0;i < 5;i ++) {
             fragments.add(new LessonListFragment());
         }
         mainListAdapter = new LessonPagerAdapter(this, getSupportFragmentManager(), fragments);
@@ -110,7 +122,8 @@ public class MainActivity extends AppCompatActivity
         weekdayTabs.setTabsFromPagerAdapter(mainListAdapter);
 
         setupDrawer();
-        setupList();
+        refreshWeek();
+        setupList();// ATTENTION, order of setup and refresh
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
@@ -119,13 +132,15 @@ public class MainActivity extends AppCompatActivity
         List<Lesson> lessons = null;
         try {
             lessons = preferenceManager.getChart();
-            for(Lesson l : lessons) {
+            for (LessonListFragment f : fragments)
+                f.clearLesson();
+            for (Lesson l : lessons) {
                 int index = Utils.parseIndexFromWeekday(l.getWeekDay());
-                if(index >= 0) {
+                if (index >= 0 && curWeek >= l.getStartWeek() && curWeek <= l.getEndWeek()) {
                     fragments.get(index).addLesson(l);
                 }
             }
-            for(LessonListFragment f : fragments) {
+            for (LessonListFragment f : fragments) {
                 f.updateList();
             }
         } catch (FileNotFoundException e) {
@@ -136,8 +151,9 @@ public class MainActivity extends AppCompatActivity
         cal.setTimeZone(TimeZone.getDefault());
         int curWeekDay = cal.get(Calendar.DAY_OF_WEEK);
         curWeekDay = (curWeekDay - 2) % 7;
-        if(curWeekDay < mainListAdapter.getCount())
+        if (curWeekDay < mainListAdapter.getCount()) {
             mainListPager.setCurrentItem(curWeekDay);
+        }
     }
 
     private void setupDrawer() {
@@ -158,6 +174,35 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
         updateDrawer();
+    }
+
+    public void refreshWeek() {
+        new AsyncTask<String, String, Integer>() {
+
+            @Override
+            protected void onPostExecute(Integer integer) {
+                if(integer == 0) {
+                    Toast.makeText(MainActivity.this, "Unable to fetch week", Toast.LENGTH_SHORT).show();
+                    return ;
+                }
+                if(curWeek != integer) {
+                    curWeek = integer;
+                    preferenceManager.saveWeek(curWeek);
+                    setupList();
+                    weekdayText.setText(curWeek + "");
+                }
+            }
+
+            @Override
+            protected Integer doInBackground(String... params) {
+                try {
+                    return session.fetchWeek();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            }
+        }.execute();
     }
 
     @Override
@@ -204,8 +249,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void onPostExecute(List<Lesson> lessons) {
               //  LessonListAdapter adapter = new LessonListAdapter(MainActivity.this, lessons);
-                int curWeek = preferenceManager.getWeek();
-                if(lessons != null)
+                //int curWeek = preferenceManager.getWeek();
+                if (lessons != null)
                     try {
                         preferenceManager.saveChart(lessons);
                         setupList();
@@ -220,6 +265,7 @@ public class MainActivity extends AppCompatActivity
                     preferenceManager.saveName(stuName);
                     updateDrawer();
                 }
+                //refreshProgress.setVisibility(View.INVISIBLE);
             }
         }.execute();
 
