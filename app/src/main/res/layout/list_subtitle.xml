@@ -3,6 +3,7 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:id="@+id/tv_subtitle"
     android:textStyle="bold"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:clickable="false">
 
 </TextView>

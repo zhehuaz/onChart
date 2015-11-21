@@ -36,4 +36,38 @@ public class Utils {
             R.string.weekday_Sat,
             R.string.weekday_Sun
     };
+
+    public static String timeFromPeriod(int i) {
+        switch (i) {
+            case 1:
+                return "08:00";
+            case 2:
+                return "08:50";
+            case 3:
+                return "09:50";
+            case 4:
+                return "10:40";
+            case 5:
+                return "11:30";
+            case 6:
+                return "13:20";
+            case 7:
+                return "14:10";
+            case 8:
+                return "15:10";
+            case 9:
+                return "16:10";
+            case 10:
+                return "16:50";
+            case 11:
+                return "18:30";
+            case 12:
+                return "19:20";
+            case 13:
+                return "20:10";
+            default:
+                return "";
+        }
+    }
+
 }

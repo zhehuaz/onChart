@@ -4,11 +4,20 @@ package org.oo.onchart.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import org.oo.onchart.R;
@@ -23,7 +32,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class LessonListFragment extends Fragment {
-
+    private final static String TAG = "LessonListFragment";
     RecyclerView lessonList;
     LessonListAdapter adapter;
 
@@ -58,6 +67,51 @@ public class LessonListFragment extends Fragment {
         lessonList = (RecyclerView) rootView.findViewById(R.id.rv_lessons);
         lessonList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+
+        lessonList.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            View childView;
+            GestureDetector detector = new GestureDetector(getActivity(), new GestureDetector.SimpleOnGestureListener(){
+
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    //Toast.makeText(getActivity(), "Hello", Toast.LENGTH_SHORT).show();
+                    if(childView != null && childView instanceof FrameLayout) {
+                        Animation alphaAnimation = new AlphaAnimation(0.1f, 1.0f);
+                        alphaAnimation.setDuration(1000);
+                        alphaAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+
+
+                        Animation scaleAnimation = new ScaleAnimation(1.0f, 1.0f, 1.0f, 1.5f);
+                        scaleAnimation.setDuration(500);
+                        scaleAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+
+                        //childView.startAnimation(scaleAnimation);
+                        //Log.d(TAG, "animation start");
+                    }
+                    return true;
+                }
+            });
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                childView = rv.findChildViewUnder(e.getX(), e.getY());
+                //Log.d(TAG, "new child view : " + childView.getX() + " " + childView.getY());
+                //Log.d(TAG, "The action " + e.getAction());
+                detector.onTouchEvent(e);
+
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+                //detector.onTouchEvent(e);
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
         try {
             adapter.setLessons(lessons);
         } catch (LessonStartTimeException e) {

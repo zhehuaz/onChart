@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import org.oo.onchart.R;
 import org.oo.onchart.exception.LessonStartTimeException;
+import org.oo.onchart.parser.Utils;
 import org.oo.onchart.student.Lesson;
 
 import java.util.List;
@@ -67,14 +68,22 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             int startTime = l.getStartTime();
             switch (startTime) {
                 case 1:
+                case 2:
                 case 3:
+                case 4:
+                case 5:
                     morningCount ++;
                     break;
                 case 6:
+                case 7:
                 case 8:
+                case 9:
+                case 10:
                     afternoonCount ++;
                     break;
                 case 11:
+                case 12:
+                case 13:
                     eveningCount ++;
                     break;
                 default:
@@ -116,11 +125,12 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, "On bind");
+        //Log.d(TAG, "On bind");
         if(holder instanceof ViewHolder) {
             Lesson l = lessons.get(bitmap[position]);
             ((ViewHolder) holder).nameText.setText(l.getName());
             ((ViewHolder) holder).roomText.setText(l.getClassroom());
+            ((ViewHolder) holder).timeText.setText(Utils.timeFromPeriod(l.getStartTime()));
 
             ViewGroup.LayoutParams params = ((ViewHolder) holder).frame.getLayoutParams();
             params.height =(((ViewHolder) holder).cardHeight >> 1 ) * (l.getEndTime() - l.getStartTime() + 1);
@@ -152,6 +162,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView nameText;
         TextView roomText;
         ImageView nabImg;
+        TextView timeText;
 
         int cardHeight;
         public ViewHolder(View itemView) {
@@ -160,6 +171,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             cardView = (CardView) itemView.findViewById(R.id.cd_lesson_item);
             nameText = (TextView) itemView.findViewById(R.id.tv_lesson_name);
             roomText = (TextView) itemView.findViewById(R.id.tv_lesson_room);
+            timeText = (TextView) itemView.findViewById(R.id.tv_time);
             nabImg = (ImageView) itemView.findViewById(R.id.iv_nab);
 
             cardHeight = frame.getLayoutParams().height;
@@ -175,8 +187,10 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             if (cardView != null) {
                                 if (lightVibrant != null) {
                                     cardView.setCardBackgroundColor(lightVibrant.getRgb());
+                                    timeText.setTextColor(lightVibrant.getRgb());
                                 } else if (vibrant != null) {
                                     cardView.setCardBackgroundColor(vibrant.getRgb());
+                                    timeText.setTextColor(vibrant.getRgb());
                                 } else {
                                     cardView.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
                                 }
@@ -216,7 +230,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        Log.d(TAG, "Get Items.");
+        //Log.d(TAG, "Get Items.");
         if(position == 0)
             return VIEW_TYPE_HEAD;
         else if(bitmap[position] < 0)
