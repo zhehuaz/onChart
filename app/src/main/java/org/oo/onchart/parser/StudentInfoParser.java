@@ -18,6 +18,7 @@
 
 package org.oo.onchart.parser;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.jsoup.Jsoup;
@@ -35,13 +36,29 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/*
+ *    Copyright 2015 Zhehua Chang
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 /**
  * parser for student information parser.
  */
 public class StudentInfoParser {
     private final static String TAG = "StudentInfoParser";
 
-    public static List<Lesson> parseChart(String htmlText)
+    public static List<Lesson> parseChart(@NonNull String htmlText)
     {
         Document doc = Jsoup.parse(htmlText);
         Element chartTable = doc.select("table#dgrdKb").first();
@@ -115,4 +132,30 @@ public class StudentInfoParser {
         }
         return lessons;
     }
+
+    public static int parseWeek(@NonNull String htmlText) {
+        Document doc = Jsoup.parse(htmlText);
+        Element rootElement = doc.select("a.black").get(0);
+        Element childElement;
+        if(rootElement != null) {
+            childElement = rootElement.select("b").get(0);
+            if(childElement != null)
+                return Integer.parseInt(childElement.text());
+        }
+        return -1;
+    }
+
+    public static String parseName(@NonNull String htmlText) {
+        Document doc = Jsoup.parse(htmlText);
+        Element element = doc.select("span#xhxm").get(0);
+        if(element != null) {
+            Pattern pattern = Pattern.compile(" .*(?=同学)");
+            Matcher m = pattern.matcher(element.text());
+            if(m.find()) {
+                return m.group().trim();
+            }
+        }
+        return "";
+    }
+
 }

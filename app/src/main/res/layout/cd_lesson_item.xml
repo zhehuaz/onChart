@@ -36,7 +36,7 @@
                 android:layout_width="95dp"
                 android:layout_height="match_parent"
                 android:src="@mipmap/little_lable2"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop" />
 
             <LinearLayout
                 android:layout_gravity="center_vertical"

@@ -10,33 +10,50 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
 import org.oo.onchart.R;
-import org.oo.onchart.parser.StudentInfoParser;
+import org.oo.onchart.config.PreferenceManager;
 import org.oo.onchart.parser.Utils;
 import org.oo.onchart.session.BitJwcSession;
 import org.oo.onchart.session.Session;
 import org.oo.onchart.student.Lesson;
 import org.oo.onchart.ui.adapter.LessonPagerAdapter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
+
+/*
+ *    Copyright 2015 Zhehua Chang
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 
 public class MainActivity extends AppCompatActivity
         implements Session.SessionListener, LoginTestFragment.LoginListener {
 
     private String TAG = "MainActivity";
-    //private TextView contentText;
     private Toolbar mainToolbar;
     private ViewPager mainListPager;
     private TabLayout weekdayTabs;
@@ -47,14 +64,18 @@ public class MainActivity extends AppCompatActivity
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private RelativeLayout loginArea;
+    private TextView nameText;
+
+    private PreferenceManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        preferenceManager = new PreferenceManager(this);
+
         session = new BitJwcSession(this);
-        //contentText = (TextView) findViewById(R.id.tv_content);
         mainToolbar = (Toolbar) findViewById(R.id.tb_main);
         setSupportActionBar(mainToolbar);
 
@@ -63,6 +84,7 @@ public class MainActivity extends AppCompatActivity
         stuffImage = (ImageView) findViewById(R.id.iv_stuff);
         drawerLayout = (DrawerLayout) findViewById(R.id.dl_drawer);
         loginArea = (RelativeLayout) findViewById(R.id.rl_login_click);
+        nameText = (TextView) findViewById(R.id.tv_stu_name);
 
         loginArea.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,11 +98,6 @@ public class MainActivity extends AppCompatActivity
         ViewGroup.LayoutParams params = stuffImage.getLayoutParams();
         params.height = getStatusBarHeight();
         stuffImage.setLayoutParams(params);
-//        ViewGroup.LayoutParams layoutParams = mainListPager.getLayoutParams();
-//        TypedValue value = new TypedValue();
-//        getTheme().resolveAttribute(R.attr.actionBarSize, value, true);
-//        layoutParams.height -= value.data;
-//        mainListPager.setLayoutParams(layoutParams);
 
         fragments = new ArrayList<>();
         for(int i = 0;i < 5;i ++) {
@@ -93,8 +110,34 @@ public class MainActivity extends AppCompatActivity
         weekdayTabs.setTabsFromPagerAdapter(mainListAdapter);
 
         setupDrawer();
+        setupList();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+    private void setupList() {
+        List<Lesson> lessons = null;
+        try {
+            lessons = preferenceManager.getChart();
+            for(Lesson l : lessons) {
+                int index = Utils.parseIndexFromWeekday(l.getWeekDay());
+                if(index >= 0) {
+                    fragments.get(index).addLesson(l);
+                }
+            }
+            for(LessonListFragment f : fragments) {
+                f.updateList();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getDefault());
+        int curWeekDay = cal.get(Calendar.DAY_OF_WEEK);
+        curWeekDay = (curWeekDay - 2) % 7;
+        if(curWeekDay < mainListAdapter.getCount())
+            mainListPager.setCurrentItem(curWeekDay);
     }
 
     private void setupDrawer() {
@@ -114,6 +157,7 @@ public class MainActivity extends AppCompatActivity
         drawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
+        updateDrawer();
     }
 
     @Override
@@ -154,23 +198,27 @@ public class MainActivity extends AppCompatActivity
         new AsyncTask<String, String, List<Lesson>>() {
             @Override
             protected List<Lesson> doInBackground(String... strings) {
-                return StudentInfoParser.parseChart(session.fetchLessionChart());
+                return session.fetchLessonChart();
             }
 
             @Override
             protected void onPostExecute(List<Lesson> lessons) {
               //  LessonListAdapter adapter = new LessonListAdapter(MainActivity.this, lessons);
-                String storage = new Gson().toJson(lessons);
-                Log.d(TAG, storage);
+                int curWeek = preferenceManager.getWeek();
+                if(lessons != null)
+                    try {
+                        preferenceManager.saveChart(lessons);
+                        setupList();
+                    } catch (IOException e) {
+                        Toast.makeText(MainActivity.this, "Save chart error", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
 
-                for(Lesson l : lessons) {
-                   int index = Utils.parseIndexFromWeekday(l.getWeekDay());
-                   if(index >= 0) {
-                       fragments.get(index).addLesson(l);
-                   }
-                }
-                for(LessonListFragment f : fragments) {
-                    f.updateList();
+
+                String stuName = session.fetchName();
+                if (stuName != null) {
+                    preferenceManager.saveName(stuName);
+                    updateDrawer();
                 }
             }
         }.execute();
@@ -185,7 +233,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onFinish(String usrNum, String psw) {
-        session.setUsrNum(usrNum);
+        session.setStuNum(usrNum);
         session.setPsw(psw);
         session.start();
     }
@@ -203,5 +251,14 @@ public class MainActivity extends AppCompatActivity
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    private void updateDrawer() {
+        String stuName = preferenceManager.getName();
+        if (stuName != null) {
+            nameText.setText(stuName);
+            loginArea.setClickable(false);
+            drawerLayout.closeDrawers();
+        }
     }
 }

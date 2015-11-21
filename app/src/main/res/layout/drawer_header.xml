@@ -26,7 +26,7 @@
             android:layout_toEndOf="@+id/iv_avatar"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/iv_avatar"
-            android:id="@+id/tv_usrname"
+            android:id="@+id/tv_stu_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title_login"
