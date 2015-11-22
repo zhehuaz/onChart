@@ -66,9 +66,9 @@ public class StudentInfoParser {
         List<Lesson> lessons = new ArrayList<>();
 
         List<Lesson> dupLessons = new ArrayList<>();
-        for(Element e : lessonEles) {
+        for (Element e : lessonEles) {
             dupLessons.clear();
-            if(!e.className().equals("datagridhead")) {
+            if (!e.className().equals("datagridhead")) {
                 Lesson baseLesson = new Lesson();
                 //dupLessons.add(newLesson);
                 Elements lessonInfo = e.getAllElements();
@@ -88,7 +88,7 @@ public class StudentInfoParser {
                     dupLessons.get(j).setClassroom(s);
 
                     //Log.d(TAG, textsTime[j]);
-                    if(textsTime[j].length() == 1)
+                    if (textsTime[j].length() == 1)
                         dupLessons.get(j).setWeekDay('0');
                     else
                         dupLessons.get(j).setWeekDay(textsTime[j].charAt(1));
@@ -96,15 +96,15 @@ public class StudentInfoParser {
                     String pattern = "(\\d)+(?=,)|(\\d+)*(?=节)";
                     Pattern reg = Pattern.compile(pattern);
                     Matcher m = reg.matcher(textsTime[j]);
-                    if(m.find()) {
+                    if (m.find()) {
                         //Log.d(TAG, m.group());
                         dupLessons.get(j).setStartTime(Integer.parseInt(m.group()));
                     }
                     String endTime = null;
-                    while(m.find() && m.group().length() > 0) {
+                    while (m.find() && m.group().length() > 0) {
                         endTime = m.group();
                     }
-                    if(endTime == null) {
+                    if (endTime == null) {
                         dupLessons.get(j).setEndTime(dupLessons.get(j).getStartTime());
                     } else {
                         //Log.d(TAG, endTime);
@@ -114,15 +114,27 @@ public class StudentInfoParser {
                     pattern = "\\d+(?=-)|\\d+(?=周)";
                     reg = Pattern.compile(pattern);
                     m = reg.matcher(textsTime[j]);
-                    if(m.find()) {
+                    if (m.find()) {
                         dupLessons.get(j).setStartWeek(Integer.parseInt(m.group()));
                     } else {
                         dupLessons.get(j).setStartWeek(0);
                     }
-                    if(m.find()) {
+                    if (m.find()) {
                         dupLessons.get(j).setEndWeek(Integer.parseInt(m.group()));
                     } else {
                         dupLessons.get(j).setEndTime(dupLessons.get(j).getStartTime());
+                    }
+
+                    pattern = "(单|双)(?=周)";
+                    reg = Pattern.compile(pattern);
+                    m = reg.matcher(textsTime[j]);
+                    if (m.find()) {
+                        if (m.group().equals("单"))
+                            dupLessons.get(j).setWeekParity((byte)1);
+                        else
+                            dupLessons.get(j).setWeekParity((byte)2);
+                    } else {
+                        dupLessons.get(j).setWeekParity((byte)-1);
                     }
                     j++;
                 }
@@ -133,13 +145,14 @@ public class StudentInfoParser {
         return lessons;
     }
 
+
     public static int parseWeek(@NonNull String htmlText) {
         Document doc = Jsoup.parse(htmlText);
         Element rootElement = doc.select("a.black").get(0);
         Element childElement;
-        if(rootElement != null) {
+        if (rootElement != null) {
             childElement = rootElement.select("b").get(0);
-            if(childElement != null)
+            if (childElement != null)
                 return Integer.parseInt(childElement.text());
         }
         return -1;
@@ -148,10 +161,10 @@ public class StudentInfoParser {
     public static String parseName(@NonNull String htmlText) {
         Document doc = Jsoup.parse(htmlText);
         Element element = doc.select("span#xhxm").get(0);
-        if(element != null) {
+        if (element != null) {
             Pattern pattern = Pattern.compile(" .*(?=同学)");
             Matcher m = pattern.matcher(element.text());
-            if(m.find()) {
+            if (m.find()) {
                 return m.group().trim();
             }
         }

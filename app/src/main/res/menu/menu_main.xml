@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
 
     <item
+        android:id="@+id/item_refresh"
         app:actionLayout="@layout/item_refresh"
         android:title="refresh"
         app:showAsAction="always"/>

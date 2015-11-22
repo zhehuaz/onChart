@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -93,7 +94,6 @@ public class MainActivity extends AppCompatActivity
         drawerLayout = (DrawerLayout) findViewById(R.id.dl_drawer);
         loginArea = (RelativeLayout) findViewById(R.id.rl_login_click);
         nameText = (TextView) findViewById(R.id.tv_stu_name);
-        refreshProgress = (ProgressBar) findViewById(R.id.pb_refresh);
         weekdayText = (TextView) findViewById(R.id.tv_weekday);
         if (weekdayText != null)
             weekdayText.setText("" + curWeek);// an int would be considered as a resource id
@@ -123,13 +123,13 @@ public class MainActivity extends AppCompatActivity
 
         setupDrawer();
         refreshWeek();
-        setupList();// ATTENTION, order of setup and refresh
+        setupList();// ATTENTION, order of refresh and setup
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     private void setupList() {
-        List<Lesson> lessons = null;
+        List<Lesson> lessons;
         try {
             lessons = preferenceManager.getChart();
             for (LessonListFragment f : fragments)
@@ -137,7 +137,10 @@ public class MainActivity extends AppCompatActivity
             for (Lesson l : lessons) {
                 int index = Utils.parseIndexFromWeekday(l.getWeekDay());
                 if (index >= 0 && curWeek >= l.getStartWeek() && curWeek <= l.getEndWeek()) {
-                    fragments.get(index).addLesson(l);
+                    if (l.getWeekParity() < 0)
+                        fragments.get(index).addLesson(l);
+                    else if (curWeek % 2 == l.getWeekParity()) // odd or even week num
+                        fragments.get(index).addLesson(l);
                 }
             }
             for (LessonListFragment f : fragments) {
@@ -177,6 +180,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void refreshWeek() {
+        if(refreshProgress != null)
+            refreshProgress.setVisibility(View.VISIBLE);
         new AsyncTask<String, String, Integer>() {
 
             @Override
@@ -191,6 +196,8 @@ public class MainActivity extends AppCompatActivity
                     setupList();
                     weekdayText.setText(curWeek + "");
                 }
+                if(refreshProgress != null)
+                    refreshProgress.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -209,6 +216,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        refreshProgress = (ProgressBar) menu.findItem(R.id.item_refresh).getActionView().findViewById(R.id.pb_refresh);
         return true;
     }
 

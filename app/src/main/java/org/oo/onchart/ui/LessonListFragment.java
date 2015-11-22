@@ -96,7 +96,6 @@ public class LessonListFragment extends Fragment {
                         alphaAnimation.setDuration(1000);
                         alphaAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
 
-
                         Animation scaleAnimation = new ScaleAnimation(1.0f, 1.0f, 1.0f, 1.5f);
                         scaleAnimation.setDuration(500);
                         scaleAnimation.setInterpolator(new AccelerateDecelerateInterpolator());

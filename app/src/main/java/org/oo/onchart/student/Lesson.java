@@ -34,6 +34,8 @@ package org.oo.onchart.student;
  *    limitations under the License.
  */
 
+import org.oo.onchart.R;
+
 /**
  * Entity class representative of a block in lesson chart.
  */
@@ -48,27 +50,38 @@ public class Lesson implements Comparable {
     private int endTime;
     private int startWeek;
     private int endWeek;
+    private byte weekParity;
+    private int labelPic;
+
 
     public Lesson() {
-
+        this.name = "";
+        this.department = "";
+        credit = 0f;
+        teacher = "";
+        classroom = "";
+        weekDay = 0;
+        startTime = 0;
+        endTime = 0;
+        startWeek = 0;
+        endWeek = 0;
+        weekParity = -1;
+        labelPic = R.mipmap.little_lable;
     }
 
     public Lesson(Lesson lesson) {
-        if(lesson.name != null)
-            this.name = new String(lesson.name);
-        if(lesson.department != null)
-            this.department = new String(lesson.department);
-        if(lesson.teacher != null)
-            this.teacher = new String(lesson.teacher);
-        if(lesson.classroom != null)
-            this.classroom = new String(lesson.classroom);
-
+        this.name = new String(lesson.name);
+        this.department = new String(lesson.department);
+        this.teacher = new String(lesson.teacher);
+        this.classroom = new String(lesson.classroom);
         this.credit = lesson.credit;
         this.weekDay = lesson.weekDay;
         this.startTime = lesson.startTime;
         this.endTime = lesson.endTime;
         this.startWeek = lesson.startTime;
         this.endWeek = lesson.endWeek;
+        this.weekParity = lesson.weekParity;
+        this.labelPic = lesson.labelPic;
     }
 
     public String getName() {
@@ -149,6 +162,22 @@ public class Lesson implements Comparable {
 
     public void setEndWeek(int endWeek) {
         this.endWeek = endWeek;
+    }
+
+    public byte getWeekParity() {
+        return weekParity;
+    }
+
+    public void setWeekParity(byte weekParity) {
+        this.weekParity = weekParity;
+    }
+
+    public int getLabelPic() {
+        return labelPic;
+    }
+
+    public void setLabelPic(int labelPic) {
+        this.labelPic = labelPic;
     }
 
     @Override

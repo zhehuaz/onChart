@@ -9,6 +9,8 @@
         android:layout_height="24dp"
         android:id="@+id/pb_refresh"
         android:indeterminateTintMode="src_atop"
-        android:indeterminateTint="@color/white" />
+        android:indeterminateTint="@color/white"
+        android:visibility="invisible"/>
+
 
 </LinearLayout>
