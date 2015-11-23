@@ -13,43 +13,41 @@
         android:paddingTop="0dp"
         android:paddingBottom="0dp"
         tools:context=".ui.MainActivity">
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:background="@mipmap/main_tb_bg"
-        android:layout_height="@dimen/toolbar_height"
-        app:elevation="10dp"
-        >
-        <ImageView
-            android:id="@+id/iv_stuff"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    <android.support.v7.widget.Toolbar
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tb_main"
-        app:theme="@style/Theme.AppCompat"
-        app:popupTheme="@style/Theme.AppCompat.Light"
-        >
-    </android.support.v7.widget.Toolbar>
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tl_weekday"
-            android:layout_width="match_parent"
+            android:background="@mipmap/main_tb_bg"
+            android:layout_height="@dimen/toolbar_height"
+            app:elevation="10dp">
+            <ImageView
+                android:id="@+id/iv_stuff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        <android.support.v7.widget.Toolbar
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            app:tabIndicatorHeight="5dp"
-            app:tabIndicatorColor="@android:color/background_light"
-            app:tabTextColor="#AAFFFFFF"
-            app:tabSelectedTextColor="@android:color/background_light"
-            app:theme="@style/ThemeOverlay.AppCompat.Light"
-            />
+            android:id="@+id/tb_main"
+            app:theme="@style/Theme.AppCompat"
+            app:popupTheme="@style/Theme.AppCompat.Light">
+        </android.support.v7.widget.Toolbar>
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tl_weekday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabIndicatorHeight="5dp"
+                app:tabIndicatorColor="@android:color/background_light"
+                app:tabTextColor="#AAFFFFFF"
+                app:tabSelectedTextColor="@android:color/background_light"
+                app:theme="@style/ThemeOverlay.AppCompat.Light"
+                />
 
-    </android.support.design.widget.AppBarLayout>
-    <android.support.v4.view.ViewPager
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/vp_lessons"
-        android:layout_alignParentBottom="true">
-    </android.support.v4.view.ViewPager>
-</RelativeLayout>
+        </android.support.design.widget.AppBarLayout>
+        <android.support.v4.view.ViewPager
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/vp_lessons"
+            android:layout_alignParentBottom="true">
+        </android.support.v4.view.ViewPager>
+    </RelativeLayout>
     <android.support.design.widget.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

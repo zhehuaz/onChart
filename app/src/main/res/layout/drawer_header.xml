@@ -13,8 +13,11 @@
         android:clickable="true"
         android:id="@+id/rl_login_click"
         android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingStart="16dp"
         android:paddingBottom="8dp"
         android:paddingTop="8dp"
+        android:paddingRight="16dp"
+        android:paddingEnd="16dp"
         >
         <ImageView
             android:id="@+id/iv_avatar"
@@ -39,9 +42,17 @@
             android:id="@+id/tv_weekday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@+id/tv_week"
             android:text="Hello"
             android:textColor="@color/white"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/tv_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/weekday_week"
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"/>
     </RelativeLayout>
 </FrameLayout>

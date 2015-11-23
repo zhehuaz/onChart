@@ -17,4 +17,5 @@
     <string name="subtitle_afternoon">下午</string>
     <string name="subtitle_evening">晚上</string>
     <string name="subtitle_morning">早上</string>
+    <string name="weekday_week">周</string>
 </resources>

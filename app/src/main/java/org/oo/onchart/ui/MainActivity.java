@@ -274,7 +274,8 @@ public class MainActivity extends AppCompatActivity
                     preferenceManager.saveName(stuName);
                     updateDrawer();
                 }
-                //refreshProgress.setVisibility(View.INVISIBLE);
+                if(refreshProgress != null)
+                    refreshProgress.setVisibility(View.INVISIBLE);
             }
         }.execute();
 
@@ -288,6 +289,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onFinish(String usrNum, String psw) {
+        if (refreshProgress != null)
+            refreshProgress.setVisibility(View.VISIBLE);
         session.setStuNum(usrNum);
         session.setPsw(psw);
         session.start();

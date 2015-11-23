@@ -26,4 +26,5 @@
     <string name="subtitle_morning">Morning</string>
     <string name="subtitle_afternoon">Afternoon</string>
     <string name="subtitle_evening">Evening</string>
+    <string name="weekday_week">Week</string>
 </resources>
