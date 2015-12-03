@@ -25,6 +25,7 @@
         android:layout_gravity="end"
         card_view:cardElevation="5dp"
         android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         >
         <LinearLayout
             android:layout_width="fill_parent"
@@ -36,7 +37,7 @@
                 android:layout_width="95dp"
                 android:layout_height="match_parent"
                 android:src="@mipmap/little_lable2"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop" />
 
             <LinearLayout
                 android:layout_gravity="center_vertical"

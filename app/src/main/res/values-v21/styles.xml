@@ -9,8 +9,13 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:navigationBarColor">@color/white</item>
-        <item name="android:colorForeground">@android:color/white</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="colorPrimary">@android:color/white</item>
-</style>
+<item name="android:colorForeground">@android:color/white</item>
+    </style>
+
+    <style name="SettingTheme" parent="@style/Theme.AppCompat.Light">
+
+        <item name="android:windowActionBar">true</item>
+    </style>
+
 </resources>
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:id="@+id/pb_refresh"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/white"
+        android:visibility="invisible"/>
+
+
+</LinearLayout>

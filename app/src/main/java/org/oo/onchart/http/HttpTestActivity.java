@@ -15,7 +15,6 @@ import android.widget.TextView;
 import org.oo.onchart.R;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -91,8 +90,8 @@ public class HttpTestActivity extends AppCompatActivity{
                                 }
                             };
                             HttpResponse chartResponse = chartRequest.send();
-                            String htmlRes = chartResponse.getResponseContent();
-                            Log.i(TAG, "Response : " + chartResponse.getResponseContent());
+                            String htmlRes = chartResponse.getContent();
+                            Log.i(TAG, "Response : " + chartResponse.getContent());
                             return htmlRes;
                         } catch (MalformedURLException e) {
                             e.printStackTrace();

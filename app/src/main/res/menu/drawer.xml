@@ -5,7 +5,7 @@
 
         <item
             android:title="@string/action_chart"
-            android:icon="@drawable/ic_assignment_black_24dp"/>
+            android:icon="@drawable/ic_today_black_24dp"/>
         <item
             android:title="@string/action_exam"
             android:icon="@drawable/ic_book_open_variant_black_24dp"
@@ -20,5 +20,9 @@
         <item
             android:title="@string/action_about"
             android:icon="@drawable/ic_info_black_24dp" />
+        <item
+            android:id="@+id/item_settings"
+            android:title="@string/action_settings"
+            android:icon="@drawable/ic_settings_black_24dp" />
     </group>
 </menu>

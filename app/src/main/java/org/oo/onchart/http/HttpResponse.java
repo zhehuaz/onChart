@@ -42,7 +42,7 @@ public class HttpResponse {
         return requestUrl;
     }
 
-    public String getResponseContent() {
+    public String getContent() {
         return responseContent;
     }
 

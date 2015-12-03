@@ -23,6 +23,22 @@ import org.oo.onchart.student.Lesson;
 
 import java.util.List;
 
+/*
+ *    Copyright 2015 Zhehua Chang
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 /**
  * Created by langley on 11/17/15.
  */
@@ -128,13 +144,52 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         //Log.d(TAG, "On bind");
         if(holder instanceof ViewHolder) {
             Lesson l = lessons.get(bitmap[position]);
-            ((ViewHolder) holder).nameText.setText(l.getName());
-            ((ViewHolder) holder).roomText.setText(l.getClassroom());
-            ((ViewHolder) holder).timeText.setText(Utils.timeFromPeriod(l.getStartTime()));
+            final TextView nameText = ((ViewHolder) holder).nameText;
+            final TextView roomText = ((ViewHolder) holder).roomText;
+            final TextView timeText = ((ViewHolder) holder).timeText;
+            final ImageView nabImg = ((ViewHolder) holder).nabImg;
+            final CardView cardView = ((ViewHolder) holder).cardView;
+            nameText.setText(l.getName());
+            roomText.setText(l.getClassroom());
+            timeText.setText(Utils.timeFromPeriod(l.getStartTime()));
 
             ViewGroup.LayoutParams params = ((ViewHolder) holder).frame.getLayoutParams();
             params.height =(((ViewHolder) holder).cardHeight >> 1 ) * (l.getEndTime() - l.getStartTime() + 1);
             ((ViewHolder) holder).frame.setLayoutParams(params);
+
+            nabImg.setImageResource(l.getLabelPic());
+
+            Drawable nab = nabImg.getDrawable();
+            if(nab != null) {
+                new Palette.Builder(((BitmapDrawable) nab).getBitmap())
+                        .generate(new Palette.PaletteAsyncListener() {
+                            @Override
+                            public void onGenerated(Palette palette) {
+                                Palette.Swatch lightVibrant = palette.getLightVibrantSwatch();
+                                Palette.Swatch vibrant = palette.getVibrantSwatch();
+                                if (cardView != null) {
+                                    if (lightVibrant != null) {
+                                        cardView.setCardBackgroundColor(lightVibrant.getRgb());
+                                        //timeText.setTextColor(lightVibrant.getRgb());
+                                    } else if (vibrant != null) {
+                                        cardView.setCardBackgroundColor(vibrant.getRgb());
+                                        //timeText.setTextColor(vibrant.getRgb());
+                                    }
+
+                                    if (vibrant != null)
+                                        timeText.setTextColor(vibrant.getRgb());
+                                    else
+                                        timeText.setTextColor(context.getResources().getColor(R.color.default_title));
+                                }
+
+
+                                nameText.setTextColor(context.getResources().getColor(R.color.default_title));
+                                roomText.setTextColor(context.getResources().getColor(R.color.default_title));
+
+                            }
+
+                        });
+            }
         } else if(holder instanceof SubtitleViewHolder) {
             if (MORNING_FLAG == bitmap[position]) {
                 ((SubtitleViewHolder) holder).subTitle.setText(context.getResources().getString(R.string.subtitle_morning));
@@ -175,42 +230,6 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             nabImg = (ImageView) itemView.findViewById(R.id.iv_nab);
 
             cardHeight = frame.getLayoutParams().height;
-
-            Drawable nab = nabImg.getDrawable();
-            if(nab != null) {
-                new Palette.Builder(((BitmapDrawable) nab).getBitmap())
-                    .generate(new Palette.PaletteAsyncListener() {
-                        @Override
-                        public void onGenerated(Palette palette) {
-                            Palette.Swatch lightVibrant = palette.getLightVibrantSwatch();
-                            Palette.Swatch vibrant = palette.getVibrantSwatch();
-                            if (cardView != null) {
-                                if (lightVibrant != null) {
-                                    cardView.setCardBackgroundColor(lightVibrant.getRgb());
-                                    timeText.setTextColor(lightVibrant.getRgb());
-                                } else if (vibrant != null) {
-                                    cardView.setCardBackgroundColor(vibrant.getRgb());
-                                    timeText.setTextColor(vibrant.getRgb());
-                                } else {
-                                    cardView.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
-                                }
-                            }
-                            if (nameText != null && roomText != null) {
-                                if (lightVibrant != null) {
-                                    nameText.setTextColor(lightVibrant.getTitleTextColor());
-                                    roomText.setTextColor(lightVibrant.getTitleTextColor());
-
-                                } else if (vibrant != null) {
-                                    nameText.setTextColor(vibrant.getTitleTextColor());
-                                    roomText.setTextColor(vibrant.getTitleTextColor());
-                                } else {
-                                    nameText.setTextColor(Color.parseColor("#DCDCDC"));
-                                    roomText.setTextColor(Color.parseColor("#DCDCDC"));
-                                }
-                            }
-                        }
-                    });
-            }
         }
     }
 

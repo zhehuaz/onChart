@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">onChart</string>
+    <string name="app_name" translatable="false">onChart</string>
+    <string name="version_name" translatable="false">v1.0</string>
 
     <string name="hello_world" translatable="false">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -26,4 +27,14 @@
     <string name="subtitle_morning">Morning</string>
     <string name="subtitle_afternoon">Afternoon</string>
     <string name="subtitle_evening">Evening</string>
+    <string name="weekday_week">Week</string>
+
+    <string name="num_weekday_five">5 days</string>
+    <string name="num_weekday_with_Sat">5 days and Sat</string>
+    <string name="num_weekday_with_Sun">5 days and Sun</string>
+    <string name="num_weekday_seven">7 days</string>
+
+    <string name="title_num_weekday">Num of days in one week</string>
+
+    <string name="key_num_of_weekday">num_of_weekday</string>
 </resources>
