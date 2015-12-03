@@ -1,9 +1,12 @@
 package org.oo.onchart.ui;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
-import android.os.Looper;
 import android.os.PersistableBundle;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -11,7 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.oo.onchart.BuildConfig;
 import org.oo.onchart.R;
 import org.oo.onchart.config.PreferenceManager;
 import org.oo.onchart.parser.Utils;
@@ -56,7 +60,7 @@ import java.util.TimeZone;
 public class MainActivity extends AppCompatActivity
         implements Session.SessionListener, LoginTestFragment.LoginListener {
 
-    private String TAG = "MainActivity";
+    private final static String TAG = "MainActivity";
     private Toolbar mainToolbar;
     private ViewPager mainListPager;
     private TabLayout weekdayTabs;
@@ -70,10 +74,13 @@ public class MainActivity extends AppCompatActivity
     private TextView nameText;
     private ProgressBar refreshProgress;
     private TextView weekdayText;
+    private TextView versionText;
+    private NavigationView drawerView;
 
     private PreferenceManager preferenceManager;
 
     private int curWeek;
+    private int numOfWeekdays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +102,11 @@ public class MainActivity extends AppCompatActivity
         loginArea = (RelativeLayout) findViewById(R.id.rl_login_click);
         nameText = (TextView) findViewById(R.id.tv_stu_name);
         weekdayText = (TextView) findViewById(R.id.tv_weekday);
+        versionText = (TextView) findViewById(R.id.tv_version);
+        drawerView = (NavigationView) findViewById(R.id.nv_drawer);
+
+        if (versionText != null)
+            versionText.setText(BuildConfig.VERSION_NAME);
         if (weekdayText != null)
             weekdayText.setText("" + curWeek);// an int would be considered as a resource id
 
@@ -111,15 +123,7 @@ public class MainActivity extends AppCompatActivity
         params.height = getStatusBarHeight();
         stuffImage.setLayoutParams(params);
 
-        fragments = new ArrayList<>();
-        for (int i = 0;i < 5;i ++) {
-            fragments.add(new LessonListFragment());
-        }
-        mainListAdapter = new LessonPagerAdapter(this, getSupportFragmentManager(), fragments);
-        mainListPager.setAdapter(mainListAdapter);
-
-        weekdayTabs.setupWithViewPager(mainListPager);
-        weekdayTabs.setTabsFromPagerAdapter(mainListAdapter);
+        numOfWeekdays = preferenceManager.getNumOfWeekdays();
 
         setupDrawer();
         refreshWeek();
@@ -129,6 +133,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setupList() {
+        fragments = new ArrayList<>();
+        for (int i = 0;i < Math.abs(numOfWeekdays);i ++) {
+            fragments.add(new LessonListFragment());
+        }
+        mainListAdapter = new LessonPagerAdapter(this, getSupportFragmentManager(), fragments, numOfWeekdays);
+        mainListPager.setAdapter(mainListAdapter);
+
+        weekdayTabs.setupWithViewPager(mainListPager);
+        weekdayTabs.setTabsFromPagerAdapter(mainListAdapter);
+
         List<Lesson> lessons;
         try {
             lessons = preferenceManager.getChart();
@@ -160,6 +174,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setupDrawer() {
+
+        drawerView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if(id == R.id.item_settings) {
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivityForResult(intent, 0);
+                }
+                return false;
+            }
+        });
+
+
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -177,6 +205,21 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
         updateDrawer();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //numOfWeekdays = preferenceManager.getNumOfWeekdays();
+        //setupList();// slow..
+        //preferenceManager.registerOnPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        //preferenceManager.unregisterOnPreferenceChangeListener(this);
     }
 
     public void refreshWeek() {
@@ -227,6 +270,7 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
 
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
@@ -286,7 +330,6 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(this, "Fail to connect JWC", Toast.LENGTH_SHORT).show();
     }
 
-
     @Override
     public void onFinish(String usrNum, String psw) {
         if (refreshProgress != null)
@@ -317,6 +360,17 @@ public class MainActivity extends AppCompatActivity
             nameText.setText(stuName);
             loginArea.setClickable(false);
             drawerLayout.closeDrawers();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK) {
+            Log.d(TAG, "Result ok");
+            numOfWeekdays = data.getIntExtra(getString(R.string.key_num_of_weekday), 5);
+            setupList();
         }
     }
 }

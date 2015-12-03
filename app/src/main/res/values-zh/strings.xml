@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">onChart</string>
     <string name="weekday_Fri">周五</string>
     <string name="weekday_Mon">周一</string>
     <string name="weekday_Sat">周六</string>
@@ -18,4 +17,11 @@
     <string name="subtitle_evening">晚上</string>
     <string name="subtitle_morning">早上</string>
     <string name="weekday_week">周</string>
+    <string name="title_activity_settings">设置</string>
+    <string name="version_name"></string>
+    <string name="num_weekday_five">5天</string>
+    <string name="num_weekday_seven">7天</string>
+    <string name="num_weekday_with_Sat">5天加周六</string>
+    <string name="num_weekday_with_Sun">5天加周日</string>
+    <string name="title_num_weekday">一周中的天数</string>
 </resources>

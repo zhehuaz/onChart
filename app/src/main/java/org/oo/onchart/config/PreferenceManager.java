@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.oo.onchart.R;
 import org.oo.onchart.student.Lesson;
 
 import java.io.FileNotFoundException;
@@ -19,7 +20,7 @@ import java.util.List;
  * Created by Administrator on 2015/11/21.
  */
 public class PreferenceManager {
-    private static final String SETTING_FILE = "onchar_setting";
+    private static String SETTING_FILE;
     private static final String PREF_KEY_NAME = "name";
     private static final String PREF_KEY_WEEK = "week";
 
@@ -31,6 +32,17 @@ public class PreferenceManager {
     public PreferenceManager(Context context) {
         this.context = context;
         gson = new Gson();
+        SETTING_FILE = context.getResources().getString(R.string.pref_file_name);
+    }
+
+    public void registerOnPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE)
+                .registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public void unregisterOnPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE)
+                .unregisterOnSharedPreferenceChangeListener(listener);
     }
 
     public void saveChart(List<Lesson> lessons) throws IOException {
@@ -67,4 +79,8 @@ public class PreferenceManager {
         return sp.getInt(PREF_KEY_WEEK, 1);
     }
 
+    public int getNumOfWeekdays() {
+        SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
+        return Integer.parseInt(sp.getString(context.getResources().getString(R.string.key_num_of_weekday), "5"));
+    }
 }

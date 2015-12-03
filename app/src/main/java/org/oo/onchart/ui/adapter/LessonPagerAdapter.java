@@ -34,11 +34,13 @@ import java.util.List;
 public class LessonPagerAdapter extends FragmentPagerAdapter {
     private List<LessonListFragment> fragments;
     private Context context;
+    private int numOfWeekdays;
 
-    public LessonPagerAdapter(Context context, FragmentManager fm, List<LessonListFragment> fragments) {
+    public LessonPagerAdapter(Context context, FragmentManager fm, List<LessonListFragment> fragments, int numOfWeekdays) {
         super(fm);
         this.context = context;
         this.fragments = fragments;
+        this.numOfWeekdays = numOfWeekdays;
     }
 
     @Override
@@ -64,6 +66,11 @@ public class LessonPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return context.getResources().getString(Utils.weekdayFromIndex[position]);
+        if (position != 5)
+            return context.getResources().getString(Utils.weekdayFromIndex[position]);
+        else
+            return context.getResources().getString(Utils.weekdayFromIndex[position + (numOfWeekdays == -6 ? 1 : 0)]);
+        //else
+            //return context.getResources().getString(Utils.weekdayFromIndex[position]);
     }
 }
