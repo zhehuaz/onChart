@@ -22,8 +22,8 @@ public class SettingsActivity extends PreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.SettingTheme);
         super.onCreate(savedInstanceState);
-
         getFragmentManager().beginTransaction().replace(android.R.id.content,
                 new SettingsFragment()).commit();
 
@@ -43,8 +43,7 @@ public class SettingsActivity extends PreferenceActivity {
             preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-
-                    getActivity().setResult(RESULT_OK, new Intent().putExtra(getString(R.string.key_num_of_weekday), Integer.parseInt((String)newValue)));
+                    getActivity().setResult(RESULT_OK, new Intent().putExtra(getString(R.string.key_num_of_weekday), Integer.parseInt((String) newValue)));
                     return true;
                 }
             });

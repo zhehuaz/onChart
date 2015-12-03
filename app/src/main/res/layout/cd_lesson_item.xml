@@ -25,6 +25,7 @@
         android:layout_gravity="end"
         card_view:cardElevation="5dp"
         android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         >
         <LinearLayout
             android:layout_width="fill_parent"

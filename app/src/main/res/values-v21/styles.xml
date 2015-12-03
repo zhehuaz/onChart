@@ -11,4 +11,11 @@
         <item name="android:navigationBarColor">@color/white</item>
 <item name="android:colorForeground">@android:color/white</item>
     </style>
-    </resources>
+
+    <style name="SettingTheme" parent="@style/Theme.AppCompat.Light">
+
+        <item name="android:windowActionBar">true</item>
+    </style>
+
+</resources>
+
