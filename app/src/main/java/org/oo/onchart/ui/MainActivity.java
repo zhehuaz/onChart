@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity
         drawerView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
+                drawerLayout.closeDrawers();
                 int id = menuItem.getItemId();
                 if(id == R.id.item_settings) {
                     Intent intent = new Intent(MainActivity.this, SettingsActivity.class);

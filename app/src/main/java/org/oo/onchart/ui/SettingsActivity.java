@@ -35,10 +35,11 @@ public class SettingsActivity extends PreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            addPreferencesFromResource(R.xml.preferences);
             getPreferenceManager().setSharedPreferencesName(getResources().getString(R.string.pref_file_name));
             //View view = getView();
             //Log.i(TAG, view.getClass());
+            addPreferencesFromResource(R.xml.preferences);
+
             Preference preference = findPreference(getString(R.string.key_num_of_weekday));
             preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
