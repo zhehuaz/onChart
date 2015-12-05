@@ -15,9 +15,11 @@
     <group android:id="@+id/g_bottom">
 
         <item
+            android:id="@+id/item_share"
             android:title="@string/action_share"
             android:icon="@drawable/ic_share_black_24dp"/>
         <item
+            android:id="@+id/item_about"
             android:title="@string/action_about"
             android:icon="@drawable/ic_info_black_24dp" />
         <item

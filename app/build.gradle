@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "org.oo.onchart"
+        applicationId "me.zchang.onchart"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
