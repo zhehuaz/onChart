@@ -9,6 +9,7 @@
         android:layout_height="130dp">
 
         <ImageView
+            android:id="@+id/iv_label"
             android:src="@mipmap/little_lable1"
             android:scaleType="centerCrop"
             android:layout_width="match_parent"

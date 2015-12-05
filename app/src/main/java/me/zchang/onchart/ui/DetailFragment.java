@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import me.zchang.onchart.R;
@@ -50,13 +51,14 @@ public class DetailFragment extends DialogFragment {
             TextView classroomText = (TextView) rootView.findViewById(R.id.tv_classroom);
             TextView weekText = (TextView) rootView.findViewById(R.id.tv_week_cycle);
             TextView creditText = (TextView) rootView.findViewById(R.id.tv_credit);
+            ImageView labelImage = (ImageView) rootView.findViewById(R.id.iv_label);
 
             lessonNameText.setText(lesson.getName());
             teacherText.setText(lesson.getTeacher());
             classroomText.setText(lesson.getClassroom());
             weekText.setText(lesson.getStartWeek() + " - " + lesson.getEndWeek() + getString(R.string.weekday_week));
             creditText.setText(lesson.getCredit() + "");
-
+            labelImage.setImageResource(lesson.getLabelPic());
         }
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         return rootView;

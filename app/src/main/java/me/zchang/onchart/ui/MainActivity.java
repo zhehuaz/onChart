@@ -125,12 +125,13 @@ public class MainActivity extends AppCompatActivity
 
         setupDrawer();
         refreshWeek();
+        setupFragments();
         setupList();// ATTENTION, order of refresh and setup
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
 
-    private void setupList() {
+    private void setupFragments() {
         fragments = new ArrayList<>();
         for (int i = 0;i < Math.abs(numOfWeekdays);i ++) {
             fragments.add(new LessonListFragment());
@@ -140,6 +141,10 @@ public class MainActivity extends AppCompatActivity
 
         weekdayTabs.setupWithViewPager(mainListPager);
         weekdayTabs.setTabsFromPagerAdapter(mainListAdapter);
+
+    }
+
+    private void setupList() {
 
         List<Lesson> lessons;
         try {
@@ -211,21 +216,6 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
         updateDrawer();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //numOfWeekdays = preferenceManager.getNumOfWeekdays();
-        //setupList();// slow..
-        //preferenceManager.registerOnPreferenceChangeListener(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        //preferenceManager.unregisterOnPreferenceChangeListener(this);
     }
 
     public void refreshWeek() {
@@ -376,6 +366,7 @@ public class MainActivity extends AppCompatActivity
         if(resultCode == RESULT_OK) {
             Log.d(TAG, "Result ok");
             numOfWeekdays = data.getIntExtra(getString(R.string.key_num_of_weekday), 5);
+            setupFragments();
             setupList();
         }
     }
