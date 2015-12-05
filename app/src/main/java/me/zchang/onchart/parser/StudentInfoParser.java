@@ -145,12 +145,15 @@ public class StudentInfoParser {
 
     public static int parseWeek(@NonNull String htmlText) {
         Document doc = Jsoup.parse(htmlText);
-        Element rootElement = doc.select("a.black").get(0);
-        Element childElement;
-        if (rootElement != null) {
-            childElement = rootElement.select("b").get(0);
-            if (childElement != null)
-                return Integer.parseInt(childElement.text());
+        Elements rootElements = doc.select("a.black");
+        if (rootElements.size() > 0) {
+            Element rootElement = rootElements.get(0);
+            Element childElement;
+            if (rootElement != null) {
+                childElement = rootElement.select("b").get(0);
+                if (childElement != null)
+                    return Integer.parseInt(childElement.text());
+            }
         }
         return -1;
     }

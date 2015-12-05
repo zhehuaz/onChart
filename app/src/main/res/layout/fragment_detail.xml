@@ -13,7 +13,10 @@
             android:src="@mipmap/little_lable1"
             android:scaleType="centerCrop"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            />
         <TextView
             android:id="@+id/tv_lesson_name"
             android:layout_width="match_parent"

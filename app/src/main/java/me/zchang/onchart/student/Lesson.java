@@ -34,7 +34,7 @@ package me.zchang.onchart.student;
  *    limitations under the License.
  */
 
-import me.zchang.onchart.R;
+import me.zchang.onchart.config.PreferenceManager;
 
 /**
  * Entity class representative of a block in lesson chart.
@@ -54,7 +54,7 @@ public class Lesson implements Comparable {
     private int startWeek;
     private int endWeek;
     private byte weekParity;
-    private int labelPic;
+    private int labelImgIndex;
 
 
     public Lesson() {
@@ -69,7 +69,7 @@ public class Lesson implements Comparable {
         startWeek = 0;
         endWeek = 0;
         weekParity = -1;
-        labelPic = R.mipmap.little_lable1;
+        labelImgIndex = 0;
     }
 
     public Lesson(Lesson lesson) {
@@ -84,7 +84,7 @@ public class Lesson implements Comparable {
         this.startWeek = lesson.startTime;
         this.endWeek = lesson.endWeek;
         this.weekParity = lesson.weekParity;
-        this.labelPic = lesson.labelPic;
+        this.labelImgIndex = lesson.labelImgIndex;
         this.id = lesson.id;
     }
 
@@ -176,12 +176,16 @@ public class Lesson implements Comparable {
         this.weekParity = weekParity;
     }
 
-    public int getLabelPic() {
-        return labelPic;
+    public int getLabelImgIndex() {
+        return labelImgIndex;
     }
 
-    public void setLabelPic(int labelPic) {
-        this.labelPic = labelPic;
+    public void setToNextLabelImg() {
+        this.labelImgIndex = (this.labelImgIndex + 1) % PreferenceManager.labelImgs.length;
+    }
+
+    public void setLabelImgIndex(int labelImgIndex) {
+        this.labelImgIndex = labelImgIndex;
     }
 
     public int getId() {

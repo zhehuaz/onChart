@@ -43,20 +43,15 @@ public class PreferenceManager {
     Context context;
     Gson gson;
 
+    public final static int labelImgs[] = {
+            R.mipmap.little_lable1,
+            R.mipmap.little_label2
+    };
+
     public PreferenceManager(Context context) {
         this.context = context;
         gson = new Gson();
         SETTING_FILE = context.getResources().getString(R.string.pref_file_name);
-    }
-
-    public void registerOnPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
-        context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE)
-                .registerOnSharedPreferenceChangeListener(listener);
-    }
-
-    public void unregisterOnPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
-        context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE)
-                .unregisterOnSharedPreferenceChangeListener(listener);
     }
 
     public void saveChart(List<Lesson> lessons) throws IOException {
@@ -64,11 +59,35 @@ public class PreferenceManager {
         FileOutputStream fos = context.openFileOutput(CHART_FILE_NAME, Context.MODE_PRIVATE);
         fos.write(json.getBytes());
         fos.close();
+
+        SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        for (Lesson lesson : lessons) {
+            //savePicPath(lesson.getId(), lesson.getLabelImgIndex());
+            editor.putInt(lesson.getId() + "", lesson.getLabelImgIndex());
+        }
+        editor.apply();
     }
 
     public List<Lesson> getChart() throws FileNotFoundException {
         Reader reader = new InputStreamReader(context.openFileInput(CHART_FILE_NAME));
-        return gson.fromJson(reader, new TypeToken<List<Lesson>>(){ }.getType());
+        List<Lesson> lessons = gson.fromJson(reader, new TypeToken<List<Lesson>>(){ }.getType());
+
+        for (Lesson lesson : lessons) {
+            lesson.setLabelImgIndex(getPicPathIndex(lesson.getId()));
+        }
+
+        return lessons;
+    }
+
+    public void savePicPathIndex(int key, int resIndex) {
+        SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
+        sp.edit().putInt(key + "", resIndex).apply();
+    }
+
+    public int getPicPathIndex(int key) {
+        SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
+        return sp.getInt(key + "", 0);
     }
 
     public void saveName(String name) {

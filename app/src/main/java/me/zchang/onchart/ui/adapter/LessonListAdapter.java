@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import me.zchang.onchart.R;
+import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.exception.LessonStartTimeException;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.student.Lesson;
@@ -139,7 +140,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         //Log.d(TAG, "On bind");
         if(holder instanceof ViewHolder) {
             final Lesson l = lessons.get(bitmap[position]);
@@ -156,7 +157,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             params.height =(((ViewHolder) holder).cardHeight >> 1 ) * (l.getEndTime() - l.getStartTime() + 1);
             ((ViewHolder) holder).frame.setLayoutParams(params);
 
-            nabImg.setImageResource(l.getLabelPic());
+            nabImg.setImageResource(PreferenceManager.labelImgs[l.getLabelImgIndex()]);
             //nabImg.setScaleType(ImageView.);
 
 
@@ -195,6 +196,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 public void onClick(View v) {
                     DetailFragment fragment = new DetailFragment();
                     fragment.setLesson(l);
+                    fragment.setPosition(position);
                     fragment.show(((MainActivity)context).getSupportFragmentManager(), MainActivity.TAG);
                 }
             });

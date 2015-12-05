@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import me.zchang.onchart.R;
+import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.student.Lesson;
 
 /*
@@ -32,12 +33,18 @@ import me.zchang.onchart.student.Lesson;
 public class DetailFragment extends DialogFragment {
 
     Lesson lesson;
+    int position;
     public DetailFragment() {
         lesson = null;
+        position = 0;
     }
 
     public void setLesson(Lesson lesson) {
         this.lesson = lesson;
+    }
+
+    public  void setPosition(int position) {
+        this.position = position;
     }
 
     @Override
@@ -46,19 +53,30 @@ public class DetailFragment extends DialogFragment {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         if(lesson != null) {
-            TextView lessonNameText = (TextView) rootView.findViewById(R.id.tv_lesson_name);
+            final TextView lessonNameText = (TextView) rootView.findViewById(R.id.tv_lesson_name);
             TextView teacherText = (TextView) rootView.findViewById(R.id.tv_teacher);
             TextView classroomText = (TextView) rootView.findViewById(R.id.tv_classroom);
             TextView weekText = (TextView) rootView.findViewById(R.id.tv_week_cycle);
             TextView creditText = (TextView) rootView.findViewById(R.id.tv_credit);
-            ImageView labelImage = (ImageView) rootView.findViewById(R.id.iv_label);
+            final ImageView labelImage = (ImageView) rootView.findViewById(R.id.iv_label);
 
             lessonNameText.setText(lesson.getName());
             teacherText.setText(lesson.getTeacher());
             classroomText.setText(lesson.getClassroom());
             weekText.setText(lesson.getStartWeek() + " - " + lesson.getEndWeek() + getString(R.string.weekday_week));
             creditText.setText(lesson.getCredit() + "");
-            labelImage.setImageResource(lesson.getLabelPic());
+            labelImage.setImageResource(PreferenceManager.labelImgs[lesson.getLabelImgIndex()]);
+
+            labelImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO too many things to modify
+                    lesson.setToNextLabelImg();
+                    ((MainActivity)getActivity()).getPreferenceManager().savePicPathIndex(lesson.getId(), lesson.getLabelImgIndex());
+                    labelImage.setImageResource(PreferenceManager.labelImgs[lesson.getLabelImgIndex()]);
+                    ((MainActivity)getActivity()).getListFragment().adapter.notifyItemChanged(position);
+                }
+            });
         }
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         return rootView;

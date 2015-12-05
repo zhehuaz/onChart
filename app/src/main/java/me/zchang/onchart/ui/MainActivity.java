@@ -190,7 +190,6 @@ public class MainActivity extends AppCompatActivity
                     intent.setAction(Intent.ACTION_SEND);
                     intent.putExtra(Intent.EXTRA_TEXT, "onChart");
                     intent.setType("text/plain");
-                    //intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("android.resource://org.oo.onchart/mipmap/ic_launcher"));
                     startActivity(Intent.createChooser(intent, "choose to share"));
                 }
                 return false;
@@ -228,7 +227,7 @@ public class MainActivity extends AppCompatActivity
                     Toast.makeText(MainActivity.this, "Unable to fetch week", Toast.LENGTH_SHORT).show();
                     return ;
                 }
-                if(curWeek != integer) {
+                if(curWeek != integer && integer > 0) {
                     curWeek = integer;
                     preferenceManager.saveWeek(curWeek);
                     setupList();
@@ -298,7 +297,7 @@ public class MainActivity extends AppCompatActivity
             protected void onPostExecute(List<Lesson> lessons) {
               //  LessonListAdapter adapter = new LessonListAdapter(MainActivity.this, lessons);
                 //int curWeek = preferenceManager.getWeek();
-                if (lessons != null)
+                if (lessons != null) {
                     try {
                         preferenceManager.saveChart(lessons);
                         setupList();
@@ -306,7 +305,7 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(MainActivity.this, "Save chart error", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
-
+                }
 
                 String stuName = session.fetchName();
                 if (stuName != null) {
@@ -368,5 +367,14 @@ public class MainActivity extends AppCompatActivity
             setupFragments();
             setupList();
         }
+    }
+
+    PreferenceManager getPreferenceManager()
+    {
+        return preferenceManager;
+    }
+
+    LessonListFragment getListFragment() {
+        return fragments.get(mainListPager.getCurrentItem());
     }
 }
