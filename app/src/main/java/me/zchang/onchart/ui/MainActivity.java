@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity
 
         weekdayTabs.setupWithViewPager(mainListPager);
         weekdayTabs.setTabsFromPagerAdapter(mainListAdapter);
-
     }
 
     private void setupList() {

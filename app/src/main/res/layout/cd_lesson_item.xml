@@ -58,7 +58,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="Hello, again"
-                        android:id="@+id/tv_lesson_room"/>
+                        android:id="@+id/tv_lesson_room"
+                        android:textSize="13sp"/>
             </LinearLayout>
 
         </LinearLayout>

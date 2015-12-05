@@ -60,6 +60,7 @@ public class StudentInfoParser {
         Element chartTable = doc.select("table#dgrdKb").first();
         Elements lessonEles = chartTable.select("tr");
         List<Lesson> lessons = new ArrayList<>();
+        int lessonId = 0;
 
         List<Lesson> dupLessons = new ArrayList<>();
         for (Element e : lessonEles) {
@@ -80,7 +81,7 @@ public class StudentInfoParser {
                 String[] textsClassroom = textClassroom.split(";");
                 int j = 0;
                 for (String s : textsClassroom) {
-                    dupLessons.add(new Lesson(baseLesson));
+                    dupLessons.add(new Lesson(baseLesson).setId(lessonId ++));
                     dupLessons.get(j).setClassroom(s);
 
                     //Log.d(TAG, textsTime[j]);
@@ -136,8 +137,8 @@ public class StudentInfoParser {
                 }
             }
             lessons.addAll(dupLessons);
-            Collections.sort(lessons);
         }
+        Collections.sort(lessons);
         return lessons;
     }
 

@@ -40,6 +40,9 @@ import me.zchang.onchart.R;
  * Entity class representative of a block in lesson chart.
  */
 public class Lesson implements Comparable {
+
+
+    private int id;
     private String name;
     private String department;
     private float credit;
@@ -82,6 +85,7 @@ public class Lesson implements Comparable {
         this.endWeek = lesson.endWeek;
         this.weekParity = lesson.weekParity;
         this.labelPic = lesson.labelPic;
+        this.id = lesson.id;
     }
 
     public String getName() {
@@ -180,6 +184,14 @@ public class Lesson implements Comparable {
         this.labelPic = labelPic;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public Lesson setId(int id) {
+        this.id = id;
+        return this;
+    }
     @Override
     public int compareTo(Object o) {
         Lesson l = (Lesson)o;

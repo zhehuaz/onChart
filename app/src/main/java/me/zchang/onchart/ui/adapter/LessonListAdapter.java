@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import me.zchang.onchart.R;
 import me.zchang.onchart.exception.LessonStartTimeException;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.student.Lesson;
@@ -156,6 +157,8 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((ViewHolder) holder).frame.setLayoutParams(params);
 
             nabImg.setImageResource(l.getLabelPic());
+            //nabImg.setScaleType(ImageView.);
+
 
             Drawable nab = nabImg.getDrawable();
             if(nab != null) {
@@ -169,21 +172,19 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     if (lightVibrant != null) {
                                         cardView.setCardBackgroundColor(lightVibrant.getRgb());
                                         //timeText.setTextColor(lightVibrant.getRgb());
+                                        nameText.setTextColor(lightVibrant.getTitleTextColor());
+                                        roomText.setTextColor(lightVibrant.getBodyTextColor());
                                     } else if (vibrant != null) {
                                         cardView.setCardBackgroundColor(vibrant.getRgb());
                                         //timeText.setTextColor(vibrant.getRgb());
+                                        nameText.setTextColor(vibrant.getTitleTextColor());
+                                        roomText.setTextColor(vibrant.getBodyTextColor());
                                     }
-
                                     if (vibrant != null)
                                         timeText.setTextColor(vibrant.getRgb());
                                     else
-                                        timeText.setTextColor(context.getResources().getColor(me.zchang.onchart.R.color.default_title));
+                                        timeText.setTextColor(context.getResources().getColor(R.color.default_title));
                                 }
-
-
-                                nameText.setTextColor(context.getResources().getColor(me.zchang.onchart.R.color.default_title));
-                                roomText.setTextColor(context.getResources().getColor(me.zchang.onchart.R.color.default_title));
-
                             }
 
                         });
