@@ -20,6 +20,8 @@ import org.oo.onchart.R;
 import org.oo.onchart.exception.LessonStartTimeException;
 import org.oo.onchart.parser.Utils;
 import org.oo.onchart.student.Lesson;
+import org.oo.onchart.ui.DetailFragment;
+import org.oo.onchart.ui.MainActivity;
 
 import java.util.List;
 
@@ -143,7 +145,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         //Log.d(TAG, "On bind");
         if(holder instanceof ViewHolder) {
-            Lesson l = lessons.get(bitmap[position]);
+            final Lesson l = lessons.get(bitmap[position]);
             final TextView nameText = ((ViewHolder) holder).nameText;
             final TextView roomText = ((ViewHolder) holder).roomText;
             final TextView timeText = ((ViewHolder) holder).timeText;
@@ -190,6 +192,15 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                         });
             }
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DetailFragment fragment = new DetailFragment();
+                    fragment.setLesson(l);
+                    fragment.show(((MainActivity)context).getSupportFragmentManager(), MainActivity.TAG);
+                }
+            });
         } else if(holder instanceof SubtitleViewHolder) {
             if (MORNING_FLAG == bitmap[position]) {
                 ((SubtitleViewHolder) holder).subTitle.setText(context.getResources().getString(R.string.subtitle_morning));

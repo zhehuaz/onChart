@@ -60,7 +60,7 @@ import java.util.TimeZone;
 public class MainActivity extends AppCompatActivity
         implements Session.SessionListener, LoginTestFragment.LoginListener {
 
-    private final static String TAG = "MainActivity";
+    public final static String TAG = "MainActivity";
     private Toolbar mainToolbar;
     private ViewPager mainListPager;
     private TabLayout weekdayTabs;

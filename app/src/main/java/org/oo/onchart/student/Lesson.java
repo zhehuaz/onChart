@@ -66,7 +66,7 @@ public class Lesson implements Comparable {
         startWeek = 0;
         endWeek = 0;
         weekParity = -1;
-        labelPic = R.mipmap.little_lable;
+        labelPic = R.mipmap.little_lable1;
     }
 
     public Lesson(Lesson lesson) {
