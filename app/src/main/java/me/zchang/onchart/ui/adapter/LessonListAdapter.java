@@ -180,6 +180,10 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                         //timeText.setTextColor(vibrant.getRgb());
                                         nameText.setTextColor(vibrant.getTitleTextColor());
                                         roomText.setTextColor(vibrant.getBodyTextColor());
+                                    } else {
+                                        cardView.setCardBackgroundColor(context.getResources().getColor(R.color.cardview_light_background));
+                                        nameText.setTextColor(context.getResources().getColor(R.color.default_title));
+                                        roomText.setTextColor(context.getResources().getColor(R.color.default_title));
                                     }
                                     if (vibrant != null)
                                         timeText.setTextColor(vibrant.getRgb());

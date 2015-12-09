@@ -3,9 +3,7 @@
         android:title="Hello"
         >
 
-        <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
-             dismiss it. -->
-        <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+
         <ListPreference
             android:key="@string/key_num_of_weekday"
             android:title="@string/pref_title_add_friends_to_messages"
@@ -16,9 +14,4 @@
             android:positiveButtonText="@null" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="Hello, again">
-
-
-    </PreferenceCategory>
 </PreferenceScreen>
