@@ -23,8 +23,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXTextObject;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
 import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
+import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.session.BitJwcSession;
@@ -80,10 +87,16 @@ public class MainActivity extends AppCompatActivity
     private int curWeek;
     private int numOfWeekdays;
 
+    IWXAPI api;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        String APP_ID = MainApp.APP_ID;
+        api = WXAPIFactory.createWXAPI(MainActivity.this, APP_ID, true);
+        api.registerApp(APP_ID);
+
 
         preferenceManager = new PreferenceManager(this);
 
@@ -186,11 +199,20 @@ public class MainActivity extends AppCompatActivity
                     Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                     startActivityForResult(intent, 0);
                 } else if (id == R.id.item_share) {
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_SEND);
-                    intent.putExtra(Intent.EXTRA_TEXT, "onChart");
-                    intent.setType("text/plain");
-                    startActivity(Intent.createChooser(intent, "choose to share"));
+                    WXTextObject textObject = new WXTextObject();
+                    textObject.text = "Hello from onChart";
+
+                    WXMediaMessage msg = new WXMediaMessage();
+                    msg.mediaObject = textObject;
+                    msg.description = "First message";
+                    SendMessageToWX.Req req = new SendMessageToWX.Req();
+                    req.transaction = String.valueOf(System.currentTimeMillis());
+                    req.message = msg;
+                    //req.scene = SendMessageToWX.Req.WXSceneTimeline;
+
+
+
+                    Log.d(TAG, api.sendReq(req) + "");
                 }
                 return false;
             }

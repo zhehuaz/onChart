@@ -2,6 +2,9 @@ package me.zchang.onchart.config;
 
 import android.app.Application;
 
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -20,9 +23,15 @@ import android.app.Application;
  */
 
 public class MainApp extends Application {
+    public static final String APP_ID = "wx01d11a2486ccbf17";
+    public static IWXAPI api;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        api = WXAPIFactory.createWXAPI(this, APP_ID, true);
+        api.registerApp(APP_ID);
     }
 }

@@ -44,8 +44,11 @@ public class PreferenceManager {
     Gson gson;
 
     public final static int labelImgs[] = {
-            R.mipmap.little_lable1,
-            R.mipmap.little_label2
+            R.mipmap.little_label1,
+            R.mipmap.autumn,
+            R.mipmap.winter,
+            R.mipmap.spring,
+            R.mipmap.night
     };
 
     public PreferenceManager(Context context) {

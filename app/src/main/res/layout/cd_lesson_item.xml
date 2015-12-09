@@ -36,7 +36,7 @@
                 android:id="@+id/iv_nab"
                 android:layout_width="95dp"
                 android:layout_height="match_parent"
-                android:src="@mipmap/little_label2"
+                android:src="@mipmap/little_label1"
                 android:scaleType="centerCrop" />
 
             <LinearLayout

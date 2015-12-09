@@ -10,9 +10,9 @@
 
         <ImageView
             android:id="@+id/iv_label"
-            android:src="@mipmap/little_lable1"
+            android:src="@mipmap/little_label1"
             android:scaleType="centerCrop"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="match_parent"
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
