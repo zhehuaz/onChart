@@ -15,4 +15,10 @@
         <item name="windowActionBar">true</item>
     </style>
 
+    <style name="DetailTexts">
+
+        <item name="android:textSize">15sp</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
 </resources>

@@ -2,7 +2,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="org.oo.onchart.ui.LoginTestFragment"
+             tools:context="me.zchang.onchart.ui.LoginTestFragment"
     android:orientation="vertical">
 
             <EditText

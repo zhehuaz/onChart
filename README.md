@@ -2,7 +2,8 @@
 # onChart
 A Lesson table APP for Beijing Institute of Technology.
 Fetch lessons automatically from the [academic affairs office](http://jwc.bit.edu.cn)(Intranet only) of BIT.
-![](http://i.imgur.com/CpVHOjM.png)
+
+![](http://i.imgur.com/Pdzbks7.png)![](http://i.imgur.com/KsHvvQX.png)
 
 ### Build Evironment
 *   Android Studio: 1.4.0
@@ -19,11 +20,14 @@ lesson in this week only.
 
 ### Bugs
 *   Handle exception of incorrect student number or password
-*   Untouchable tabs on devices before Lollipop.
 
-### Pending
+### Coming soon
 *   Fetch exam schedule.
 *   Sharing events to to-do apps like [TickTick](https://ticktick.com/) or [Wunderlist](https://www.wunderlist.com/).
+*   More label images
+
+### Attention
+    If any images used in the app have copyright infringement, contact me please and I'll remove it ASAP.
 
 ### License
 
