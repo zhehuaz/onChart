@@ -114,4 +114,13 @@ public class LessonListFragment extends Fragment {
             adapter.notifyDataSetChanged();
         }
     }
+
+    public void updateLessonImg(int id) {
+        for (Lesson lesson : lessons) {
+            if (lesson.getId() == id) {
+                lesson.setToNextLabelImg();
+                break;
+            }
+        }
+    }
 }

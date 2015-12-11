@@ -408,16 +408,6 @@ public class MainActivity extends AppCompatActivity
                     setupList();
                 }
                 break;
-            case REQ_POSITION:
-                if (resultCode == RESULT_OK) {
-                    int fragIndex = data.getIntExtra(getString(R.string.intent_frag_index), 0);
-                    int position = data.getIntExtra(getString(R.string.intent_position), 0);
-                    LessonListFragment fragment = (LessonListFragment) getSupportFragmentManager().findFragmentById(fragIndex);
-                    if (fragment != null) {
-                        fragment.adapter.notifyItemChanged(position);
-                    }
-                }
-                break;
         }
     }
 
@@ -434,10 +424,8 @@ public class MainActivity extends AppCompatActivity
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(TAG, "Get shared preference change message :" + Integer.parseInt(key));
         LessonListFragment fragment = fragments.get(mainListPager.getCurrentItem());
-        int position = fragment.adapter.findLessonById(Integer.parseInt(key));
-        if(position != -1) {
-            fragment.adapter.notifyItemChanged(position);
-            Log.d(TAG, "item changed " + position);
-        }
+        int id = Integer.parseInt(key);
+        fragment.updateLessonImg(id);
+        fragment.adapter.notifyItemChanged(fragment.adapter.findLessonById(id));
     }
 }

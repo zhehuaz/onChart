@@ -283,6 +283,11 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return VIEW_TYPE_LIST;
     }
 
+    /**
+     * Find the position of lesson in the list by id.
+     * @param id ID of the lesson
+     * @return the position of lesson in the list
+     */
     public int findLessonById(int id) {
         for(int i = 0; i < bitmap.length; i ++) {
             if (bitmap[i] >= 0 && (lessons.get(bitmap[i]).getId() == id)) {
@@ -291,5 +296,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
         return -1;
     }
+
+
 
 }
