@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity
                     req.message = msg;
                     //req.scene = SendMessageToWX.Req.WXSceneTimeline;
 
-                    Log.d(TAG, api.sendReq(req) + "");
+                    //Log.d(TAG, api.sendReq(req) + "");
                 }
                 return false;
             }
@@ -402,7 +402,7 @@ public class MainActivity extends AppCompatActivity
         switch (requestCode) {
             case REQ_SETTING_WEEKNUM:
                 if (resultCode == RESULT_OK) {
-                    Log.d(TAG, "Result ok");
+                    //Log.d(TAG, "Result ok");
                     numOfWeekdays = data.getIntExtra(getString(R.string.key_num_of_weekday), 5);
                     setupFragments();
                     setupList();
@@ -422,7 +422,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.d(TAG, "Get shared preference change message :" + Integer.parseInt(key));
+        //Log.d(TAG, "Get shared preference change message :" + Integer.parseInt(key));
         LessonListFragment fragment = fragments.get(mainListPager.getCurrentItem());
         int id = Integer.parseInt(key);
         fragment.updateLessonImg(id);

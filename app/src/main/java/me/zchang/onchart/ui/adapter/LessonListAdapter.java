@@ -1,10 +1,12 @@
 package me.zchang.onchart.ui.adapter;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -21,8 +23,6 @@ import me.zchang.onchart.exception.LessonStartTimeException;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.student.Lesson;
 import me.zchang.onchart.ui.DetailActivity;
-import me.zchang.onchart.ui.DetailFragment;
-import me.zchang.onchart.ui.MainActivity;
 
 import java.util.List;
 
@@ -212,7 +212,14 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     intent.putExtra(context.getString(R.string.intent_position), position);
                     intent.putExtra(context.getString(R.string.intent_lesson), l);
                     //((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION);
-                    context.startActivity(intent);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context,
+                                cardView,
+                                context.getString(R.string.trans_detail_item));
+                        context.startActivity(intent, options.toBundle());
+                    } else {
+                        context.startActivity(intent);
+                    }
                 }
             });
         } else if(holder instanceof SubtitleViewHolder) {

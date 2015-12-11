@@ -20,4 +20,8 @@
         <item name="android:padding">8dp</item>
     </style>
 
+    <style name="TranslucentActivity" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
 </resources>

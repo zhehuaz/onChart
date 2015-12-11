@@ -1,18 +1,29 @@
 package me.zchang.onchart.ui;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.transition.ArcMotion;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.student.Lesson;
+import me.zchang.onchart.ui.Utils.CardToDialog;
+import me.zchang.onchart.ui.Utils.DialogToCard;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -22,11 +33,29 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ViewGroup container = (ViewGroup) findViewById(R.id.ll_container);
+            ArcMotion arcMotion = new ArcMotion();
+            arcMotion.setMinimumHorizontalAngle(50f);
+            arcMotion.setMinimumVerticalAngle(50f);
+            Interpolator easeInOut = new AccelerateDecelerateInterpolator();
+            CardToDialog sharedEnter = new CardToDialog();
+            sharedEnter.setPathMotion(arcMotion);
+            sharedEnter.setInterpolator(easeInOut);
+            sharedEnter.addTarget(container);
+
+            DialogToCard sharedExit = new DialogToCard();
+            sharedExit.setPathMotion(arcMotion);
+            sharedExit.setInterpolator(new DecelerateInterpolator());
+            sharedExit.addTarget(container);
+            getWindow().setSharedElementEnterTransition(sharedEnter);
+            getWindow().setSharedElementExitTransition(sharedExit);
+        }
+
+
         //retIntent = new Intent();
         final Intent intent = getIntent();
         final Lesson lesson = intent.getParcelableExtra(getString(R.string.intent_lesson));
-        int position = intent.getIntExtra(getString(R.string.intent_position), 0);
-        final int fragIndex = intent.getIntExtra(getString(R.string.intent_lesson), 0);
 
         //setResult(RESULT_CANCELED);
         //retIntent.putExtra(getString(R.string.intent_frag_index), fragIndex);
@@ -49,8 +78,8 @@ public class DetailActivity extends AppCompatActivity {
             labelImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO too many things to modify
                     lesson.setToNextLabelImg();
+                    // update local storage only.
                     ((MainApp) getApplication()).getPreferenceManager().savePicPathIndex(lesson.getId(), lesson.getLabelImgIndex());
                     labelImage.setImageResource(PreferenceManager.labelImgs[lesson.getLabelImgIndex()]);
                     //((MainActivity)getActivity()).getListFragment().adapter.notifyItemChanged(position);
@@ -61,4 +90,15 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    @TargetApi(21)
+    public void onBackPressed() {
+        dismiss(null);
+    }
+
+
+    @TargetApi(21)
+    public void dismiss(View view) {
+        finishAfterTransition();
+    }
 }
