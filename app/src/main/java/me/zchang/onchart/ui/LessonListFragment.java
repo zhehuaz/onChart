@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -40,6 +42,8 @@ import java.util.List;
  */
 public class LessonListFragment extends Fragment {
     private final static String TAG = "LessonListFragment";
+
+    private int Id;
     RecyclerView lessonList;
     LessonListAdapter adapter;
 
@@ -60,7 +64,7 @@ public class LessonListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            adapter = new LessonListAdapter(context, lessons);
+            adapter = new LessonListAdapter(context, lessons, getId());
         } catch (LessonStartTimeException e) {
             Toast.makeText(getActivity(), "Unknown lesson time", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -70,6 +74,7 @@ public class LessonListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "Fragment show");
         View rootView = inflater.inflate(R.layout.fragment_lesson_list, container, false);
         lessonList = (RecyclerView) rootView.findViewById(R.id.rv_lessons);
         lessonList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -109,7 +114,4 @@ public class LessonListFragment extends Fragment {
             adapter.notifyDataSetChanged();
         }
     }
-
-
-
 }

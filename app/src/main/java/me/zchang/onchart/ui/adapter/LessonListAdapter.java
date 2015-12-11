@@ -1,6 +1,8 @@
 package me.zchang.onchart.ui.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.graphics.Palette;
@@ -18,6 +20,7 @@ import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.exception.LessonStartTimeException;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.student.Lesson;
+import me.zchang.onchart.ui.DetailActivity;
 import me.zchang.onchart.ui.DetailFragment;
 import me.zchang.onchart.ui.MainActivity;
 
@@ -39,9 +42,6 @@ import java.util.List;
  *    limitations under the License.
  */
 
-/**
- * Created by langley on 11/17/15.
- */
 public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final static String TAG = "LessonListAdapter";
     public final static int VIEW_TYPE_HEAD = 0;
@@ -51,21 +51,24 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public final static int MORNING_FLAG = -1;
     public final static int AFTERNOON_FLAG = -2;
     public final static int EVENING_FLAG = -3;
+    public final static int HEAD_FLAG = -4;
 
     private int morningCount;
     private int afternoonCount;
     private int eveningCount;
+
     private byte[] bitmap;
 
     List<Lesson> lessons;
     Context context;
+    private int fragId;
 
-    public LessonListAdapter(Context context, List<Lesson> lessons) throws LessonStartTimeException {
-
+    public LessonListAdapter(Context context, List<Lesson> lessons, int fragId) throws LessonStartTimeException {
 
         bitmap = new byte[20];
         this.lessons = lessons;
         this.context = context;
+        this.fragId = fragId;
 
         processLessons();
 
@@ -109,6 +112,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         int length = getItemCount();
         byte lessonCount = 0;
+        bitmap[0] = HEAD_FLAG;
         for(int position = 1; position < length; position ++) {
             if (position == 1 && morningCount > 0) {
                 bitmap[position] = MORNING_FLAG;
@@ -198,10 +202,17 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DetailFragment fragment = new DetailFragment();
-                    fragment.setLesson(l);
-                    fragment.setPosition(position);
-                    fragment.show(((MainActivity)context).getSupportFragmentManager(), MainActivity.TAG);
+                    //DetailFragment fragment = new DetailFragment();
+                    //fragment.setLesson(l);
+                    //fragment.setPosition(position);
+                    //fragment.show(((MainActivity)context).getSupportFragmentManager(), MainActivity.TAG);
+
+                    Intent intent = new Intent(context, DetailActivity.class);
+                    intent.putExtra(context.getString(R.string.intent_frag_index), fragId);
+                    intent.putExtra(context.getString(R.string.intent_position), position);
+                    intent.putExtra(context.getString(R.string.intent_lesson), l);
+                    //((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION);
+                    context.startActivity(intent);
                 }
             });
         } else if(holder instanceof SubtitleViewHolder) {
@@ -272,5 +283,13 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return VIEW_TYPE_LIST;
     }
 
+    public int findLessonById(int id) {
+        for(int i = 0; i < bitmap.length; i ++) {
+            if (bitmap[i] >= 0 && (lessons.get(bitmap[i]).getId() == id)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
 }

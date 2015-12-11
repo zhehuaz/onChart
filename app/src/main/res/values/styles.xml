@@ -11,7 +11,6 @@
     </style>
 
     <style name="SettingTheme" parent="@style/Theme.AppCompat.Light">
-
         <item name="windowActionBar">true</item>
     </style>
 

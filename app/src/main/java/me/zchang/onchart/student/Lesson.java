@@ -34,12 +34,15 @@ package me.zchang.onchart.student;
  *    limitations under the License.
  */
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import me.zchang.onchart.config.PreferenceManager;
 
 /**
  * Entity class representative of a block in lesson chart.
  */
-public class Lesson implements Comparable {
+public class Lesson implements Comparable, Parcelable {
 
 
     private int id;
@@ -201,4 +204,43 @@ public class Lesson implements Comparable {
         Lesson l = (Lesson)o;
         return this.getStartTime() - l.getStartTime();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.teacher);
+        dest.writeString(this.classroom);
+        dest.writeInt(this.startWeek);
+        dest.writeInt(this.endWeek);
+        dest.writeFloat(this.credit);
+        dest.writeInt(this.labelImgIndex);
+    }
+
+    public static final Parcelable.Creator<Lesson> CREATOR = new Creator<Lesson>() {
+
+        @Override
+        public Lesson createFromParcel(Parcel source) {
+            Lesson lesson = new Lesson();
+            lesson.setId(source.readInt());
+            lesson.setName(source.readString());
+            lesson.setTeacher(source.readString());
+            lesson.setClassroom(source.readString());
+            lesson.setStartWeek(source.readInt());
+            lesson.setEndWeek(source.readInt());
+            lesson.setCredit(source.readFloat());
+            lesson.setLabelImgIndex(source.readInt());
+            return lesson;
+        }
+
+        @Override
+        public Lesson[] newArray(int size) {
+            return new Lesson[0];
+        }
+    };
 }

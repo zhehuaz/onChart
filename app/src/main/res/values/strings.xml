@@ -37,4 +37,9 @@
     <string name="title_num_weekday">Num of days in one week</string>
 
     <string name="key_num_of_weekday">num_of_weekday</string>
+    <string name="title_activity_detail">DetailActivity</string>
+
+    <string name="intent_lesson">Lesson</string>
+    <string name="intent_position">Position</string>
+    <string name="intent_frag_index">Fragment</string>
 </resources>
