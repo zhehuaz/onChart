@@ -296,9 +296,11 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
      * @return the position of lesson in the list
      */
     public int findLessonById(int id) {
-        for(int i = 0; i < bitmap.length; i ++) {
-            if (bitmap[i] >= 0 && (lessons.get(bitmap[i]).getId() == id)) {
-                return i;
+        if(!lessons.isEmpty()) {
+            for (int i = 0; i < bitmap.length; i++) {
+                if (bitmap[i] >= 0 && (lessons.get(bitmap[i]).getId() == id)) {
+                    return i;
+                }
             }
         }
         return -1;

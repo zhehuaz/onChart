@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -256,8 +255,7 @@ public class MainActivity extends AppCompatActivity
                 if(curWeek != integer && integer > 0) {
                     curWeek = integer;
                     preferenceManager.saveWeek(curWeek);
-                    setupList();
-                    weekdayText.setText(curWeek + "");
+
                 }
                 if(refreshProgress != null)
                     refreshProgress.setVisibility(View.INVISIBLE);
@@ -284,7 +282,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        preferenceManager.unRegisterListenter(this);
+        preferenceManager.unRegisterListener(this);
     }
 
     @Override
@@ -422,10 +420,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        //Log.d(TAG, "Get shared preference change message :" + Integer.parseInt(key));
-        LessonListFragment fragment = fragments.get(mainListPager.getCurrentItem());
-        int id = Integer.parseInt(key);
-        fragment.updateLessonImg(id);
-        fragment.adapter.notifyItemChanged(fragment.adapter.findLessonById(id));
+        Log.d(TAG, "Get shared preference change message :" + key);
+        if (key.matches("^[0-9]+$")) {
+            LessonListFragment fragment = fragments.get(mainListPager.getCurrentItem());
+            int id = Integer.parseInt(key);
+            fragment.updateLessonImg(id);
+            fragment.adapter.notifyItemChanged(fragment.adapter.findLessonById(id));
+        } else if (key.equals(getString(R.string.pref_week_num))) {
+            setupList();
+            weekdayText.setText(curWeek + "");// TODO update changed items
+        }
     }
 }

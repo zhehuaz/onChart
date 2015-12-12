@@ -35,8 +35,8 @@ import java.util.List;
 
 public class PreferenceManager {
     private static String SETTING_FILE;
-    private static final String PREF_KEY_NAME = "name";
-    private static final String PREF_KEY_WEEK = "week";
+    private static String PREF_KEY_NAME = "name";
+    private static String PREF_KEY_WEEK = "week";
 
     final static String CHART_FILE_NAME = "chart.js";
 
@@ -57,7 +57,7 @@ public class PreferenceManager {
         sp.registerOnSharedPreferenceChangeListener(listener);
     }
 
-    public void unRegisterListenter(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+    public void unRegisterListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
         sp.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
@@ -66,10 +66,10 @@ public class PreferenceManager {
     public PreferenceManager(Context context) {
         this.context = context;
         gson = new Gson();
-        SETTING_FILE = context.getResources().getString(R.string.pref_file_name);
+        SETTING_FILE = context.getString(R.string.pref_file_name);
 
         sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
-
+        PREF_KEY_WEEK = context.getString(R.string.pref_week_num);
     }
 
     public void saveChart(List<Lesson> lessons) throws IOException {
