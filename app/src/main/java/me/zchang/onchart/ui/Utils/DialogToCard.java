@@ -1,43 +1,53 @@
-package me.zchang.onchart.ui.Utils;
-
+package me.zchang.onchart.ui.utils;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.ColorInt;
+import android.support.v4.content.ContextCompat;
 import android.transition.ChangeBounds;
 import android.transition.TransitionValues;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
 
+import me.zchang.onchart.R;
+
 /**
- * Created by Administrator on 2015/12/11.
+ * A transition that morphs a rectangle into a circle, changing it's background color.
  */
-@TargetApi(19)
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class DialogToCard extends ChangeBounds {
-    @Override
-    public String[] getTransitionProperties() {
-        return super.getTransitionProperties();
+
+    private static final String PROPERTY_COLOR = "plaid:rectMorph:color";
+    private static final String PROPERTY_CORNER_RADIUS = "plaid:rectMorph:cornerRadius";
+    private static final String[] TRANSITION_PROPERTIES = {
+            PROPERTY_COLOR,
+            PROPERTY_CORNER_RADIUS
+    };
+    private @ColorInt int endColor = Color.TRANSPARENT;
+
+    public DialogToCard(@ColorInt int endColor) {
+        super();
+        setEndColor(endColor);
     }
 
-    @TargetApi(21)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public DialogToCard(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public DialogToCard() {
-        super();
+    public void setEndColor(@ColorInt int endColor) {
+        this.endColor = endColor;
     }
 
     @Override
-    public void captureEndValues(TransitionValues transitionValues) {
-        super.captureEndValues(transitionValues);
-        final View view = transitionValues.view;
-        if (view.getWidth() <= 0 || view.getHeight() <= 0) {
-            return;
-        }
+    public String[] getTransitionProperties() {
+        return TRANSITION_PROPERTIES;
     }
 
     @Override
@@ -47,37 +57,62 @@ public class DialogToCard extends ChangeBounds {
         if (view.getWidth() <= 0 || view.getHeight() <= 0) {
             return;
         }
+        transitionValues.values.put(PROPERTY_COLOR,
+                ContextCompat.getColor(view.getContext(), R.color.super_light_grey));
     }
 
     @Override
-    public Animator createAnimator(ViewGroup sceneRoot, TransitionValues startValues, TransitionValues endValues) {
-        Animator changeBounds = super.createAnimator(sceneRoot, startValues, endValues);
-        if (startValues == null || endValues == null || changeBounds == null) return null;
+    public void captureEndValues(TransitionValues transitionValues) {
+        super.captureEndValues(transitionValues);
+        final View view = transitionValues.view;
+        if (view.getWidth() <= 0 || view.getHeight() <= 0) {
+            return;
+        }
+        transitionValues.values.put(PROPERTY_COLOR, endColor);
+    }
 
-        // ease in the dialog's child views (slide up & fade_fast in)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public Animator createAnimator(final ViewGroup sceneRoot,
+                                   TransitionValues startValues,
+                                   TransitionValues endValues) {
+        Animator changeBounds = super.createAnimator(sceneRoot, startValues, endValues);
+        if (startValues == null || endValues == null || changeBounds == null) {
+            return null;
+        }
+
+        Integer startColor = (Integer) startValues.values.get(PROPERTY_COLOR);
+        Integer endColor = (Integer) endValues.values.get(PROPERTY_COLOR);
+
+        if (startColor == null || endColor == null) {
+            return null;
+        }
+
+        MorphDrawable background = new MorphDrawable(startColor, 0);
+        endValues.view.setBackground(background);
+
+        Animator color = ObjectAnimator.ofArgb(background, background.COLOR, endColor);
+
+        // hide child views (offset down & fade_fast out)
         if (endValues.view instanceof ViewGroup) {
             ViewGroup vg = (ViewGroup) endValues.view;
-            float offset = vg.getHeight() / 3;
             for (int i = 0; i < vg.getChildCount(); i++) {
                 View v = vg.getChildAt(i);
-                v.setTranslationY(offset);
-                v.setAlpha(0f);
                 v.animate()
-                        .alpha(1f)
-                        .translationY(0f)
-                        .setDuration(150)
-                        .setStartDelay(150)
-                        .setInterpolator(AnimationUtils.loadInterpolator(vg.getContext(),
-                                android.R.interpolator.fast_out_slow_in));
-                offset *= 1.8f;
+                        .alpha(0f)
+                        //.translationY(v.getHeight() / 3)
+                        .setStartDelay(0L)
+                        .setDuration(200L);
+                        //.setInterpolator(AnimationUtils.loadInterpolator(vg.getContext(),
+                        //        android.R.interpolator.fast_out_linear_in))
+                        //.start();
             }
         }
 
         AnimatorSet transition = new AnimatorSet();
-        transition.playTogether(changeBounds);
-        transition.setDuration(300);
-        transition.setInterpolator(AnimationUtils.loadInterpolator(sceneRoot.getContext(),
-                android.R.interpolator.fast_out_slow_in));
+        transition.playTogether(changeBounds, color);
+        transition.setDuration(200);
+        transition.setInterpolator(AnimUtils.getMaterialInterpolator(sceneRoot.getContext()));
         return transition;
     }
 }

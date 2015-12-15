@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -24,6 +25,7 @@ import me.zchang.onchart.exception.LessonStartTimeException;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.student.Lesson;
 import me.zchang.onchart.ui.DetailActivity;
+import me.zchang.onchart.ui.MainActivity;
 
 import java.util.List;
 
@@ -176,17 +178,18 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 Palette.Swatch vibrant = palette.getVibrantSwatch();
                                 if (cardView != null) {
                                     if (lightVibrant != null) {
-                                        cardView.setCardBackgroundColor(lightVibrant.getRgb());
+                                        cardView.setBackground(new ColorDrawable(lightVibrant.getRgb()));
+                                        //cardView.setCardBackgroundColor(lightVibrant.getRgb());
                                         //timeText.setTextColor(lightVibrant.getRgb());
                                         nameText.setTextColor(lightVibrant.getTitleTextColor());
                                         roomText.setTextColor(lightVibrant.getBodyTextColor());
                                     } else if (vibrant != null) {
-                                        cardView.setCardBackgroundColor(vibrant.getRgb());
+                                        cardView.setBackground(new ColorDrawable(vibrant.getRgb()));
                                         //timeText.setTextColor(vibrant.getRgb());
                                         nameText.setTextColor(vibrant.getTitleTextColor());
                                         roomText.setTextColor(vibrant.getBodyTextColor());
                                     } else {
-                                        cardView.setCardBackgroundColor(context.getResources().getColor(R.color.cardview_light_background));
+                                        cardView.setBackground(new ColorDrawable(context.getResources().getColor(R.color.cardview_light_background)));
                                         nameText.setTextColor(context.getResources().getColor(R.color.default_title));
                                         roomText.setTextColor(context.getResources().getColor(R.color.default_title));
                                     }
@@ -214,11 +217,11 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     intent.putExtra(context.getString(R.string.intent_lesson), l);
                     //((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        intent.putExtra("color", cardView.getDrawingCacheBackgroundColor());
+                        intent.putExtra("color", ((ColorDrawable)cardView.getBackground()).getColor());
                         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context,
-                                cardView,
+                                v,
                                 context.getString(R.string.trans_detail_item));
-                        context.startActivity(intent, options.toBundle());
+                        ((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION, options.toBundle());
                     } else {
                         context.startActivity(intent);
                     }

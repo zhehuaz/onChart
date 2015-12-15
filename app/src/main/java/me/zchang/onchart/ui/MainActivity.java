@@ -1,5 +1,6 @@
 package me.zchang.onchart.ui;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -7,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -91,11 +94,13 @@ public class MainActivity extends AppCompatActivity
 
     private int curWeek;
     private int numOfWeekdays;
+    private int curImgIndex;
 
     IWXAPI api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         String APP_ID = MainApp.APP_ID;
@@ -412,6 +417,20 @@ public class MainActivity extends AppCompatActivity
                     setupList();
                 }
                 break;
+            case REQ_POSITION:
+                if (resultCode == RESULT_OK) {
+
+                    LessonListFragment curFragment = fragments.get(mainListPager.getCurrentItem());
+
+                    Lesson lesson = curFragment.findLessonById(data.getIntExtra(getString(R.string.intent_lesson_id), -1));
+                    if (lesson != null) {
+                        lesson.setLabelImgIndex(curImgIndex);
+                    }
+
+                    curFragment.adapter
+                        .notifyItemChanged(data.getIntExtra(getString(R.string.intent_position), 0));
+                }
+                break;
         }
     }
 
@@ -428,10 +447,11 @@ public class MainActivity extends AppCompatActivity
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(TAG, "Get shared preference change message :" + key);
         if (key.matches("^[0-9]+$")) {
-            LessonListFragment fragment = fragments.get(mainListPager.getCurrentItem());
-            int id = Integer.parseInt(key);
-            fragment.updateLessonImg(id);
-            fragment.adapter.notifyItemChanged(fragment.adapter.findLessonById(id));
+            //LessonListFragment fragment = fragments.get(mainListPager.getCurrentItem());
+            //int id = Integer.parseInt(key);
+            //fragment.updateLessonImg(id);
+            //fragment.adapter.notifyItemChanged(fragment.adapter.findLessonById(id));
+            curImgIndex = sharedPreferences.getInt(key, 0);
         } else if (key.equals(getString(R.string.pref_week_num))) {
             setupList();
             weekdayText.setText(curWeek + "");// TODO update changed items

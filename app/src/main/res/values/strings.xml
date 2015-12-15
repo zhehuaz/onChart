@@ -42,6 +42,7 @@
     <string name="intent_lesson">Lesson</string>
     <string name="intent_position">Position</string>
     <string name="intent_frag_index">Fragment</string>
+    <string name="intent_lesson_id">LessonId</string>
 
     <string name="trans_detail_item">DetailItem</string>
     <string name="trans_detail_img">DetailImage</string>

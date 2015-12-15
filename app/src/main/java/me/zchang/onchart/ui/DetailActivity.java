@@ -25,44 +25,47 @@ import me.zchang.onchart.ui.utils.DialogToCard;
 
 public class DetailActivity extends AppCompatActivity {
 
-    //Intent retIntent;
+    Intent retIntent;
+    Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+       // getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
+        //getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_detail);
-        final Intent intent = getIntent();
+        intent = getIntent();
         int startColor = intent.getIntExtra("color", -1);
         final Lesson lesson = intent.getParcelableExtra(getString(R.string.intent_lesson));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-
             ViewGroup container = (ViewGroup) findViewById(R.id.ll_container);
-            //ArcMotion arcMotion = new ArcMotion();
-            //arcMotion.setMinimumHorizontalAngle(50f);
-            //arcMotion.setMinimumVerticalAngle(50f);
+            ArcMotion arcMotion = new ArcMotion();
+            arcMotion.setMinimumHorizontalAngle(50f);
+            arcMotion.setMinimumVerticalAngle(50f);
             Interpolator easeInOut = new AccelerateDecelerateInterpolator();
             CardToDialog sharedEnter = new CardToDialog(startColor);
-            //sharedEnter.setPathMotion(arcMotion);
+            sharedEnter.setPathMotion(arcMotion);
             sharedEnter.setInterpolator(easeInOut);
             sharedEnter.addTarget(container);
 
             DialogToCard sharedExit = new DialogToCard(startColor);
-            //sharedExit.setPathMotion(arcMotion);
-            sharedExit.setInterpolator(new DecelerateInterpolator());
+            sharedExit.setPathMotion(arcMotion);
+            sharedExit.setInterpolator(easeInOut);
             sharedExit.addTarget(container);
             getWindow().setSharedElementEnterTransition(sharedEnter);
+            getWindow().setSharedElementReturnTransition(sharedExit);
             getWindow().setSharedElementExitTransition(sharedExit);
         }
 
 
-        //retIntent = new Intent();
+        retIntent = new Intent();
         //final Intent intent = getIntent();
         //final Lesson lesson = intent.getParcelableExtra(getString(R.string.intent_lesson));
 
-        //setResult(RESULT_CANCELED);
-        //retIntent.putExtra(getString(R.string.intent_frag_index), fragIndex);
-        //retIntent.putExtra(getString(R.string.intent_position), position);
+        setResult(RESULT_CANCELED);
+        //retIntent.putExtra(getString(R.string.intent_frag_index), intent.getIntExtra(getString(R.string.intent_frag_index), 0));
+        retIntent.putExtra(getString(R.string.intent_position), intent.getIntExtra(getString(R.string.intent_position), 0));
         if(lesson != null) {
+            retIntent.putExtra(getString(R.string.intent_lesson_id), lesson.getId());
             final TextView lessonNameText = (TextView) findViewById(R.id.tv_lesson_name);
             TextView teacherText = (TextView) findViewById(R.id.tv_teacher);
             TextView classroomText = (TextView) findViewById(R.id.tv_classroom);
@@ -86,7 +89,7 @@ public class DetailActivity extends AppCompatActivity {
                     labelImage.setImageResource(PreferenceManager.labelImgs[lesson.getLabelImgIndex()]);
                     //((MainActivity)getActivity()).getListFragment().adapter.notifyItemChanged(position);
                     //retIntent.putExtra(getString(R.string.intent_frag_index), fragIndex);
-                    //setResult(RESULT_OK, intent);
+                    setResult(RESULT_OK, retIntent);
                 }
             });
         }
@@ -100,7 +103,9 @@ public class DetailActivity extends AppCompatActivity {
 
     @TargetApi(21)
     public void dismiss(View view) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //setResult(RESULT_CANCELED);
             finishAfterTransition();
+        }
     }
 }

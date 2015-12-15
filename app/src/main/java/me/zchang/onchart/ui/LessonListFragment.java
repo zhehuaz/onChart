@@ -123,4 +123,13 @@ public class LessonListFragment extends Fragment {
             }
         }
     }
+
+    public Lesson findLessonById(int id) {
+        for (Lesson lesson : lessons) {
+            if (lesson.getId() == id) {
+                return lesson;
+            }
+        }
+        return null;
+    }
 }
