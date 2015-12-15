@@ -4,6 +4,7 @@ package me.zchang.onchart.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import me.zchang.onchart.R;
@@ -131,5 +133,17 @@ public class LessonListFragment extends Fragment {
             }
         }
         return null;
+    }
+
+    // TODO Set reenter transition to MainActivity
+    public void onReturnComplete(int position) {
+        View view = lessonList.getChildAt(position);
+        if(view instanceof FrameLayout) {
+            View cardView = ((FrameLayout) view).getChildAt(1);
+            //cardView.setAlpha(0f);
+            cardView.animate()
+                    .alpha(1f)
+                    .setDuration(500L);
+        }
     }
 }

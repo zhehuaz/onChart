@@ -310,7 +310,4 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
         return -1;
     }
-
-
-
 }

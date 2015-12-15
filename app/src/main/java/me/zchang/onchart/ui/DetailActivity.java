@@ -48,12 +48,12 @@ public class DetailActivity extends AppCompatActivity {
             sharedEnter.addTarget(container);
 
             DialogToCard sharedExit = new DialogToCard(startColor);
-            sharedExit.setPathMotion(arcMotion);
+            //sharedExit.setPathMotion(arcMotion);
             sharedExit.setInterpolator(easeInOut);
             sharedExit.addTarget(container);
             getWindow().setSharedElementEnterTransition(sharedEnter);
             getWindow().setSharedElementReturnTransition(sharedExit);
-            getWindow().setSharedElementExitTransition(sharedExit);
+            //getWindow().setSharedElementExitTransition(sharedExit);
         }
 
 
@@ -61,7 +61,7 @@ public class DetailActivity extends AppCompatActivity {
         //final Intent intent = getIntent();
         //final Lesson lesson = intent.getParcelableExtra(getString(R.string.intent_lesson));
 
-        setResult(RESULT_CANCELED);
+        setResult(RESULT_CANCELED, retIntent);
         //retIntent.putExtra(getString(R.string.intent_frag_index), intent.getIntExtra(getString(R.string.intent_frag_index), 0));
         retIntent.putExtra(getString(R.string.intent_position), intent.getIntExtra(getString(R.string.intent_position), 0));
         if(lesson != null) {

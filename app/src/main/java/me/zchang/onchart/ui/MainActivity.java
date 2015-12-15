@@ -418,9 +418,11 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case REQ_POSITION:
+                LessonListFragment curFragment = fragments.get(mainListPager.getCurrentItem());
+                int pos = data.getIntExtra(getString(R.string.intent_position), 0);
+
                 if (resultCode == RESULT_OK) {
 
-                    LessonListFragment curFragment = fragments.get(mainListPager.getCurrentItem());
 
                     Lesson lesson = curFragment.findLessonById(data.getIntExtra(getString(R.string.intent_lesson_id), -1));
                     if (lesson != null) {
@@ -428,7 +430,9 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     curFragment.adapter
-                        .notifyItemChanged(data.getIntExtra(getString(R.string.intent_position), 0));
+                        .notifyItemChanged(pos);
+                } else {
+                    curFragment.onReturnComplete(pos);
                 }
                 break;
         }

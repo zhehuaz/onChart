@@ -101,8 +101,8 @@ public class DialogToCard extends ChangeBounds {
                 v.animate()
                         .alpha(0f)
                         //.translationY(v.getHeight() / 3)
-                        .setStartDelay(0L)
-                        .setDuration(200L);
+                        //.setStartDelay(0L)
+                        .setDuration(160L);
                         //.setInterpolator(AnimationUtils.loadInterpolator(vg.getContext(),
                         //        android.R.interpolator.fast_out_linear_in))
                         //.start();
