@@ -2,28 +2,26 @@ package me.zchang.onchart.ui;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.ArcMotion;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.student.Lesson;
-import me.zchang.onchart.ui.Utils.CardToDialog;
-import me.zchang.onchart.ui.Utils.DialogToCard;
+import me.zchang.onchart.ui.utils.CardToDialog;
+import me.zchang.onchart.ui.utils.DialogToCard;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -32,20 +30,24 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
+        final Intent intent = getIntent();
+        int startColor = intent.getIntExtra("color", -1);
+        final Lesson lesson = intent.getParcelableExtra(getString(R.string.intent_lesson));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
             ViewGroup container = (ViewGroup) findViewById(R.id.ll_container);
-            ArcMotion arcMotion = new ArcMotion();
-            arcMotion.setMinimumHorizontalAngle(50f);
-            arcMotion.setMinimumVerticalAngle(50f);
+            //ArcMotion arcMotion = new ArcMotion();
+            //arcMotion.setMinimumHorizontalAngle(50f);
+            //arcMotion.setMinimumVerticalAngle(50f);
             Interpolator easeInOut = new AccelerateDecelerateInterpolator();
-            CardToDialog sharedEnter = new CardToDialog();
-            sharedEnter.setPathMotion(arcMotion);
+            CardToDialog sharedEnter = new CardToDialog(startColor);
+            //sharedEnter.setPathMotion(arcMotion);
             sharedEnter.setInterpolator(easeInOut);
             sharedEnter.addTarget(container);
 
-            DialogToCard sharedExit = new DialogToCard();
-            sharedExit.setPathMotion(arcMotion);
+            DialogToCard sharedExit = new DialogToCard(startColor);
+            //sharedExit.setPathMotion(arcMotion);
             sharedExit.setInterpolator(new DecelerateInterpolator());
             sharedExit.addTarget(container);
             getWindow().setSharedElementEnterTransition(sharedEnter);
@@ -54,8 +56,8 @@ public class DetailActivity extends AppCompatActivity {
 
 
         //retIntent = new Intent();
-        final Intent intent = getIntent();
-        final Lesson lesson = intent.getParcelableExtra(getString(R.string.intent_lesson));
+        //final Intent intent = getIntent();
+        //final Lesson lesson = intent.getParcelableExtra(getString(R.string.intent_lesson));
 
         //setResult(RESULT_CANCELED);
         //retIntent.putExtra(getString(R.string.intent_frag_index), fragIndex);
@@ -91,14 +93,14 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     @Override
-    @TargetApi(21)
     public void onBackPressed() {
-        dismiss(null);
+            dismiss(null);
     }
 
 
     @TargetApi(21)
     public void dismiss(View view) {
-        finishAfterTransition();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            finishAfterTransition();
     }
 }

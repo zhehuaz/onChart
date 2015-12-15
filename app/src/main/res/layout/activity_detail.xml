@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:onClick="dismiss"
     >
 
     <LinearLayout
+        android:layout_gravity="center"
         android:orientation="vertical"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:transitionName="@string/trans_detail_item"
         android:id="@+id/ll_container"
-        android:padding="16dp">
+        android:background="@color/white"
+        android:elevation="20dp">
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="130dp">
@@ -23,9 +24,7 @@
                 android:scaleType="centerCrop"
                 android:layout_width="300dp"
                 android:layout_height="match_parent"
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                />
+                android:clickable="true"/>
             <TextView
                 android:id="@+id/tv_lesson_name"
                 android:layout_width="match_parent"

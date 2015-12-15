@@ -335,8 +335,12 @@ public class MainActivity extends AppCompatActivity
                 //int curWeek = preferenceManager.getWeek();
                 if (lessons != null) {
                     try {
-                        preferenceManager.saveChart(lessons);
-                        setupList();
+                        if(lessons != null) {
+                            preferenceManager.saveChart(lessons);
+                            setupList();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Invalid account", Toast.LENGTH_SHORT).show();
+                        }
                     } catch (IOException e) {
                         Toast.makeText(MainActivity.this, "Save chart error", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
@@ -347,6 +351,8 @@ public class MainActivity extends AppCompatActivity
                 if (stuName != null) {
                     preferenceManager.saveName(stuName);
                     updateDrawer();
+                } else {
+                    Toast.makeText(MainActivity.this, "Invalid account", Toast.LENGTH_SHORT).show();
                 }
                 if(refreshProgress != null)
                     refreshProgress.setVisibility(View.INVISIBLE);

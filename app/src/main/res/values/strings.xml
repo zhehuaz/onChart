@@ -44,4 +44,5 @@
     <string name="intent_frag_index">Fragment</string>
 
     <string name="trans_detail_item">DetailItem</string>
+    <string name="trans_detail_img">DetailImage</string>
 </resources>

@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.graphics.Palette;
@@ -213,6 +214,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     intent.putExtra(context.getString(R.string.intent_lesson), l);
                     //((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        intent.putExtra("color", cardView.getDrawingCacheBackgroundColor());
                         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context,
                                 cardView,
                                 context.getString(R.string.trans_detail_item));

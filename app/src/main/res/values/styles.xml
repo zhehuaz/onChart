@@ -8,6 +8,8 @@
         <item name="android:colorForeground">@android:color/white</item>
         <item name="android:textColorPrimary">@android:color/black</item>
         <item name="colorPrimary">@color/white</item>
+
+
     </style>
 
     <style name="SettingTheme" parent="@style/Theme.AppCompat.Light">
@@ -20,8 +22,4 @@
         <item name="android:padding">8dp</item>
     </style>
 
-    <style name="TranslucentActivity" parent="AppTheme">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowAnimationStyle">@null</item>
-    </style>
 </resources>
