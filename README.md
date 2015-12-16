@@ -5,7 +5,7 @@ Fetch lessons automatically from the [academic affairs office](http://jwc.bit.ed
 
 ![](http://i.imgur.com/Pdzbks7.png)![](http://i.imgur.com/KsHvvQX.png)
 
-### Build Evironment
+### Build Environment
 *   Android Studio: 1.4.0
 
 *   Build tools version: 23.0.1
@@ -25,6 +25,7 @@ lesson in this week only.
 *   Fetch exam schedule.
 *   Sharing events to to-do apps like [TickTick](https://ticktick.com/) or [Wunderlist](https://www.wunderlist.com/).
 *   More label images
+*   Data interface for other universities(evaluating)
 
 ### Attention
     If any images used in the app have copyright infringement, contact me please and I'll remove it ASAP.

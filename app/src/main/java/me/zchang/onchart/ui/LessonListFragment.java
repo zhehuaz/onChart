@@ -4,11 +4,15 @@ package me.zchang.onchart.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import me.zchang.onchart.R;
@@ -40,6 +44,8 @@ import java.util.List;
  */
 public class LessonListFragment extends Fragment {
     private final static String TAG = "LessonListFragment";
+
+    private int Id;
     RecyclerView lessonList;
     LessonListAdapter adapter;
 
@@ -60,7 +66,7 @@ public class LessonListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            adapter = new LessonListAdapter(context, lessons);
+            adapter = new LessonListAdapter(context, lessons, getId());
         } catch (LessonStartTimeException e) {
             Toast.makeText(getActivity(), "Unknown lesson time", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -70,6 +76,7 @@ public class LessonListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "Fragment show");
         View rootView = inflater.inflate(R.layout.fragment_lesson_list, container, false);
         lessonList = (RecyclerView) rootView.findViewById(R.id.rv_lessons);
         lessonList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -110,6 +117,33 @@ public class LessonListFragment extends Fragment {
         }
     }
 
+    public void updateLessonImg(int id) {
+        for (Lesson lesson : lessons) {
+            if (lesson.getId() == id) {
+                lesson.setToNextLabelImg();
+                break;
+            }
+        }
+    }
 
+    public Lesson findLessonById(int id) {
+        for (Lesson lesson : lessons) {
+            if (lesson.getId() == id) {
+                return lesson;
+            }
+        }
+        return null;
+    }
 
+    // TODO Set reenter transition to MainActivity
+    public void onReturnComplete(int position) {
+        View view = lessonList.getChildAt(position);
+        if(view instanceof FrameLayout) {
+            View cardView = ((FrameLayout) view).getChildAt(1);
+            //cardView.setAlpha(0f);
+            cardView.animate()
+                    .alpha(1f)
+                    .setDuration(500L);
+        }
+    }
 }

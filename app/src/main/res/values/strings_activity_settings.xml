@@ -19,4 +19,5 @@
     </string-array>
 
 
+    <string name="pref_week_num">week</string>
 </resources>

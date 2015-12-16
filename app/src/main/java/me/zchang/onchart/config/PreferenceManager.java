@@ -35,13 +35,15 @@ import java.util.List;
 
 public class PreferenceManager {
     private static String SETTING_FILE;
-    private static final String PREF_KEY_NAME = "name";
-    private static final String PREF_KEY_WEEK = "week";
+    private static String PREF_KEY_NAME = "name";
+    private static String PREF_KEY_WEEK = "week";
 
     final static String CHART_FILE_NAME = "chart.js";
 
     Context context;
     Gson gson;
+    SharedPreferences sp;
+    //SharedPreferences.OnSharedPreferenceChangeListener listener = null;
 
     public final static int labelImgs[] = {
             R.mipmap.little_label1,
@@ -51,10 +53,23 @@ public class PreferenceManager {
             R.mipmap.night
     };
 
+    public void registerListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        sp.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public void unRegisterListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        sp.unregisterOnSharedPreferenceChangeListener(listener);
+    }
+
+
+
     public PreferenceManager(Context context) {
         this.context = context;
         gson = new Gson();
-        SETTING_FILE = context.getResources().getString(R.string.pref_file_name);
+        SETTING_FILE = context.getString(R.string.pref_file_name);
+
+        sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
+        PREF_KEY_WEEK = context.getString(R.string.pref_week_num);
     }
 
     public void saveChart(List<Lesson> lessons) throws IOException {
@@ -84,39 +99,38 @@ public class PreferenceManager {
     }
 
     public void savePicPathIndex(int key, int resIndex) {
-        SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
-        sp.edit().putInt(key + "", resIndex).apply();
+        //SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
+        sp.edit().putInt(key + "", resIndex).commit();
     }
 
     public int getPicPathIndex(int key) {
-        SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
+        //SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
         return sp.getInt(key + "", 0);
     }
 
     public void saveName(String name) {
         if(name != null) {
-            SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
+            //SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
             sp.edit().putString(PREF_KEY_NAME, name).apply();
         }
     }
 
     public String getName() {
-        SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
         return sp.getString(PREF_KEY_NAME, null);
     }
 
     public void saveWeek(int week) {
-        SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
+        //SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
         sp.edit().putInt(PREF_KEY_WEEK, week).apply();
     }
 
     public int getWeek() {
-        SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
+        //SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
         return sp.getInt(PREF_KEY_WEEK, 1);
     }
 
     public int getNumOfWeekdays() {
-        SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
+        //SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
         return Integer.parseInt(sp.getString(context.getResources().getString(R.string.key_num_of_weekday), "5"));
     }
 }
