@@ -93,14 +93,16 @@ public class CardToDialog extends ChangeBounds {
             for (int i = 0; i < vg.getChildCount(); i++) {
                 View v = vg.getChildAt(i);
                 //v.setTranslationY(offset);
-                v.setAlpha(0f);
-                v.animate()
-                        .alpha(1f)
-                        //.translationY(0f)
-                        .setDuration(250)
-                        .setStartDelay(0);
-                        //.setInterpolator(AnimationUtils.loadInterpolator(vg.getContext(),
-                               // android.R.interpolator.fast_out_slow_in));
+                if (v.getId() != R.id.iv_label) {
+                    v.setAlpha(0f);
+                    v.animate()
+                            .alpha(1f)
+                                    //.translationY(0f)
+                            .setDuration(250)
+                            .setStartDelay(0)//;
+                            .setInterpolator(AnimationUtils.loadInterpolator(vg.getContext(),
+                                    android.R.interpolator.fast_out_slow_in));
+                }
                 //offset *= 1.8f;
             }
         }

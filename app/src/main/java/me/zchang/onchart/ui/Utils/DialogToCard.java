@@ -24,10 +24,10 @@ import me.zchang.onchart.R;
 public class DialogToCard extends ChangeBounds {
 
     private static final String PROPERTY_COLOR = "plaid:rectMorph:color";
-    private static final String PROPERTY_CORNER_RADIUS = "plaid:rectMorph:cornerRadius";
+    //private static final String PROPERTY_CORNER_RADIUS = "plaid:rectMorph:cornerRadius";
     private static final String[] TRANSITION_PROPERTIES = {
             PROPERTY_COLOR,
-            PROPERTY_CORNER_RADIUS
+            //PROPERTY_CORNER_RADIUS
     };
     private @ColorInt int endColor = Color.TRANSPARENT;
 
@@ -98,11 +98,12 @@ public class DialogToCard extends ChangeBounds {
             ViewGroup vg = (ViewGroup) endValues.view;
             for (int i = 0; i < vg.getChildCount(); i++) {
                 View v = vg.getChildAt(i);
-                v.animate()
+                if (v.getId() != R.id.iv_label)
+                    v.animate()
                         .alpha(0f)
                         //.translationY(v.getHeight() / 3)
                         //.setStartDelay(0L)
-                        .setDuration(160L);
+                        .setDuration(300L);
                         //.setInterpolator(AnimationUtils.loadInterpolator(vg.getContext(),
                         //        android.R.interpolator.fast_out_linear_in))
                         //.start();
@@ -111,8 +112,8 @@ public class DialogToCard extends ChangeBounds {
 
         AnimatorSet transition = new AnimatorSet();
         transition.playTogether(changeBounds, color);
-        transition.setDuration(200);
-        transition.setInterpolator(AnimUtils.getMaterialInterpolator(sceneRoot.getContext()));
+        transition.setDuration(300);
+        //transition.setInterpolator(AnimUtils.getMaterialInterpolator(sceneRoot.getContext()));
         return transition;
     }
 }

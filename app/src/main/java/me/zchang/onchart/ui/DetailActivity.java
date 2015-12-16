@@ -7,6 +7,9 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.ArcMotion;
+import android.transition.ChangeBounds;
+import android.transition.ChangeImageTransform;
+import android.transition.TransitionSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -42,20 +45,28 @@ public class DetailActivity extends AppCompatActivity {
             arcMotion.setMinimumHorizontalAngle(50f);
             arcMotion.setMinimumVerticalAngle(50f);
             Interpolator easeInOut = new AccelerateDecelerateInterpolator();
-            CardToDialog sharedEnter = new CardToDialog(startColor);
+            TransitionSet sharedEnterSet = new TransitionSet();
+            //CardToDialog sharedEnter = new CardToDialog(startColor);
+            ChangeBounds sharedEnter = new ChangeBounds();
             sharedEnter.setPathMotion(arcMotion);
             sharedEnter.setInterpolator(easeInOut);
-            sharedEnter.addTarget(container);
+            //sharedEnter.addTarget(R.id.ll_container);
+            sharedEnterSet.addTransition(sharedEnter);
+            ChangeImageTransform imgTrans = new ChangeImageTransform();
+            imgTrans.addTarget(R.id.iv_label);
 
-            DialogToCard sharedExit = new DialogToCard(startColor);
-            //sharedExit.setPathMotion(arcMotion);
-            sharedExit.setInterpolator(easeInOut);
-            sharedExit.addTarget(container);
-            getWindow().setSharedElementEnterTransition(sharedEnter);
-            getWindow().setSharedElementReturnTransition(sharedExit);
+            TransitionSet sharedExitSet = new TransitionSet();
+            ChangeBounds sharedExit = new ChangeBounds();
+            //DialogToCard sharedExit = new DialogToCard(startColor);
+            sharedExitSet.addTransition(sharedExit);
+            sharedExitSet.addTransition(imgTrans);
+            sharedExit.setPathMotion(arcMotion);
+            //sharedExit.setInterpolator(easeInOut);
+            //sharedExit.addTarget(R.id.ll_container);
+            getWindow().setSharedElementEnterTransition(sharedEnterSet);
+            getWindow().setSharedElementReturnTransition(sharedExitSet);
             //getWindow().setSharedElementExitTransition(sharedExit);
         }
-
 
         retIntent = new Intent();
         //final Intent intent = getIntent();

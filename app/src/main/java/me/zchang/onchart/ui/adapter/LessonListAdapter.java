@@ -12,6 +12,7 @@ import android.os.Build;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -219,8 +220,9 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         intent.putExtra("color", ((ColorDrawable)cardView.getBackground()).getColor());
                         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context,
-                                v,
-                                context.getString(R.string.trans_detail_item));
+                                Pair.create(v, context.getString(R.string.trans_detail_item)),
+                                Pair.create(v.findViewById(R.id.iv_label), context.getString(R.string.trans_detail_img))
+                                );
                         ((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION, options.toBundle());
                     } else {
                         context.startActivity(intent);
@@ -264,7 +266,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             nameText = (TextView) itemView.findViewById(me.zchang.onchart.R.id.tv_lesson_name);
             roomText = (TextView) itemView.findViewById(me.zchang.onchart.R.id.tv_lesson_room);
             timeText = (TextView) itemView.findViewById(me.zchang.onchart.R.id.tv_time);
-            nabImg = (ImageView) itemView.findViewById(me.zchang.onchart.R.id.iv_nab);
+            nabImg = (ImageView) itemView.findViewById(me.zchang.onchart.R.id.iv_label);
 
             cardHeight = frame.getLayoutParams().height;
         }
