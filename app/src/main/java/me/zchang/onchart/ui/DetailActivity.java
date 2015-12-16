@@ -32,9 +32,7 @@ public class DetailActivity extends AppCompatActivity {
     Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       // getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
-        //getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_detail);
         intent = getIntent();
         int startColor = intent.getIntExtra("color", -1);
@@ -49,7 +47,6 @@ public class DetailActivity extends AppCompatActivity {
             ChangeBounds sharedEnter = new ChangeBounds();
             sharedEnter.setPathMotion(arcMotion);
             sharedEnter.setInterpolator(easeInOut);
-            //sharedEnter.addTarget(R.id.ll_container);
             sharedEnterSet.addTransition(sharedEnter);
             ChangeImageTransform imgTrans = new ChangeImageTransform();
             imgTrans.addTarget(R.id.iv_label);
@@ -61,18 +58,14 @@ public class DetailActivity extends AppCompatActivity {
             sharedExitSet.addTransition(sharedExit);
             sharedExitSet.addTransition(imgTrans);
             //sharedExit.setInterpolator(easeInOut);
-            //sharedExit.addTarget(R.id.ll_container);
             getWindow().setSharedElementEnterTransition(sharedEnterSet);
             getWindow().setSharedElementReturnTransition(sharedExit);
             //getWindow().setSharedElementExitTransition(sharedExit);
         }
 
         retIntent = new Intent();
-        //final Intent intent = getIntent();
-        //final Lesson lesson = intent.getParcelableExtra(getString(R.string.intent_lesson));
 
         setResult(RESULT_CANCELED, retIntent);
-        //retIntent.putExtra(getString(R.string.intent_frag_index), intent.getIntExtra(getString(R.string.intent_frag_index), 0));
         retIntent.putExtra(getString(R.string.intent_position), intent.getIntExtra(getString(R.string.intent_position), 0));
         if(lesson != null) {
             retIntent.putExtra(getString(R.string.intent_lesson_id), lesson.getId());
@@ -107,15 +100,14 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-            dismiss(null);
+            dismissCompat(null);
     }
 
-
-    @TargetApi(21)
-    public void dismiss(View view) {
+    public void dismissCompat(View view) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //setResult(RESULT_CANCELED);
             finishAfterTransition();
+        } else {
+            finish();
         }
     }
 }

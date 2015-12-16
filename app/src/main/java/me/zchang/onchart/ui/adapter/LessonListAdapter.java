@@ -1,18 +1,17 @@
 package me.zchang.onchart.ui.adapter;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,6 @@ import me.zchang.onchart.exception.LessonStartTimeException;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.student.Lesson;
 import me.zchang.onchart.ui.DetailActivity;
-import me.zchang.onchart.ui.DetailFragment;
 import me.zchang.onchart.ui.MainActivity;
 
 import java.util.List;
@@ -180,18 +178,26 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 Palette.Swatch vibrant = palette.getVibrantSwatch();
                                 if (cardView != null) {
                                     if (lightVibrant != null) {
-                                        cardView.setBackground(new ColorDrawable(lightVibrant.getRgb()));
-                                        //cardView.setCardBackgroundColor(lightVibrant.getRgb());
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                                            cardView.setBackground(new ColorDrawable(lightVibrant.getRgb()));
+                                        else
+                                            cardView.setCardBackgroundColor(lightVibrant.getRgb());
                                         //timeText.setTextColor(lightVibrant.getRgb());
                                         nameText.setTextColor(lightVibrant.getTitleTextColor());
                                         roomText.setTextColor(lightVibrant.getBodyTextColor());
                                     } else if (vibrant != null) {
-                                        cardView.setBackground(new ColorDrawable(vibrant.getRgb()));
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                                            cardView.setBackground(new ColorDrawable(vibrant.getRgb()));
+                                        else
+                                            cardView.setBackgroundColor(lightVibrant.getRgb());
                                         //timeText.setTextColor(vibrant.getRgb());
                                         nameText.setTextColor(vibrant.getTitleTextColor());
                                         roomText.setTextColor(vibrant.getBodyTextColor());
                                     } else {
-                                        cardView.setBackground(new ColorDrawable(context.getResources().getColor(R.color.cardview_light_background)));
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                                            cardView.setBackground(new ColorDrawable(context.getResources().getColor(R.color.cardview_light_background)));
+                                        else
+                                            cardView.setCardBackgroundColor(context.getResources().getColor(R.color.cardview_light_background));
                                         nameText.setTextColor(context.getResources().getColor(R.color.default_title));
                                         roomText.setTextColor(context.getResources().getColor(R.color.default_title));
                                     }
@@ -222,16 +228,14 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     intent.putExtra(context.getString(R.string.intent_position), position);
                     intent.putExtra(context.getString(R.string.intent_lesson), l);
                     //((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                         intent.putExtra("color", ((ColorDrawable)cardView.getBackground()).getColor());
-                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context,
-                                Pair.create(v, context.getString(R.string.trans_detail_item)),
-                                Pair.create(v.findViewById(R.id.iv_label), context.getString(R.string.trans_detail_img))
-                                );
-                        ((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION, options.toBundle());
-                    } else {
-                        context.startActivity(intent);
-                    }
+                    else
+                        intent.putExtra("color", 0xffffff);
+                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context,
+                            Pair.create(v, context.getString(R.string.trans_detail_item)),
+                            Pair.create(v.findViewById(R.id.iv_label), context.getString(R.string.trans_detail_img)));
+                    ((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION, options.toBundle());
                 }
             });
         } else if(holder instanceof SubtitleViewHolder) {
