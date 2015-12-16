@@ -3,10 +3,16 @@ package me.zchang.onchart.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.transition.ArcMotion;
+import android.transition.ChangeBounds;
+import android.transition.ChangeImageTransform;
+import android.transition.TransitionSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -79,6 +85,33 @@ public class DetailFragment extends DialogFragment {
             });
         }
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        ArcMotion arcMotion = new ArcMotion();
+        arcMotion.setMinimumHorizontalAngle(50f);
+        arcMotion.setMinimumVerticalAngle(50f);
+        Interpolator easeInOut = new AccelerateDecelerateInterpolator();
+        TransitionSet sharedEnterSet = new TransitionSet();
+        //CardToDialog sharedEnter = new CardToDialog(startColor);
+        ChangeBounds sharedEnter = new ChangeBounds();
+        sharedEnter.setPathMotion(arcMotion);
+        sharedEnter.setInterpolator(easeInOut);
+        //sharedEnter.addTarget(R.id.ll_container);
+        sharedEnterSet.addTransition(sharedEnter);
+        ChangeImageTransform imgTrans = new ChangeImageTransform();
+        imgTrans.addTarget(R.id.iv_label);
+
+        TransitionSet sharedExitSet = new TransitionSet();
+        ChangeBounds sharedExit = new ChangeBounds();
+        //DialogToCard sharedExit = new DialogToCard(startColor);
+        sharedExitSet.addTransition(sharedExit);
+        sharedExitSet.addTransition(imgTrans);
+        sharedExit.setPathMotion(arcMotion);
+        //sharedExit.setInterpolator(easeInOut);
+        //sharedExit.addTarget(R.id.ll_container);
+
+        setSharedElementEnterTransition(sharedEnterSet);
+        setSharedElementReturnTransition(sharedExitSet);
+
         return rootView;
     }
 

@@ -93,7 +93,7 @@ public class DialogToCard extends ChangeBounds {
 
         Animator color = ObjectAnimator.ofArgb(background, background.COLOR, endColor);
 
-        // hide child views (offset down & fade_fast out)
+        //   hide child views (offset down & fade_fast out)
         if (endValues.view instanceof ViewGroup) {
             ViewGroup vg = (ViewGroup) endValues.view;
             for (int i = 0; i < vg.getChildCount(); i++) {
@@ -103,7 +103,7 @@ public class DialogToCard extends ChangeBounds {
                         .alpha(0f)
                         //.translationY(v.getHeight() / 3)
                         //.setStartDelay(0L)
-                        .setDuration(300L);
+                        .setDuration(120L);
                         //.setInterpolator(AnimationUtils.loadInterpolator(vg.getContext(),
                         //        android.R.interpolator.fast_out_linear_in))
                         //.start();
@@ -112,7 +112,7 @@ public class DialogToCard extends ChangeBounds {
 
         AnimatorSet transition = new AnimatorSet();
         transition.playTogether(changeBounds, color);
-        transition.setDuration(300);
+        transition.setDuration(150);
         //transition.setInterpolator(AnimUtils.getMaterialInterpolator(sceneRoot.getContext()));
         return transition;
     }

@@ -40,7 +40,6 @@ public class DetailActivity extends AppCompatActivity {
         int startColor = intent.getIntExtra("color", -1);
         final Lesson lesson = intent.getParcelableExtra(getString(R.string.intent_lesson));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ViewGroup container = (ViewGroup) findViewById(R.id.ll_container);
             ArcMotion arcMotion = new ArcMotion();
             arcMotion.setMinimumHorizontalAngle(50f);
             arcMotion.setMinimumVerticalAngle(50f);
@@ -56,15 +55,15 @@ public class DetailActivity extends AppCompatActivity {
             imgTrans.addTarget(R.id.iv_label);
 
             TransitionSet sharedExitSet = new TransitionSet();
-            ChangeBounds sharedExit = new ChangeBounds();
-            //DialogToCard sharedExit = new DialogToCard(startColor);
+            //ChangeBounds sharedExit = new ChangeBounds();
+            DialogToCard sharedExit = new DialogToCard(startColor);
+            sharedExit.setPathMotion(arcMotion);
             sharedExitSet.addTransition(sharedExit);
             sharedExitSet.addTransition(imgTrans);
-            sharedExit.setPathMotion(arcMotion);
             //sharedExit.setInterpolator(easeInOut);
             //sharedExit.addTarget(R.id.ll_container);
             getWindow().setSharedElementEnterTransition(sharedEnterSet);
-            getWindow().setSharedElementReturnTransition(sharedExitSet);
+            getWindow().setSharedElementReturnTransition(sharedExit);
             //getWindow().setSharedElementExitTransition(sharedExit);
         }
 

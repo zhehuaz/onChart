@@ -6,7 +6,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="130dp">
+        android:layout_height="130dp"
+        android:transitionName="@string/trans_detail_item">
 
         <ImageView
             android:id="@+id/iv_label"
@@ -16,6 +17,7 @@
             android:layout_height="match_parent"
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
+            android:transitionName="@string/trans_detail_img"
             />
         <TextView
             android:id="@+id/tv_lesson_name"

@@ -87,29 +87,29 @@ public class CardToDialog extends ChangeBounds {
         Animator color = ObjectAnimator.ofArgb(background, background.COLOR, endColor);
 
         // ease in the dialog's child views (slide up & fade_fast in)
-        if (endValues.view instanceof ViewGroup) {
-            ViewGroup vg = (ViewGroup) endValues.view;
-            //float offset = vg.getHeight() / 3;
-            for (int i = 0; i < vg.getChildCount(); i++) {
-                View v = vg.getChildAt(i);
-                //v.setTranslationY(offset);
-                if (v.getId() != R.id.iv_label) {
-                    v.setAlpha(0f);
-                    v.animate()
-                            .alpha(1f)
-                                    //.translationY(0f)
-                            .setDuration(250)
-                            .setStartDelay(0)//;
-                            .setInterpolator(AnimationUtils.loadInterpolator(vg.getContext(),
-                                    android.R.interpolator.fast_out_slow_in));
-                }
-                //offset *= 1.8f;
-            }
-        }
+//        if (endValues.view instanceof ViewGroup) {
+//            ViewGroup vg = (ViewGroup) endValues.view;
+//            //float offset = vg.getHeight() / 3;
+//            for (int i = 0; i < vg.getChildCount(); i++) {
+//                View v = vg.getChildAt(i);
+//                //v.setTranslationY(offset);
+//                if (v.getId() != R.id.iv_label) {
+//                    v.setAlpha(0f);
+//                    v.animate()
+//                            .alpha(1f)
+//                                    //.translationY(0f)
+//                            .setDuration(250)
+//                            .setStartDelay(0)//;
+//                            .setInterpolator(AnimationUtils.loadInterpolator(vg.getContext(),
+//                                    android.R.interpolator.fast_out_slow_in));
+//                }
+//                //offset *= 1.8f;
+//            }
+//        }
 
         AnimatorSet transition = new AnimatorSet();
         transition.playTogether(changeBounds, color);
-        transition.setDuration(300);
+        transition.setDuration(180);
         transition.setInterpolator(AnimationUtils.loadInterpolator(sceneRoot.getContext(),
                 android.R.interpolator.fast_out_slow_in));
         return transition;

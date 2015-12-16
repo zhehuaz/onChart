@@ -26,6 +26,7 @@ import me.zchang.onchart.exception.LessonStartTimeException;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.student.Lesson;
 import me.zchang.onchart.ui.DetailActivity;
+import me.zchang.onchart.ui.DetailFragment;
 import me.zchang.onchart.ui.MainActivity;
 
 import java.util.List;
@@ -207,10 +208,14 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //DetailFragment fragment = new DetailFragment();
-                    //fragment.setLesson(l);
-                    //fragment.setPosition(position);
-                    //fragment.show(((MainActivity)context).getSupportFragmentManager(), MainActivity.TAG);
+//                    ((MainActivity) context).getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .addSharedElement(v, context.getString(R.string.trans_detail_item))
+//                            .addSharedElement(v.findViewById(R.id.iv_label), context.getString(R.string.trans_detail_img));
+//                    DetailFragment fragment = new DetailFragment();
+//                    fragment.setLesson(l);
+//                    fragment.setPosition(position);
+//                    fragment.show(((MainActivity)context).getSupportFragmentManager(), MainActivity.TAG);
 
                     Intent intent = new Intent(context, DetailActivity.class);
                     intent.putExtra(context.getString(R.string.intent_frag_index), fragId);
