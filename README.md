@@ -18,9 +18,6 @@ lesson in this week only.
 *   Lessons in every other week (Odd or even week only) are supported.
 *   Lessons on Saturday and Sunday can be alternatively displayed.
 
-### Bugs
-*   Handle exception of incorrect student number or password
-
 ### Coming soon
 *   Fetch exam schedule.
 *   Sharing events to to-do apps like [TickTick](https://ticktick.com/) or [Wunderlist](https://www.wunderlist.com/).

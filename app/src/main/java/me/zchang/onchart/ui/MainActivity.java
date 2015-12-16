@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity
                     req.transaction = String.valueOf(System.currentTimeMillis());
                     req.message = msg;
                     //req.scene = SendMessageToWX.Req.WXSceneTimeline;
-
+                    api.sendReq(req);
                     //Log.d(TAG, api.sendReq(req) + "");
                 }
                 return false;

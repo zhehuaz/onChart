@@ -103,7 +103,7 @@ public class DialogToCard extends ChangeBounds {
                         .alpha(0f)
                         //.translationY(v.getHeight() / 3)
                         //.setStartDelay(0L)
-                        .setDuration(120L);
+                        .setDuration(150L);
                         //.setInterpolator(AnimationUtils.loadInterpolator(vg.getContext(),
                         //        android.R.interpolator.fast_out_linear_in))
                         //.start();
@@ -112,7 +112,7 @@ public class DialogToCard extends ChangeBounds {
 
         AnimatorSet transition = new AnimatorSet();
         transition.playTogether(changeBounds, color);
-        transition.setDuration(150);
+        transition.setDuration(200);
         //transition.setInterpolator(AnimUtils.getMaterialInterpolator(sceneRoot.getContext()));
         return transition;
     }
