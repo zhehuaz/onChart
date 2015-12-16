@@ -9,7 +9,10 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:navigationBarColor">@color/white</item>
-<item name="android:colorForeground">@android:color/white</item>
+
+    <item name="android:windowContentTransitions">true</item>
+    <item name="android:windowAllowEnterTransitionOverlap">true</item>
+    <item name="android:windowAllowReturnTransitionOverlap">true</item>
     </style>
 
     <style name="SettingTheme" parent="@style/Theme.AppCompat.Light">
@@ -17,5 +20,10 @@
         <item name="android:windowActionBar">true</item>
     </style>
 
+    <style name="TranslucentActivity" parent="AppTheme">
+        <item name="android:windowBackground">@color/scrim</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
 </resources>
 

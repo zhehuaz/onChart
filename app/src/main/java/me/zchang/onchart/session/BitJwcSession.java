@@ -159,6 +159,24 @@ public class BitJwcSession extends Session{
         return null;
     }
 
+    public String pswToUnicode(String psw) {
+        StringBuffer sb = new StringBuffer();
+        int length = psw.length();
+        char c;
+        int temp;
+        for (int i = 0;i < length;i ++) {
+            c = psw.charAt(i);
+            if((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c <= 'a' && c >= 'z')) {
+                sb.append(c);
+            } else {
+                temp = c;
+                sb.append("%" + String.format("%x", temp));
+            }
+        }
+
+        return sb.toString();
+    }
+
     @Override
     public void onError(HttpError error) {
 
@@ -186,7 +204,7 @@ public class BitJwcSession extends Session{
     }
 
     public void setPsw(String psw) {
-        this.psw = psw;
+        this.psw = pswToUnicode(psw);
     }
 
     public String getStartResponse() {

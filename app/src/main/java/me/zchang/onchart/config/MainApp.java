@@ -23,9 +23,9 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
  */
 
 public class MainApp extends Application {
-    public static final String APP_ID = "wx01d11a2486ccbf17";
+    public static final String APP_ID = "wx5a0d7c554008997c";
     public static IWXAPI api;
-
+    private PreferenceManager preferenceManager;
 
     @Override
     public void onCreate() {
@@ -33,5 +33,16 @@ public class MainApp extends Application {
 
         api = WXAPIFactory.createWXAPI(this, APP_ID, true);
         api.registerApp(APP_ID);
+
+        preferenceManager = new PreferenceManager(this);
+
+    }
+
+    public PreferenceManager getPreferenceManager() {
+        return preferenceManager;
+    }
+
+    public void setPreferenceManager(PreferenceManager preferenceManager) {
+        this.preferenceManager = preferenceManager;
     }
 }

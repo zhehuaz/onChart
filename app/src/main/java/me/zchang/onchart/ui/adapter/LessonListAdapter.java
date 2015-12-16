@@ -1,8 +1,14 @@
 package me.zchang.onchart.ui.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +24,7 @@ import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.exception.LessonStartTimeException;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.student.Lesson;
-import me.zchang.onchart.ui.DetailFragment;
+import me.zchang.onchart.ui.DetailActivity;
 import me.zchang.onchart.ui.MainActivity;
 
 import java.util.List;
@@ -39,9 +45,6 @@ import java.util.List;
  *    limitations under the License.
  */
 
-/**
- * Created by langley on 11/17/15.
- */
 public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final static String TAG = "LessonListAdapter";
     public final static int VIEW_TYPE_HEAD = 0;
@@ -51,21 +54,24 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public final static int MORNING_FLAG = -1;
     public final static int AFTERNOON_FLAG = -2;
     public final static int EVENING_FLAG = -3;
+    public final static int HEAD_FLAG = -4;
 
     private int morningCount;
     private int afternoonCount;
     private int eveningCount;
+
     private byte[] bitmap;
 
     List<Lesson> lessons;
     Context context;
+    private int fragId;
 
-    public LessonListAdapter(Context context, List<Lesson> lessons) throws LessonStartTimeException {
-
+    public LessonListAdapter(Context context, List<Lesson> lessons, int fragId) throws LessonStartTimeException {
 
         bitmap = new byte[20];
         this.lessons = lessons;
         this.context = context;
+        this.fragId = fragId;
 
         processLessons();
 
@@ -109,6 +115,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         int length = getItemCount();
         byte lessonCount = 0;
+        bitmap[0] = HEAD_FLAG;
         for(int position = 1; position < length; position ++) {
             if (position == 1 && morningCount > 0) {
                 bitmap[position] = MORNING_FLAG;
@@ -171,17 +178,26 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 Palette.Swatch vibrant = palette.getVibrantSwatch();
                                 if (cardView != null) {
                                     if (lightVibrant != null) {
-                                        cardView.setCardBackgroundColor(lightVibrant.getRgb());
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                                            cardView.setBackground(new ColorDrawable(lightVibrant.getRgb()));
+                                        else
+                                            cardView.setCardBackgroundColor(lightVibrant.getRgb());
                                         //timeText.setTextColor(lightVibrant.getRgb());
                                         nameText.setTextColor(lightVibrant.getTitleTextColor());
                                         roomText.setTextColor(lightVibrant.getBodyTextColor());
                                     } else if (vibrant != null) {
-                                        cardView.setCardBackgroundColor(vibrant.getRgb());
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                                            cardView.setBackground(new ColorDrawable(vibrant.getRgb()));
+                                        else
+                                            cardView.setBackgroundColor(lightVibrant.getRgb());
                                         //timeText.setTextColor(vibrant.getRgb());
                                         nameText.setTextColor(vibrant.getTitleTextColor());
                                         roomText.setTextColor(vibrant.getBodyTextColor());
                                     } else {
-                                        cardView.setCardBackgroundColor(context.getResources().getColor(R.color.cardview_light_background));
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                                            cardView.setBackground(new ColorDrawable(context.getResources().getColor(R.color.cardview_light_background)));
+                                        else
+                                            cardView.setCardBackgroundColor(context.getResources().getColor(R.color.cardview_light_background));
                                         nameText.setTextColor(context.getResources().getColor(R.color.default_title));
                                         roomText.setTextColor(context.getResources().getColor(R.color.default_title));
                                     }
@@ -198,10 +214,28 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DetailFragment fragment = new DetailFragment();
-                    fragment.setLesson(l);
-                    fragment.setPosition(position);
-                    fragment.show(((MainActivity)context).getSupportFragmentManager(), MainActivity.TAG);
+//                    ((MainActivity) context).getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .addSharedElement(v, context.getString(R.string.trans_detail_item))
+//                            .addSharedElement(v.findViewById(R.id.iv_label), context.getString(R.string.trans_detail_img));
+//                    DetailFragment fragment = new DetailFragment();
+//                    fragment.setLesson(l);
+//                    fragment.setPosition(position);
+//                    fragment.show(((MainActivity)context).getSupportFragmentManager(), MainActivity.TAG);
+
+                    Intent intent = new Intent(context, DetailActivity.class);
+                    intent.putExtra(context.getString(R.string.intent_frag_index), fragId);
+                    intent.putExtra(context.getString(R.string.intent_position), position);
+                    intent.putExtra(context.getString(R.string.intent_lesson), l);
+                    //((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                        intent.putExtra("color", ((ColorDrawable)cardView.getBackground()).getColor());
+                    else
+                        intent.putExtra("color", 0xffffff);
+                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context,
+                            Pair.create(v, context.getString(R.string.trans_detail_item)),
+                            Pair.create(v.findViewById(R.id.iv_label), context.getString(R.string.trans_detail_img)));
+                    ((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION, options.toBundle());
                 }
             });
         } else if(holder instanceof SubtitleViewHolder) {
@@ -241,7 +275,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             nameText = (TextView) itemView.findViewById(me.zchang.onchart.R.id.tv_lesson_name);
             roomText = (TextView) itemView.findViewById(me.zchang.onchart.R.id.tv_lesson_room);
             timeText = (TextView) itemView.findViewById(me.zchang.onchart.R.id.tv_time);
-            nabImg = (ImageView) itemView.findViewById(me.zchang.onchart.R.id.iv_nab);
+            nabImg = (ImageView) itemView.findViewById(me.zchang.onchart.R.id.iv_label);
 
             cardHeight = frame.getLayoutParams().height;
         }
@@ -272,5 +306,19 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return VIEW_TYPE_LIST;
     }
 
-
+    /**
+     * Find the position of lesson in the list by id.
+     * @param id ID of the lesson
+     * @return the position of lesson in the list
+     */
+    public int findLessonById(int id) {
+        if(!lessons.isEmpty()) {
+            for (int i = 0; i < bitmap.length; i++) {
+                if (bitmap[i] >= 0 && (lessons.get(bitmap[i]).getId() == id)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
 }

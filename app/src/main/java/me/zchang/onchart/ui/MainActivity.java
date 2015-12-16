@@ -1,22 +1,29 @@
 package me.zchang.onchart.ui;
 
+import android.animation.Animator;
+import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.transition.Transition;
+import android.transition.TransitionValues;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -25,7 +32,7 @@ import android.widget.Toast;
 
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.sdk.modelmsg.WXTextObject;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
@@ -63,7 +70,11 @@ import java.util.TimeZone;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements Session.SessionListener, LoginTestFragment.LoginListener {
+        implements Session.SessionListener, LoginTestFragment.LoginListener
+        , SharedPreferences.OnSharedPreferenceChangeListener {
+
+    public final static int REQ_POSITION = 0;
+    public final static int REQ_SETTING_WEEKNUM = 1;
 
     public final static String TAG = "MainActivity";
     private Toolbar mainToolbar;
@@ -86,19 +97,20 @@ public class MainActivity extends AppCompatActivity
 
     private int curWeek;
     private int numOfWeekdays;
+    private int curImgIndex;
 
     IWXAPI api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         String APP_ID = MainApp.APP_ID;
         api = WXAPIFactory.createWXAPI(MainActivity.this, APP_ID, true);
         api.registerApp(APP_ID);
 
-
-        preferenceManager = new PreferenceManager(this);
+        preferenceManager = ((MainApp) getApplication()).getPreferenceManager();
 
         session = new BitJwcSession(this);
         mainToolbar = (Toolbar) findViewById(R.id.tb_main);
@@ -142,6 +154,8 @@ public class MainActivity extends AppCompatActivity
         setupList();// ATTENTION, order of refresh and setup
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+        //getWindow().setReenterTransition();
     }
 
     private void setupFragments() {
@@ -197,22 +211,21 @@ public class MainActivity extends AppCompatActivity
                 int id = menuItem.getItemId();
                 if(id == R.id.item_settings) {
                     Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                    startActivityForResult(intent, 0);
+
+                    startActivityForResult(intent, REQ_SETTING_WEEKNUM);
                 } else if (id == R.id.item_share) {
-                    WXTextObject textObject = new WXTextObject();
-                    textObject.text = "Hello from onChart";
+                    WXWebpageObject webpageObject = new WXWebpageObject();
+                    webpageObject.webpageUrl = "https://github.com/LangleyChang/onChart";
 
                     WXMediaMessage msg = new WXMediaMessage();
-                    msg.mediaObject = textObject;
-                    msg.description = "First message";
+                    msg.mediaObject = webpageObject;
+                    msg.description = "求star～";
                     SendMessageToWX.Req req = new SendMessageToWX.Req();
                     req.transaction = String.valueOf(System.currentTimeMillis());
                     req.message = msg;
                     //req.scene = SendMessageToWX.Req.WXSceneTimeline;
-
-
-
-                    Log.d(TAG, api.sendReq(req) + "");
+                    api.sendReq(req);
+                    //Log.d(TAG, api.sendReq(req) + "");
                 }
                 return false;
             }
@@ -252,8 +265,7 @@ public class MainActivity extends AppCompatActivity
                 if(curWeek != integer && integer > 0) {
                     curWeek = integer;
                     preferenceManager.saveWeek(curWeek);
-                    setupList();
-                    weekdayText.setText(curWeek + "");
+
                 }
                 if(refreshProgress != null)
                     refreshProgress.setVisibility(View.INVISIBLE);
@@ -269,6 +281,20 @@ public class MainActivity extends AppCompatActivity
                 return 0;
             }
         }.execute();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        preferenceManager.registerListener(this);
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        preferenceManager.unRegisterListener(this);
     }
 
     @Override
@@ -321,8 +347,12 @@ public class MainActivity extends AppCompatActivity
                 //int curWeek = preferenceManager.getWeek();
                 if (lessons != null) {
                     try {
-                        preferenceManager.saveChart(lessons);
-                        setupList();
+                        if(lessons != null) {
+                            preferenceManager.saveChart(lessons);
+                            setupList();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Invalid account", Toast.LENGTH_SHORT).show();
+                        }
                     } catch (IOException e) {
                         Toast.makeText(MainActivity.this, "Save chart error", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
@@ -333,6 +363,8 @@ public class MainActivity extends AppCompatActivity
                 if (stuName != null) {
                     preferenceManager.saveName(stuName);
                     updateDrawer();
+                } else {
+                    Toast.makeText(MainActivity.this, "Invalid account", Toast.LENGTH_SHORT).show();
                 }
                 if(refreshProgress != null)
                     refreshProgress.setVisibility(View.INVISIBLE);
@@ -383,11 +415,33 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == RESULT_OK) {
-            Log.d(TAG, "Result ok");
-            numOfWeekdays = data.getIntExtra(getString(R.string.key_num_of_weekday), 5);
-            setupFragments();
-            setupList();
+        switch (requestCode) {
+            case REQ_SETTING_WEEKNUM:
+                if (resultCode == RESULT_OK) {
+                    //Log.d(TAG, "Result ok");
+                    numOfWeekdays = data.getIntExtra(getString(R.string.key_num_of_weekday), 5);
+                    setupFragments();
+                    setupList();
+                }
+                break;
+            case REQ_POSITION:
+                LessonListFragment curFragment = fragments.get(mainListPager.getCurrentItem());
+                int pos = data.getIntExtra(getString(R.string.intent_position), 0);
+
+                if (resultCode == RESULT_OK) {
+
+
+                    Lesson lesson = curFragment.findLessonById(data.getIntExtra(getString(R.string.intent_lesson_id), -1));
+                    if (lesson != null) {
+                        lesson.setLabelImgIndex(curImgIndex);
+                    }
+
+                    curFragment.adapter
+                        .notifyItemChanged(pos);
+                } else {
+                    curFragment.onReturnComplete(pos);
+                }
+                break;
         }
     }
 
@@ -398,5 +452,20 @@ public class MainActivity extends AppCompatActivity
 
     LessonListFragment getListFragment() {
         return fragments.get(mainListPager.getCurrentItem());
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.d(TAG, "Get shared preference change message :" + key);
+        if (key.matches("^[0-9]+$")) {
+            //LessonListFragment fragment = fragments.get(mainListPager.getCurrentItem());
+            //int id = Integer.parseInt(key);
+            //fragment.updateLessonImg(id);
+            //fragment.adapter.notifyItemChanged(fragment.adapter.findLessonById(id));
+            curImgIndex = sharedPreferences.getInt(key, 0);
+        } else if (key.equals(getString(R.string.pref_week_num))) {
+            setupList();
+            weekdayText.setText(curWeek + "");// TODO update changed items
+        }
     }
 }

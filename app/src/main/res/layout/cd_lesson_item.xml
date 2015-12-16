@@ -26,6 +26,7 @@
         card_view:cardElevation="5dp"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
+        android:transitionName="@string/trans_detail_item"
         >
         <LinearLayout
             android:layout_width="fill_parent"
@@ -33,11 +34,13 @@
             android:orientation="horizontal"
             android:layout_gravity="right">
             <ImageView
-                android:id="@+id/iv_nab"
+                android:id="@+id/iv_label"
                 android:layout_width="95dp"
                 android:layout_height="match_parent"
                 android:src="@mipmap/little_label1"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:transitionName="@string/trans_detail_img"
+                />
 
             <LinearLayout
                 android:layout_gravity="center_vertical"
