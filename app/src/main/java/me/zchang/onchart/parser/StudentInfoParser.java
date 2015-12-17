@@ -24,7 +24,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import me.zchang.onchart.student.Lesson;
+import me.zchang.onchart.student.Course;
+import me.zchang.onchart.student.LabelCourse;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,27 +55,27 @@ import java.util.regex.Pattern;
 public class StudentInfoParser {
     private final static String TAG = "StudentInfoParser";
 
-    public static List<Lesson> parseChart(@NonNull String htmlText)
+    public static List<Course> parseChart(@NonNull String htmlText)
     {
         Document doc = Jsoup.parse(htmlText);
         Element chartTable = doc.select("table#dgrdKb").first();
         if(chartTable != null) {
             Elements lessonEles = chartTable.select("tr");
-            List<Lesson> lessons = new ArrayList<>();
+            List<Course> courses = new ArrayList<>();
             int lessonId = 0;
 
-            List<Lesson> dupLessons = new ArrayList<>();
+            List<Course> dupCourses = new ArrayList<>();
             for (Element e : lessonEles) {
-                dupLessons.clear();
+                dupCourses.clear();
                 if (!e.className().equals("datagridhead")) {
-                    Lesson baseLesson = new Lesson();
+                    Course baseCourse = new LabelCourse();
                     //dupLessons.add(newLesson);
                     Elements lessonInfo = e.getAllElements();
 
-                    baseLesson.setName(lessonInfo.get(1).text());
-                    baseLesson.setCredit(Float.parseFloat(lessonInfo.get(2).text()));
-                    baseLesson.setDepartment(lessonInfo.get(5).text());
-                    baseLesson.setTeacher(lessonInfo.get(7).text());
+                    baseCourse.setName(lessonInfo.get(1).text());
+                    baseCourse.setCredit(Float.parseFloat(lessonInfo.get(2).text()));
+                    baseCourse.setDepartment(lessonInfo.get(5).text());
+                    baseCourse.setTeacher(lessonInfo.get(7).text());
 
                     String textTime = lessonInfo.get(8).text();
                     String[] textsTime = textTime.split(";");
@@ -82,45 +83,45 @@ public class StudentInfoParser {
                     String[] textsClassroom = textClassroom.split(";");
                     int j = 0;
                     for (String s : textsClassroom) {
-                        dupLessons.add(new Lesson(baseLesson).setId(lessonId++));
-                        dupLessons.get(j).setClassroom(s);
+                        dupCourses.add(new LabelCourse(baseCourse).setId(lessonId++));
+                        dupCourses.get(j).setClassroom(s);
 
                         //Log.d(TAG, textsTime[j]);
                         if (textsTime[j].length() == 1)
-                            dupLessons.get(j).setWeekDay('0');
+                            dupCourses.get(j).setWeekDay('0');
                         else
-                            dupLessons.get(j).setWeekDay(textsTime[j].charAt(1));
+                            dupCourses.get(j).setWeekDay(textsTime[j].charAt(1));
 
                         String pattern = "(\\d)+(?=,)|(\\d+)*(?=节)";
                         Pattern reg = Pattern.compile(pattern);
                         Matcher m = reg.matcher(textsTime[j]);
                         if (m.find()) {
                             //Log.d(TAG, m.group());
-                            dupLessons.get(j).setStartTime(Integer.parseInt(m.group()));
+                            dupCourses.get(j).setStartTime(Integer.parseInt(m.group()));
                         }
                         String endTime = null;
                         while (m.find() && m.group().length() > 0) {
                             endTime = m.group();
                         }
                         if (endTime == null) {
-                            dupLessons.get(j).setEndTime(dupLessons.get(j).getStartTime());
+                            dupCourses.get(j).setEndTime(dupCourses.get(j).getStartTime());
                         } else {
                             //Log.d(TAG, endTime);
-                            dupLessons.get(j).setEndTime(Integer.parseInt(endTime));
+                            dupCourses.get(j).setEndTime(Integer.parseInt(endTime));
                         }
 
                         pattern = "\\d+(?=-)|\\d+(?=周)";
                         reg = Pattern.compile(pattern);
                         m = reg.matcher(textsTime[j]);
                         if (m.find()) {
-                            dupLessons.get(j).setStartWeek(Integer.parseInt(m.group()));
+                            dupCourses.get(j).setStartWeek(Integer.parseInt(m.group()));
                         } else {
-                            dupLessons.get(j).setStartWeek(0);
+                            dupCourses.get(j).setStartWeek(0);
                         }
                         if (m.find()) {
-                            dupLessons.get(j).setEndWeek(Integer.parseInt(m.group()));
+                            dupCourses.get(j).setEndWeek(Integer.parseInt(m.group()));
                         } else {
-                            dupLessons.get(j).setEndTime(dupLessons.get(j).getStartTime());
+                            dupCourses.get(j).setEndTime(dupCourses.get(j).getStartTime());
                         }
 
                         pattern = "(单|双)(?=周)";
@@ -128,19 +129,19 @@ public class StudentInfoParser {
                         m = reg.matcher(textsTime[j]);
                         if (m.find()) {
                             if (m.group().equals("单"))
-                                dupLessons.get(j).setWeekParity((byte) 1);
+                                dupCourses.get(j).setWeekParity((byte) 1);
                             else
-                                dupLessons.get(j).setWeekParity((byte) 2);
+                                dupCourses.get(j).setWeekParity((byte) 2);
                         } else {
-                            dupLessons.get(j).setWeekParity((byte) -1);
+                            dupCourses.get(j).setWeekParity((byte) -1);
                         }
                         j++;
                     }
                 }
-                lessons.addAll(dupLessons);
+                courses.addAll(dupCourses);
             }
-            Collections.sort(lessons);
-            return lessons;
+            Collections.sort(courses);
+            return courses;
         } else {
             return null;
         }

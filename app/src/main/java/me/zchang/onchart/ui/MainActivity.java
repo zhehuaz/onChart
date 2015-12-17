@@ -1,7 +1,5 @@
 package me.zchang.onchart.ui;
 
-import android.animation.Animator;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -9,21 +7,17 @@ import android.os.AsyncTask;
 import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.transition.Transition;
-import android.transition.TransitionValues;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -43,7 +37,7 @@ import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
-import me.zchang.onchart.student.Lesson;
+import me.zchang.onchart.student.Course;
 import me.zchang.onchart.ui.adapter.LessonPagerAdapter;
 
 import java.io.FileNotFoundException;
@@ -97,7 +91,6 @@ public class MainActivity extends AppCompatActivity
 
     private int curWeek;
     private int numOfWeekdays;
-    private int curImgIndex;
 
     IWXAPI api;
 
@@ -106,9 +99,8 @@ public class MainActivity extends AppCompatActivity
         //getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String APP_ID = MainApp.APP_ID;
-        api = WXAPIFactory.createWXAPI(MainActivity.this, APP_ID, true);
-        api.registerApp(APP_ID);
+        api = WXAPIFactory.createWXAPI(MainActivity.this, MainApp.APP_ID, true);
+        api.registerApp(MainApp.APP_ID);
 
         preferenceManager = ((MainApp) getApplication()).getPreferenceManager();
 
@@ -150,8 +142,8 @@ public class MainActivity extends AppCompatActivity
 
         setupDrawer();
         refreshWeek();
-        setupFragments();
-        setupList();// ATTENTION, order of refresh and setup
+        //setupFragments();
+        //setupList();// ATTENTION, order of refresh and setup
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -172,18 +164,18 @@ public class MainActivity extends AppCompatActivity
 
     private void setupList() {
 
-        List<Lesson> lessons;
+        List<Course> courses;
         try {
-            lessons = preferenceManager.getChart();
+            courses = preferenceManager.getChart();
             for (LessonListFragment f : fragments)
                 f.clearLesson();
-            for (Lesson l : lessons) {
-                int index = Utils.parseIndexFromWeekday(l.getWeekDay());
-                if (index >= 0 && curWeek >= l.getStartWeek() && curWeek <= l.getEndWeek()) {
-                    if (l.getWeekParity() < 0)
-                        fragments.get(index).addLesson(l);
-                    else if (curWeek % 2 == l.getWeekParity()) // odd or even week num
-                        fragments.get(index).addLesson(l);
+            for (Course course : courses) {
+                int index = Utils.parseIndexFromWeekday(course.getWeekDay());
+                if (index >= 0 && curWeek >= course.getStartWeek() && curWeek <= course.getEndWeek()) {
+                    if (course.getWeekParity() < 0)
+                        fragments.get(index).addLesson(course);
+                    else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
+                        fragments.get(index).addLesson(course);
                 }
             }
             for (LessonListFragment f : fragments) {
@@ -265,7 +257,6 @@ public class MainActivity extends AppCompatActivity
                 if(curWeek != integer && integer > 0) {
                     curWeek = integer;
                     preferenceManager.saveWeek(curWeek);
-
                 }
                 if(refreshProgress != null)
                     refreshProgress.setVisibility(View.INVISIBLE);
@@ -287,13 +278,18 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         preferenceManager.registerListener(this);
-
-
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStart() {
+        super.onStart();
+        setupFragments();
+        setupList();// ATTENTION, order of refresh and setup
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         preferenceManager.unRegisterListener(this);
     }
 
@@ -335,20 +331,20 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onStartOver() {
-        new AsyncTask<String, String, List<Lesson>>() {
+        new AsyncTask<String, String, List<Course>>() {
             @Override
-            protected List<Lesson> doInBackground(String... strings) {
+            protected List<Course> doInBackground(String... strings) {
                 return session.fetchLessonChart();
             }
 
             @Override
-            protected void onPostExecute(List<Lesson> lessons) {
+            protected void onPostExecute(List<Course> courses) {
               //  LessonListAdapter adapter = new LessonListAdapter(MainActivity.this, lessons);
                 //int curWeek = preferenceManager.getWeek();
-                if (lessons != null) {
+                if (courses != null) {
                     try {
-                        if(lessons != null) {
-                            preferenceManager.saveChart(lessons);
+                        if(courses != null) {
+                            preferenceManager.saveChart(courses);
                             setupList();
                         } else {
                             Toast.makeText(MainActivity.this, "Invalid account", Toast.LENGTH_SHORT).show();
@@ -431,15 +427,13 @@ public class MainActivity extends AppCompatActivity
                 if (resultCode == RESULT_OK) {
 
 
-                    Lesson lesson = curFragment.findLessonById(data.getIntExtra(getString(R.string.intent_lesson_id), -1));
-                    if (lesson != null) {
-                        lesson.setLabelImgIndex(curImgIndex);
+                    Course course = curFragment.findLessonById(data.getIntExtra(getString(R.string.intent_lesson_id), -1));
+                    if (course != null) {
+                        course.setLabelImgIndex(data.getIntExtra(getString(R.string.intent_label_image_index), 0));
                     }
 
                     curFragment.adapter
                         .notifyItemChanged(pos);
-                } else {
-                    curFragment.onReturnComplete(pos);
                 }
                 break;
         }
@@ -457,13 +451,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(TAG, "Get shared preference change message :" + key);
-        if (key.matches("^[0-9]+$")) {
-            //LessonListFragment fragment = fragments.get(mainListPager.getCurrentItem());
-            //int id = Integer.parseInt(key);
-            //fragment.updateLessonImg(id);
-            //fragment.adapter.notifyItemChanged(fragment.adapter.findLessonById(id));
-            curImgIndex = sharedPreferences.getInt(key, 0);
-        } else if (key.equals(getString(R.string.pref_week_num))) {
+//        if (key.matches("^[0-9]+$")) {
+////            LessonListFragment fragment = fragments.get(mainListPager.getCurrentItem());
+////            int id = Integer.parseInt(key);
+////            fragment.updateLessonImg(id);
+////            fragment.adapter.notifyItemChanged(fragment.adapter.findLessonById(id));
+//            //fragments
+//      } else
+        if (key.equals(getString(R.string.pref_week_num))) {
             setupList();
             weekdayText.setText(curWeek + "");// TODO update changed items
         }

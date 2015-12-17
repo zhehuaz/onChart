@@ -26,7 +26,7 @@ import me.zchang.onchart.http.HttpRequest;
 import me.zchang.onchart.http.HttpResponse;
 import me.zchang.onchart.http.RequestMethod;
 import me.zchang.onchart.parser.StudentInfoParser;
-import me.zchang.onchart.student.Lesson;
+import me.zchang.onchart.student.Course;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -111,7 +111,7 @@ public class BitJwcSession extends Session{
         return null;
     }
 
-    public List<Lesson> fetchLessonChart() {
+    public List<Course> fetchLessonChart() {
         String path = "/xskbcx.aspx?xh=" + stuNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121603";
         HttpRequest chartRequest = null;
         try {

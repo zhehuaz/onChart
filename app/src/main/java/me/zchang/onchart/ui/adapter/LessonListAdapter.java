@@ -23,7 +23,8 @@ import me.zchang.onchart.R;
 import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.exception.LessonStartTimeException;
 import me.zchang.onchart.parser.Utils;
-import me.zchang.onchart.student.Lesson;
+import me.zchang.onchart.student.Course;
+import me.zchang.onchart.student.LabelCourse;
 import me.zchang.onchart.ui.DetailActivity;
 import me.zchang.onchart.ui.MainActivity;
 
@@ -62,14 +63,14 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private byte[] bitmap;
 
-    List<Lesson> lessons;
+    List<Course> courses;
     Context context;
     private int fragId;
 
-    public LessonListAdapter(Context context, List<Lesson> lessons, int fragId) throws LessonStartTimeException {
+    public LessonListAdapter(Context context, List<Course> courses, int fragId) throws LessonStartTimeException {
 
         bitmap = new byte[20];
-        this.lessons = lessons;
+        this.courses = courses;
         this.context = context;
         this.fragId = fragId;
 
@@ -77,8 +78,8 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     }
 
-    public void setLessons(List<Lesson> lessons) throws LessonStartTimeException {
-        this.lessons = lessons;
+    public void setCourses(List<Course> courses) throws LessonStartTimeException {
+        this.courses = courses;
         processLessons();
     }
 
@@ -86,7 +87,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         morningCount = 0;
         afternoonCount = 0;
         eveningCount = 0;
-        for(Lesson l : lessons) {
+        for(Course l : courses) {
             int startTime = l.getStartTime();
             switch (startTime) {
                 case 1:
@@ -150,21 +151,21 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         //Log.d(TAG, "On bind");
         if(holder instanceof ViewHolder) {
-            final Lesson l = lessons.get(bitmap[position]);
+            final LabelCourse course = (LabelCourse) courses.get(bitmap[position]);
             final TextView nameText = ((ViewHolder) holder).nameText;
             final TextView roomText = ((ViewHolder) holder).roomText;
             final TextView timeText = ((ViewHolder) holder).timeText;
             final ImageView nabImg = ((ViewHolder) holder).nabImg;
             final CardView cardView = ((ViewHolder) holder).cardView;
-            nameText.setText(l.getName());
-            roomText.setText(l.getClassroom());
-            timeText.setText(Utils.timeFromPeriod(l.getStartTime()));
+            nameText.setText(course.getName());
+            roomText.setText(course.getClassroom());
+            timeText.setText(Utils.timeFromPeriod(course.getStartTime()));
 
             ViewGroup.LayoutParams params = ((ViewHolder) holder).frame.getLayoutParams();
-            params.height =(((ViewHolder) holder).cardHeight >> 1 ) * (l.getEndTime() - l.getStartTime() + 1);
+            params.height =(((ViewHolder) holder).cardHeight >> 1 ) * (course.getEndTime() - course.getStartTime() + 1);
             ((ViewHolder) holder).frame.setLayoutParams(params);
 
-            nabImg.setImageResource(PreferenceManager.labelImgs[l.getLabelImgIndex()]);
+            nabImg.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
             //nabImg.setScaleType(ImageView.);
 
 
@@ -219,14 +220,14 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 //                            .addSharedElement(v, context.getString(R.string.trans_detail_item))
 //                            .addSharedElement(v.findViewById(R.id.iv_label), context.getString(R.string.trans_detail_img));
 //                    DetailFragment fragment = new DetailFragment();
-//                    fragment.setLesson(l);
+//                    fragment.setLesson(course);
 //                    fragment.setPosition(position);
 //                    fragment.show(((MainActivity)context).getSupportFragmentManager(), MainActivity.TAG);
 
                     Intent intent = new Intent(context, DetailActivity.class);
                     intent.putExtra(context.getString(R.string.intent_frag_index), fragId);
                     intent.putExtra(context.getString(R.string.intent_position), position);
-                    intent.putExtra(context.getString(R.string.intent_lesson), l);
+                    intent.putExtra(context.getString(R.string.intent_lesson), course);
                     //((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                         intent.putExtra("color", ((ColorDrawable)cardView.getBackground()).getColor());
@@ -251,8 +252,8 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        if(lessons.size() != 0)
-            return lessons.size() + 1 + (morningCount > 0 ? 1 : 0)
+        if(courses.size() != 0)
+            return courses.size() + 1 + (morningCount > 0 ? 1 : 0)
                     + (afternoonCount > 0 ? 1 : 0)
                     + (eveningCount > 0 ? 1 : 0);
         else
@@ -312,9 +313,9 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
      * @return the position of lesson in the list
      */
     public int findLessonById(int id) {
-        if(!lessons.isEmpty()) {
+        if(!courses.isEmpty()) {
             for (int i = 0; i < bitmap.length; i++) {
-                if (bitmap[i] >= 0 && (lessons.get(bitmap[i]).getId() == id)) {
+                if (bitmap[i] >= 0 && (courses.get(bitmap[i]).getId() == id)) {
                     return i;
                 }
             }

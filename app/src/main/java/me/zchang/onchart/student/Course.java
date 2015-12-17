@@ -38,29 +38,92 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import me.zchang.onchart.config.PreferenceManager;
+import me.zchang.onchart.parser.Utils;
 
 /**
- * Entity class representative of a block in lesson chart.
+ * Entity class representative of a block in the schedule.
  */
-public class Lesson implements Comparable, Parcelable {
+public class Course implements Comparable{
+
+    /**
+     * The ID of each course to identify the blocks in the schedule.
+     * That's to say, the ID identifies a lesson at certain time in a week.
+     */
+    protected int id;
+
+    /**
+     * The name of the course.
+     * Attention that this field can't identify a lesson because lessons with one name
+     * at different times are considered not equal.
+     */
+    protected String name;
 
 
-    private int id;
-    private String name;
-    private String department;
-    private float credit;
-    private String teacher;
-    private String classroom;
-    private char weekDay;
-    private int startTime;
-    private int endTime;
-    private int startWeek;
-    private int endWeek;
-    private byte weekParity;
-    private int labelImgIndex;
+    /**
+     * The department hosting the course.
+     */
+    protected String department;
+
+    /**
+     * Credit of the course.
+     */
+    protected float credit;
+
+    /**
+     * Teacher of the course.
+     */
+    protected String teacher;
+
+    /**
+     * Classroom of the course.
+     */
+    protected String classroom;
+
+    /**
+     * The day of the course in Chinese.
+     * You can easily translate it into index calling {@link Utils#parseIndexFromWeekday(char)}.
+     * The index is from 0 to 6 for Monday to Sunday.
+     */
+    protected char weekDay;
+
+    /**
+     * The time when the class begins.
+     */
+    protected int startTime;
+
+    /**
+     * The time when the class ends.
+     */
+    protected int endTime;
+
+    /**
+     * The first week of the course.
+     */
+    protected int startWeek;
+
+    /**
+     * The last week of the course.
+     */
+    protected int endWeek;
+
+    /**
+     * Whether the course is only in odd or even weeks or not.
+     * -1 the course is in every week
+     * 0 only in odd weeks
+     * 1 only in even weeks
+     */
+    protected byte weekParity;
+
+    /**
+     * The label image for the course, which can be shown on screen.
+     * This integer refers to a image,and you can define the map yourself.
+     * Thus, {@link #setToNextLabelImg()} is supposed to be implemented.If not,
+     * this class is considered no label.
+     */
+    protected int labelImgIndex;
 
 
-    public Lesson() {
+    public Course() {
         this.name = "";
         this.department = "";
         credit = 0f;
@@ -75,20 +138,20 @@ public class Lesson implements Comparable, Parcelable {
         labelImgIndex = 0;
     }
 
-    public Lesson(Lesson lesson) {
-        this.name = new String(lesson.name);
-        this.department = new String(lesson.department);
-        this.teacher = new String(lesson.teacher);
-        this.classroom = new String(lesson.classroom);
-        this.credit = lesson.credit;
-        this.weekDay = lesson.weekDay;
-        this.startTime = lesson.startTime;
-        this.endTime = lesson.endTime;
-        this.startWeek = lesson.startTime;
-        this.endWeek = lesson.endWeek;
-        this.weekParity = lesson.weekParity;
-        this.labelImgIndex = lesson.labelImgIndex;
-        this.id = lesson.id;
+    public Course(Course course) {
+        this.name = new String(course.name);
+        this.department = new String(course.department);
+        this.teacher = new String(course.teacher);
+        this.classroom = new String(course.classroom);
+        this.credit = course.credit;
+        this.weekDay = course.weekDay;
+        this.startTime = course.startTime;
+        this.endTime = course.endTime;
+        this.startWeek = course.startTime;
+        this.endWeek = course.endWeek;
+        this.weekParity = course.weekParity;
+        this.labelImgIndex = course.labelImgIndex;
+        this.id = course.id;
     }
 
     public String getName() {
@@ -195,52 +258,16 @@ public class Lesson implements Comparable, Parcelable {
         return id;
     }
 
-    public Lesson setId(int id) {
+    public Course setId(int id) {
         this.id = id;
         return this;
     }
+
     @Override
     public int compareTo(Object o) {
-        Lesson l = (Lesson)o;
+        Course l = (Course)o;
         return this.getStartTime() - l.getStartTime();
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
-        dest.writeString(this.name);
-        dest.writeString(this.teacher);
-        dest.writeString(this.classroom);
-        dest.writeInt(this.startWeek);
-        dest.writeInt(this.endWeek);
-        dest.writeFloat(this.credit);
-        dest.writeInt(this.labelImgIndex);
-    }
-
-    public static final Parcelable.Creator<Lesson> CREATOR = new Creator<Lesson>() {
-
-        @Override
-        public Lesson createFromParcel(Parcel source) {
-            Lesson lesson = new Lesson();
-            lesson.setId(source.readInt());
-            lesson.setName(source.readString());
-            lesson.setTeacher(source.readString());
-            lesson.setClassroom(source.readString());
-            lesson.setStartWeek(source.readInt());
-            lesson.setEndWeek(source.readInt());
-            lesson.setCredit(source.readFloat());
-            lesson.setLabelImgIndex(source.readInt());
-            return lesson;
-        }
-
-        @Override
-        public Lesson[] newArray(int size) {
-            return new Lesson[0];
-        }
-    };
 }

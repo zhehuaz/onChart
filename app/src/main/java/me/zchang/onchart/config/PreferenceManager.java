@@ -7,7 +7,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import me.zchang.onchart.R;
-import me.zchang.onchart.student.Lesson;
+import me.zchang.onchart.student.Course;
+import me.zchang.onchart.student.LabelCourse;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -72,30 +73,30 @@ public class PreferenceManager {
         PREF_KEY_WEEK = context.getString(R.string.pref_week_num);
     }
 
-    public void saveChart(List<Lesson> lessons) throws IOException {
-        String json = gson.toJson(lessons);
+    public void saveChart(List<Course> courses) throws IOException {
+        String json = gson.toJson(courses);
         FileOutputStream fos = context.openFileOutput(CHART_FILE_NAME, Context.MODE_PRIVATE);
         fos.write(json.getBytes());
         fos.close();
 
         SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        for (Lesson lesson : lessons) {
+        for (Course course : courses) {
             //savePicPath(lesson.getId(), lesson.getLabelImgIndex());
-            editor.putInt(lesson.getId() + "", lesson.getLabelImgIndex());
+            editor.putInt(course.getId() + "", course.getLabelImgIndex());
         }
         editor.apply();
     }
 
-    public List<Lesson> getChart() throws FileNotFoundException {
+    public List<Course> getChart() throws FileNotFoundException {
         Reader reader = new InputStreamReader(context.openFileInput(CHART_FILE_NAME));
-        List<Lesson> lessons = gson.fromJson(reader, new TypeToken<List<Lesson>>(){ }.getType());
+        List<Course> courses = gson.fromJson(reader, new TypeToken<List<LabelCourse>>(){ }.getType());
 
-        for (Lesson lesson : lessons) {
-            lesson.setLabelImgIndex(getPicPathIndex(lesson.getId()));
+        for (Course course : courses) {
+            course.setLabelImgIndex(getPicPathIndex(course.getId()));
         }
 
-        return lessons;
+        return courses;
     }
 
     public void savePicPathIndex(int key, int resIndex) {

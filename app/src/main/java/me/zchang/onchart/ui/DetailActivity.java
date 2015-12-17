@@ -1,8 +1,6 @@
 package me.zchang.onchart.ui;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,10 +9,7 @@ import android.transition.ChangeBounds;
 import android.transition.ChangeImageTransform;
 import android.transition.TransitionSet;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,8 +17,7 @@ import android.widget.TextView;
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.PreferenceManager;
-import me.zchang.onchart.student.Lesson;
-import me.zchang.onchart.ui.utils.CardToDialog;
+import me.zchang.onchart.student.Course;
 import me.zchang.onchart.ui.utils.DialogToCard;
 
 public class DetailActivity extends AppCompatActivity {
@@ -36,7 +30,7 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         intent = getIntent();
         int startColor = intent.getIntExtra("color", -1);
-        final Lesson lesson = intent.getParcelableExtra(getString(R.string.intent_lesson));
+        final Course course = intent.getParcelableExtra(getString(R.string.intent_lesson));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ArcMotion arcMotion = new ArcMotion();
             arcMotion.setMinimumHorizontalAngle(50f);
@@ -67,8 +61,8 @@ public class DetailActivity extends AppCompatActivity {
 
         setResult(RESULT_CANCELED, retIntent);
         retIntent.putExtra(getString(R.string.intent_position), intent.getIntExtra(getString(R.string.intent_position), 0));
-        if(lesson != null) {
-            retIntent.putExtra(getString(R.string.intent_lesson_id), lesson.getId());
+        if(course != null) {
+            retIntent.putExtra(getString(R.string.intent_lesson_id), course.getId());
             final TextView lessonNameText = (TextView) findViewById(R.id.tv_lesson_name);
             TextView teacherText = (TextView) findViewById(R.id.tv_teacher);
             TextView classroomText = (TextView) findViewById(R.id.tv_classroom);
@@ -76,22 +70,23 @@ public class DetailActivity extends AppCompatActivity {
             TextView creditText = (TextView) findViewById(R.id.tv_credit);
             final ImageView labelImage = (ImageView) findViewById(R.id.iv_label);
 
-            lessonNameText.setText(lesson.getName());
-            teacherText.setText(lesson.getTeacher());
-            classroomText.setText(lesson.getClassroom());
-            weekText.setText(lesson.getStartWeek() + " - " + lesson.getEndWeek() + getString(R.string.weekday_week));
-            creditText.setText(lesson.getCredit() + "");
-            labelImage.setImageResource(PreferenceManager.labelImgs[lesson.getLabelImgIndex()]);
+            lessonNameText.setText(course.getName());
+            teacherText.setText(course.getTeacher());
+            classroomText.setText(course.getClassroom());
+            weekText.setText(course.getStartWeek() + " - " + course.getEndWeek() + getString(R.string.weekday_week));
+            creditText.setText(course.getCredit() + "");
+            labelImage.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
 
             labelImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    lesson.setToNextLabelImg();
+                    course.setToNextLabelImg();
                     // update local storage only.
-                    ((MainApp) getApplication()).getPreferenceManager().savePicPathIndex(lesson.getId(), lesson.getLabelImgIndex());
-                    labelImage.setImageResource(PreferenceManager.labelImgs[lesson.getLabelImgIndex()]);
+                    ((MainApp) getApplication()).getPreferenceManager().savePicPathIndex(course.getId(), course.getLabelImgIndex());
+                    labelImage.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
                     //((MainActivity)getActivity()).getListFragment().adapter.notifyItemChanged(position);
                     //retIntent.putExtra(getString(R.string.intent_frag_index), fragIndex);
+                    retIntent.putExtra(getString(R.string.intent_label_image_index), course.getLabelImgIndex());
                     setResult(RESULT_OK, retIntent);
                 }
             });

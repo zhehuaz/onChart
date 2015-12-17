@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.PreferenceManager;
-import me.zchang.onchart.student.Lesson;
+import me.zchang.onchart.student.Course;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -38,15 +38,15 @@ import me.zchang.onchart.student.Lesson;
 
 public class DetailFragment extends DialogFragment {
 
-    Lesson lesson;
+    Course course;
     int position;
     public DetailFragment() {
-        lesson = null;
+        course = null;
         position = 0;
     }
 
-    public void setLesson(Lesson lesson) {
-        this.lesson = lesson;
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public  void setPosition(int position) {
@@ -58,7 +58,7 @@ public class DetailFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        if(lesson != null) {
+        if(course != null) {
             final TextView lessonNameText = (TextView) rootView.findViewById(R.id.tv_lesson_name);
             TextView teacherText = (TextView) rootView.findViewById(R.id.tv_teacher);
             TextView classroomText = (TextView) rootView.findViewById(R.id.tv_classroom);
@@ -66,20 +66,20 @@ public class DetailFragment extends DialogFragment {
             TextView creditText = (TextView) rootView.findViewById(R.id.tv_credit);
             final ImageView labelImage = (ImageView) rootView.findViewById(R.id.iv_label);
 
-            lessonNameText.setText(lesson.getName());
-            teacherText.setText(lesson.getTeacher());
-            classroomText.setText(lesson.getClassroom());
-            weekText.setText(lesson.getStartWeek() + " - " + lesson.getEndWeek() + getString(R.string.weekday_week));
-            creditText.setText(lesson.getCredit() + "");
-            labelImage.setImageResource(PreferenceManager.labelImgs[lesson.getLabelImgIndex()]);
+            lessonNameText.setText(course.getName());
+            teacherText.setText(course.getTeacher());
+            classroomText.setText(course.getClassroom());
+            weekText.setText(course.getStartWeek() + " - " + course.getEndWeek() + getString(R.string.weekday_week));
+            creditText.setText(course.getCredit() + "");
+            labelImage.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
 
             labelImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // TODO too many things to modify
-                    lesson.setToNextLabelImg();
-                    ((MainActivity)getActivity()).getPreferenceManager().savePicPathIndex(lesson.getId(), lesson.getLabelImgIndex());
-                    labelImage.setImageResource(PreferenceManager.labelImgs[lesson.getLabelImgIndex()]);
+                    course.setToNextLabelImg();
+                    ((MainActivity)getActivity()).getPreferenceManager().savePicPathIndex(course.getId(), course.getLabelImgIndex());
+                    labelImage.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
                     ((MainActivity)getActivity()).getListFragment().adapter.notifyItemChanged(position);
                 }
             });

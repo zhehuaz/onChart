@@ -14,4 +14,21 @@
             android:positiveButtonText="@null" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="More" >
+
+        <Preference
+            android:title="@string/action_about">
+            <intent
+                android:targetPackage="me.zchang.onchart"
+                android:targetClass="me.zchang.onchart.ui.AboutActivity"
+                />
+        </Preference>
+
+        <Preference
+            android:title="@string/action_logout">
+
+        </Preference>
+    </PreferenceCategory>
+
 </PreferenceScreen>

@@ -24,6 +24,7 @@
     <string name="action_about">About</string>
     <string name="action_chart">Chart</string>
     <string name="action_exam">Exam (Coming)</string>
+    <string name="action_logout">Logout</string>
     <string name="subtitle_morning">Morning</string>
     <string name="subtitle_afternoon">Afternoon</string>
     <string name="subtitle_evening">Evening</string>
@@ -43,7 +44,9 @@
     <string name="intent_position">Position</string>
     <string name="intent_frag_index">Fragment</string>
     <string name="intent_lesson_id">LessonId</string>
+    <string name="intent_label_image_index">ImageIndex</string>
 
     <string name="trans_detail_item">DetailItem</string>
     <string name="trans_detail_img">DetailImage</string>
+    <string name="title_activity_about">AboutActivity</string>
 </resources>

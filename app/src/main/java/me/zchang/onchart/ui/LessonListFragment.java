@@ -4,20 +4,17 @@ package me.zchang.onchart.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import me.zchang.onchart.R;
 import me.zchang.onchart.exception.LessonStartTimeException;
-import me.zchang.onchart.student.Lesson;
+import me.zchang.onchart.student.Course;
 import me.zchang.onchart.ui.adapter.LessonListAdapter;
 
 import java.util.ArrayList;
@@ -56,17 +53,17 @@ public class LessonListFragment extends Fragment {
      * Fragment to be passed to adapter later.What's more, the list's pointer
      * points to one area of memory so that you need to maintain this list only.
      */
-    List<Lesson> lessons;
+    List<Course> courses;
 
     public LessonListFragment() {
-        lessons = new ArrayList<>();
+        courses = new ArrayList<>();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            adapter = new LessonListAdapter(context, lessons, getId());
+            adapter = new LessonListAdapter(context, courses, getId());
         } catch (LessonStartTimeException e) {
             Toast.makeText(getActivity(), "Unknown lesson time", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -82,7 +79,7 @@ public class LessonListFragment extends Fragment {
         lessonList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         try {
-            adapter.setLessons(lessons);
+            adapter.setCourses(courses);
         } catch (LessonStartTimeException e) {
             Toast.makeText(getActivity(), "Unknown lesson time", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -93,13 +90,13 @@ public class LessonListFragment extends Fragment {
     }
 
     public void clearLesson() {
-        if(lessons != null)
-            lessons.clear();
+        if(courses != null)
+            courses.clear();
     }
 
-    public void addLesson(Lesson lesson) {
-        if(lesson != null) {
-            lessons.add(lesson);
+    public void addLesson(Course course) {
+        if(course != null) {
+            courses.add(course);
         }
 
     }
@@ -118,32 +115,21 @@ public class LessonListFragment extends Fragment {
     }
 
     public void updateLessonImg(int id) {
-        for (Lesson lesson : lessons) {
-            if (lesson.getId() == id) {
-                lesson.setToNextLabelImg();
+        for (Course course : courses) {
+            if (course.getId() == id) {
+                course.setToNextLabelImg();
                 break;
             }
         }
     }
 
-    public Lesson findLessonById(int id) {
-        for (Lesson lesson : lessons) {
-            if (lesson.getId() == id) {
-                return lesson;
+    public Course findLessonById(int id) {
+        for (Course course : courses) {
+            if (course.getId() == id) {
+                return course;
             }
         }
         return null;
     }
 
-    // TODO Set reenter transition to MainActivity
-    public void onReturnComplete(int position) {
-        View view = lessonList.getChildAt(position);
-        if(view instanceof FrameLayout) {
-            View cardView = ((FrameLayout) view).getChildAt(1);
-            //cardView.setAlpha(0f);
-            cardView.animate()
-                    .alpha(1f)
-                    .setDuration(500L);
-        }
-    }
 }

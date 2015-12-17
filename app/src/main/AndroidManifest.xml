@@ -32,9 +32,13 @@
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:theme="@style/TranslucentActivity"
             android:name=".ui.DetailActivity"
-            android:label="@string/title_activity_detail" >
+            android:label="@string/title_activity_detail"
+            android:theme="@style/TranslucentActivity" >
+        </activity>
+        <activity
+            android:name=".ui.AboutActivity"
+            android:label="@string/title_activity_about" >
         </activity>
     </application>
 
