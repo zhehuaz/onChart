@@ -53,10 +53,10 @@ import me.zchang.onchart.http.HttpResponse;
  */
 
 /**
- * A session to login and stay online.
+ * A session to login and fetch interested information.
  */
 public abstract class Session implements HttpResponse.ResponseListener, HttpResponse.ErrorListener{
-    protected String sessioId;
+    protected String sessionId;
     protected HttpRequest loginRequest;
     protected HttpResponse response;
     protected SessionListener listener;

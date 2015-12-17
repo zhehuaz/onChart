@@ -53,7 +53,7 @@ import java.util.Map;
  */
 
 /**
- * Session to http://jwc.bit.edu.cn
+ * Session to <a href="http://jwc.bit.edu.cn"/>
  */
 public class BitJwcSession extends Session{
     private String TAG = "BitJwcSession";
@@ -90,7 +90,7 @@ public class BitJwcSession extends Session{
                     };
                     HttpResponse response = loginRequest.send();
 
-                    sessioId = loginUrl.toString().substring(11,42);
+                    sessionId = loginUrl.toString().substring(11,42);
                     return response.getContent();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -111,7 +111,12 @@ public class BitJwcSession extends Session{
         return null;
     }
 
-    public List<Course> fetchLessonChart() {
+    /**
+     * Fetch schedule from <a href="http://jwc.bit.edu.cn"/> synchronously,
+     * having been authorized required.
+     * @return a list of courses.
+     */
+    public List<Course> fetchSchedule() {
         String path = "/xskbcx.aspx?xh=" + stuNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121603";
         HttpRequest chartRequest = null;
         try {
@@ -127,7 +132,7 @@ public class BitJwcSession extends Session{
                 HttpResponse chartResponse = chartRequest.send();
                 String htmlRes = chartResponse.getContent();
                 Log.i(TAG, "Response : " + chartResponse.getContent());
-                return StudentInfoParser.parseChart(htmlRes);
+                return StudentInfoParser.parseSchedule(htmlRes);
             }
             return new ArrayList<>();
         } catch (MalformedURLException e) {
@@ -138,6 +143,11 @@ public class BitJwcSession extends Session{
         return null;
     }
 
+    /**
+     * Fetch current week number from <a href="http://jwc.bit.edu.cn"/> homepage.
+     * @return current week number.
+     * @throws IOException Unable to access to the page.
+     */
     public int fetchWeek() throws IOException {
         String path = "http://10.0.6.51";
         HttpRequest weekRequest = null;
@@ -152,6 +162,10 @@ public class BitJwcSession extends Session{
         return 0;
     }
 
+    /**
+     * Fetch student name, having been authorized required.
+     * @return the student name.
+     */
     public String fetchName() {
         if(startResponse != null) {
             return StudentInfoParser.parseName(startResponse);
@@ -159,6 +173,11 @@ public class BitJwcSession extends Session{
         return null;
     }
 
+    /**
+     * Utility to covert the symbols in the password into unicode.
+     * @param psw the input password.
+     * @return coverted password
+     */
     public String pswToUnicode(String psw) {
         StringBuffer sb = new StringBuffer();
         int length = psw.length();
@@ -184,9 +203,14 @@ public class BitJwcSession extends Session{
 
     @Override
     public void onResponse(HttpResponse response) {
-        this.sessioId = parseSessionId(response.getRequestUrl());
+        this.sessionId = parseSessionId(response.getRequestUrl());
     }
 
+    /**
+     * Get session id from the redirected URL.
+     * @param url the redirected URL.
+     * @return session id.
+     */
     private String parseSessionId(URL url) {
         return url.getPath().substring(2,2 + 12);
     }

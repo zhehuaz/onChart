@@ -334,7 +334,7 @@ public class MainActivity extends AppCompatActivity
         new AsyncTask<String, String, List<Course>>() {
             @Override
             protected List<Course> doInBackground(String... strings) {
-                return session.fetchLessonChart();
+                return session.fetchSchedule();
             }
 
             @Override

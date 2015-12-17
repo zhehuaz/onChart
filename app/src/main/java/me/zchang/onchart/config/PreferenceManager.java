@@ -44,7 +44,6 @@ public class PreferenceManager {
     Context context;
     Gson gson;
     SharedPreferences sp;
-    //SharedPreferences.OnSharedPreferenceChangeListener listener = null;
 
     public final static int labelImgs[] = {
             R.mipmap.little_label1,

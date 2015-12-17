@@ -34,9 +34,6 @@ package me.zchang.onchart.student;
  *    limitations under the License.
  */
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.parser.Utils;
 
@@ -123,6 +120,9 @@ public class Course implements Comparable{
     protected int labelImgIndex;
 
 
+    /**
+     * Constructor of Course.
+     */
     public Course() {
         this.name = "";
         this.department = "";
@@ -138,6 +138,10 @@ public class Course implements Comparable{
         labelImgIndex = 0;
     }
 
+    /**
+     * Copy another course, and refer to different objects.
+     * @param course
+     */
     public Course(Course course) {
         this.name = new String(course.name);
         this.department = new String(course.department);
@@ -247,7 +251,7 @@ public class Course implements Comparable{
     }
 
     public void setToNextLabelImg() {
-        this.labelImgIndex = (this.labelImgIndex + 1) % PreferenceManager.labelImgs.length;
+        //this.labelImgIndex = (this.labelImgIndex + 1) % PreferenceManager.labelImgs.length;
     }
 
     public void setLabelImgIndex(int labelImgIndex) {

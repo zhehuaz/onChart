@@ -50,12 +50,18 @@ import java.util.regex.Pattern;
  */
 
 /**
- * parser for student information parser.
+ * Parser for the information relative to students.
+ * All the html files are from <a href="http://jwc.bit.edu.cn"/>
  */
 public class StudentInfoParser {
     private final static String TAG = "StudentInfoParser";
 
-    public static List<Course> parseChart(@NonNull String htmlText)
+    /**
+     * Parse the schedule from a html text.
+     * @param htmlText the source html text.
+     * @return the list of courses parsed from the source.Return null if failed.
+     */
+    public static List<Course> parseSchedule(@NonNull String htmlText)
     {
         Document doc = Jsoup.parse(htmlText);
         Element chartTable = doc.select("table#dgrdKb").first();
@@ -147,7 +153,11 @@ public class StudentInfoParser {
         }
     }
 
-
+    /**
+     * Parse current week number.
+     * @param htmlText the source html text.
+     * @return the week number.
+     */
     public static int parseWeek(@NonNull String htmlText) {
         Document doc = Jsoup.parse(htmlText);
         Elements rootElements = doc.select("a.black");
@@ -163,6 +173,11 @@ public class StudentInfoParser {
         return -1;
     }
 
+    /**
+     * Parse student name.
+     * @param htmlText the source html text.
+     * @return the student name.
+     */
     public static String parseName(@NonNull String htmlText) {
         Document doc = Jsoup.parse(htmlText);
         Elements elements = doc.select("span#xhxm");
