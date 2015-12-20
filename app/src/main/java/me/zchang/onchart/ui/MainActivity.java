@@ -64,11 +64,11 @@ import java.util.TimeZone;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements Session.SessionListener, LoginTestFragment.LoginListener
+        implements Session.SessionStartListener, LoginTestFragment.LoginListener
         , SharedPreferences.OnSharedPreferenceChangeListener {
 
     public final static int REQ_POSITION = 0;
-    public final static int REQ_SETTING_WEEKNUM = 1;
+    public final static int REQ_SETTING = 1;
 
     public final static String TAG = "MainActivity";
     private Toolbar mainToolbar;
@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         api = WXAPIFactory.createWXAPI(MainActivity.this, MainApp.APP_ID, true);
@@ -147,7 +146,6 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        //getWindow().setReenterTransition();
     }
 
     private void setupFragments() {
@@ -155,7 +153,8 @@ public class MainActivity extends AppCompatActivity
         for (int i = 0;i < Math.abs(numOfWeekdays);i ++) {
             fragments.add(new LessonListFragment());
         }
-        mainListAdapter = new LessonPagerAdapter(this, getSupportFragmentManager(), fragments, numOfWeekdays);
+        mainListAdapter = new LessonPagerAdapter(
+                this, getSupportFragmentManager(), fragments, numOfWeekdays);
         mainListPager.setAdapter(mainListAdapter);
 
         weekdayTabs.setupWithViewPager(mainListPager);
@@ -164,25 +163,28 @@ public class MainActivity extends AppCompatActivity
 
     private void setupList() {
 
-        List<Course> courses;
+        List<Course> courses = null;
         try {
-            courses = preferenceManager.getChart();
+            courses = preferenceManager.getSchedule();
+        } catch (FileNotFoundException e) {
+            courses = null;
+        } finally {
             for (LessonListFragment f : fragments)
                 f.clearLesson();
-            for (Course course : courses) {
-                int index = Utils.parseIndexFromWeekday(course.getWeekDay());
-                if (index >= 0 && curWeek >= course.getStartWeek() && curWeek <= course.getEndWeek()) {
-                    if (course.getWeekParity() < 0)
-                        fragments.get(index).addLesson(course);
-                    else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
-                        fragments.get(index).addLesson(course);
+            if (courses != null) {
+                for (Course course : courses) {
+                    int index = Utils.parseIndexFromWeekday(course.getWeekDay());
+                    if (index >= 0 && curWeek >= course.getStartWeek() && curWeek <= course.getEndWeek()) {
+                        if (course.getWeekParity() < 0)
+                            fragments.get(index).addLesson(course);
+                        else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
+                            fragments.get(index).addLesson(course);
+                    }
                 }
             }
             for (LessonListFragment f : fragments) {
                 f.updateList();
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
 
         Calendar cal = Calendar.getInstance();
@@ -192,6 +194,8 @@ public class MainActivity extends AppCompatActivity
         if (curWeekDay < mainListAdapter.getCount()) {
             mainListPager.setCurrentItem(curWeekDay);
         }
+
+        fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
     }
 
     private void setupDrawer() {
@@ -204,7 +208,7 @@ public class MainActivity extends AppCompatActivity
                 if(id == R.id.item_settings) {
                     Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
 
-                    startActivityForResult(intent, REQ_SETTING_WEEKNUM);
+                    startActivityForResult(intent, REQ_SETTING);
                 } else if (id == R.id.item_share) {
                     WXWebpageObject webpageObject = new WXWebpageObject();
                     webpageObject.webpageUrl = "https://github.com/LangleyChang/onChart";
@@ -215,9 +219,7 @@ public class MainActivity extends AppCompatActivity
                     SendMessageToWX.Req req = new SendMessageToWX.Req();
                     req.transaction = String.valueOf(System.currentTimeMillis());
                     req.message = msg;
-                    //req.scene = SendMessageToWX.Req.WXSceneTimeline;
                     api.sendReq(req);
-                    //Log.d(TAG, api.sendReq(req) + "");
                 }
                 return false;
             }
@@ -330,30 +332,34 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onStartOver() {
+    public void onSessionStartOver() {
         new AsyncTask<String, String, List<Course>>() {
             @Override
             protected List<Course> doInBackground(String... strings) {
-                return session.fetchSchedule();
+                try {
+                    return session.fetchSchedule();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
 
             @Override
             protected void onPostExecute(List<Course> courses) {
               //  LessonListAdapter adapter = new LessonListAdapter(MainActivity.this, lessons);
                 //int curWeek = preferenceManager.getWeek();
-                if (courses != null) {
-                    try {
-                        if(courses != null) {
-                            preferenceManager.saveChart(courses);
-                            setupList();
-                        } else {
-                            Toast.makeText(MainActivity.this, "Invalid account", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (IOException e) {
-                        Toast.makeText(MainActivity.this, "Save chart error", Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
+                try {
+                    if(courses != null) {
+                        preferenceManager.saveSchedule(courses);
+                        setupList();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Invalid account", Toast.LENGTH_SHORT).show();
                     }
+                } catch (IOException e) {
+                    Toast.makeText(MainActivity.this, "Save chart error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
                 }
+
 
                 String stuName = session.fetchName();
                 if (stuName != null) {
@@ -370,7 +376,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onError(Session.ErrorCode ec) {
+    public void onSessionStartError(Session.ErrorCode ec) {
         Toast.makeText(this, "Fail to connect JWC", Toast.LENGTH_SHORT).show();
     }
 
@@ -381,12 +387,6 @@ public class MainActivity extends AppCompatActivity
         session.setStuNum(usrNum);
         session.setPsw(psw);
         session.start();
-    }
-
-    @Override
-    public void onEnterAnimationComplete() {
-        super.onEnterAnimationComplete();
-        //fragments.get(mainListPager.getCurrentItem()).
     }
 
     public int getStatusBarHeight() {
@@ -400,11 +400,15 @@ public class MainActivity extends AppCompatActivity
 
     private void updateDrawer() {
         String stuName = preferenceManager.getName();
-        if (stuName != null) {
+        if (stuName != null && !stuName.equals(getString(R.string.null_stu_name))) {
             nameText.setText(stuName);
             loginArea.setClickable(false);
             drawerLayout.closeDrawers();
+        } else {
+            nameText.setText(getString(R.string.title_login));
+            loginArea.setClickable(true);
         }
+
     }
 
     @Override
@@ -412,12 +416,50 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-            case REQ_SETTING_WEEKNUM:
+            case REQ_SETTING:
                 if (resultCode == RESULT_OK) {
-                    //Log.d(TAG, "Result ok");
-                    numOfWeekdays = data.getIntExtra(getString(R.string.key_num_of_weekday), 5);
-                    setupFragments();
-                    setupList();
+                    int returnWeekday = data.getIntExtra(getString(R.string.key_num_of_weekday), -1);
+                    int isLogout = data.getIntExtra(getString(R.string.key_logout), SettingsActivity.FLAG_NO_LOGOUT);
+                    /**
+                     * 0 assign num of weekdays and setupFragments
+                     * 1 updateDrawer
+                     * 2 setupList
+                     */
+                    boolean flags[] = new boolean[4];
+                    if(returnWeekday != -1) {
+                        flags[0] = true;
+                        flags[2] = true;
+                        //numOfWeekdays = returnWeekday;
+                        //setupFragments();
+                        //setupList();
+                    }
+                    if (isLogout != SettingsActivity.FLAG_NO_LOGOUT) {
+                        flags[1] = true;
+                        flags[2] = true;
+                        //updateDrawer();
+                    }
+                    for (int i = 0;i < flags.length; i ++) {
+                        if (flags[i]) {
+                            switch (i) {
+                                case 0:
+                                    numOfWeekdays = returnWeekday;
+                                    setupFragments();
+                                    break;
+                                case 1:
+                                    updateDrawer();
+                                    break;
+                                case 2:
+                                    setupList();
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+//                    if (returnWeekday != -1 || isLogout != SettingsActivity.FLAG_NO_LOGOUT) {
+//                        //updateDrawer();
+//                        setupList();
+//                    }
                 }
                 break;
             case REQ_POSITION:
@@ -425,13 +467,15 @@ public class MainActivity extends AppCompatActivity
                 int pos = data.getIntExtra(getString(R.string.intent_position), 0);
 
                 if (resultCode == RESULT_OK) {
-
-
-                    Course course = curFragment.findLessonById(data.getIntExtra(getString(R.string.intent_lesson_id), -1));
+                    Course course = curFragment.findCourseById(data.getIntExtra(getString(R.string.intent_course_id), -1));
                     if (course != null) {
                         course.setLabelImgIndex(data.getIntExtra(getString(R.string.intent_label_image_index), 0));
                     }
 
+                    if (curFragment == null)
+                        Log.e(TAG, "curFragment is null");
+                    if (curFragment.adapter == null)
+                        Log.e(TAG, "adapater is null");
                     curFragment.adapter
                         .notifyItemChanged(pos);
                 }
@@ -451,13 +495,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(TAG, "Get shared preference change message :" + key);
-//        if (key.matches("^[0-9]+$")) {
-////            LessonListFragment fragment = fragments.get(mainListPager.getCurrentItem());
-////            int id = Integer.parseInt(key);
-////            fragment.updateLessonImg(id);
-////            fragment.adapter.notifyItemChanged(fragment.adapter.findLessonById(id));
-//            //fragments
-//      } else
+
         if (key.equals(getString(R.string.pref_week_num))) {
             setupList();
             weekdayText.setText(curWeek + "");// TODO update changed items

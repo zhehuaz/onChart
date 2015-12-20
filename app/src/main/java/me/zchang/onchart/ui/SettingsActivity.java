@@ -1,10 +1,15 @@
 package me.zchang.onchart.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+
+import me.zchang.onchart.R;
+import me.zchang.onchart.config.PreferenceManager;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -24,24 +29,33 @@ import android.os.Bundle;
 
 public class SettingsActivity extends PreferenceActivity {
 
+    public final static int FLAG_LOGOUT = -1;
+    public final static int FLAG_NO_LOGOUT = 0;
     private final static String TAG = "SettingsActivity";
-    //public final static String KEY_
+
+    SettingsFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(me.zchang.onchart.R.style.SettingTheme);
         super.onCreate(savedInstanceState);
+
+        fragment = new SettingsFragment();
+        // bundle = new Bundle();
+        //bundle.putParcelable("fs", retIntent);
+        //fragment.setArguments();
         getFragmentManager().beginTransaction().replace(android.R.id.content,
-                new SettingsFragment()).commit();
+                fragment).commit();
 
     }
 
 
-    public static class SettingsFragment extends PreferenceFragment {
+    public static class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener{
+        Intent retIntent;
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-
+            retIntent = new Intent();
             getPreferenceManager().setSharedPreferencesName(getResources().getString(me.zchang.onchart.R.string.pref_file_name));
             //View view = getView();
             //Log.i(TAG, view.getClass());
@@ -51,13 +65,38 @@ public class SettingsActivity extends PreferenceActivity {
             preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    getActivity().setResult(RESULT_OK, new Intent().putExtra(getString(me.zchang.onchart.R.string.key_num_of_weekday), Integer.parseInt((String) newValue)));
+                    retIntent.putExtra(getString(R.string.key_num_of_weekday), Integer.parseInt((String) newValue));
+                    getActivity().setResult(RESULT_OK, retIntent);
                     return true;
                 }
             });
+
+            Preference logoutPref = findPreference(getString(R.string.key_logout));
+            logoutPref.setOnPreferenceClickListener(this);
         }
 
-
+        @Override
+        public boolean onPreferenceClick(final Preference preference) {
+            if (preference.getKey().equals(getString(R.string.key_logout))) {
+                new AlertDialog.Builder(getActivity())
+                        .setMessage(getString(R.string.message_logout))
+                        .setPositiveButton(getString(R.string.action_positive), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                getPreferenceManager().getSharedPreferences().edit()
+                                        .putString(getString(R.string.key_name), getString(R.string.null_stu_name))
+                                        .apply();
+                                PreferenceManager.deleteSchedule(getActivity());
+                                retIntent.putExtra(getString(R.string.key_logout), FLAG_LOGOUT);
+                                getActivity().setResult(RESULT_OK, retIntent);
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.action_negative), null)
+                        .setCancelable(true)
+                        .show();
+            }
+            return false;
+        }
     }
 
 }

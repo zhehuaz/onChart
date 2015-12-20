@@ -35,7 +35,6 @@ public class MainApp extends Application {
         api.registerApp(APP_ID);
 
         preferenceManager = new PreferenceManager(this);
-
     }
 
     public PreferenceManager getPreferenceManager() {

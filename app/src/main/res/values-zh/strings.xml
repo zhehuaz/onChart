@@ -24,4 +24,8 @@
     <string name="num_weekday_with_Sat">5天加周六</string>
     <string name="num_weekday_with_Sun">5天加周日</string>
     <string name="title_num_weekday">一周中的天数</string>
+    <string name="action_logout">登出</string>
+    <string name="action_negative">取消</string>
+    <string name="action_positive">确定</string>
+    <string name="message_logout">确定要登出么？</string>
 </resources>

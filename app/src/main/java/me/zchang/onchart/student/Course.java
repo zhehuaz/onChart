@@ -34,7 +34,6 @@ package me.zchang.onchart.student;
  *    limitations under the License.
  */
 
-import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.parser.Utils;
 
 /**

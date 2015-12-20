@@ -10,6 +10,8 @@ import me.zchang.onchart.R;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.LabelCourse;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,8 +38,6 @@ import java.util.List;
 
 public class PreferenceManager {
     private static String SETTING_FILE;
-    private static String PREF_KEY_NAME = "name";
-    private static String PREF_KEY_WEEK = "week";
 
     final static String CHART_FILE_NAME = "chart.js";
 
@@ -69,10 +69,9 @@ public class PreferenceManager {
         SETTING_FILE = context.getString(R.string.pref_file_name);
 
         sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
-        PREF_KEY_WEEK = context.getString(R.string.pref_week_num);
     }
 
-    public void saveChart(List<Course> courses) throws IOException {
+    public void saveSchedule(List<Course> courses) throws IOException {
         String json = gson.toJson(courses);
         FileOutputStream fos = context.openFileOutput(CHART_FILE_NAME, Context.MODE_PRIVATE);
         fos.write(json.getBytes());
@@ -81,15 +80,15 @@ public class PreferenceManager {
         SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         for (Course course : courses) {
-            //savePicPath(lesson.getId(), lesson.getLabelImgIndex());
             editor.putInt(course.getId() + "", course.getLabelImgIndex());
         }
         editor.apply();
     }
 
-    public List<Course> getChart() throws FileNotFoundException {
+    public List<Course> getSchedule() throws FileNotFoundException {
         Reader reader = new InputStreamReader(context.openFileInput(CHART_FILE_NAME));
-        List<Course> courses = gson.fromJson(reader, new TypeToken<List<LabelCourse>>(){ }.getType());
+        List<Course> courses = gson.fromJson(reader, new TypeToken<List<LabelCourse>>() {
+        }.getType());
 
         for (Course course : courses) {
             course.setLabelImgIndex(getPicPathIndex(course.getId()));
@@ -98,39 +97,38 @@ public class PreferenceManager {
         return courses;
     }
 
+    public static void deleteSchedule(Context context) {
+        File file = new File(context.getFilesDir(), CHART_FILE_NAME);
+        file.delete();
+    }
+
     public void savePicPathIndex(int key, int resIndex) {
-        //SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
         sp.edit().putInt(key + "", resIndex).commit();
     }
 
     public int getPicPathIndex(int key) {
-        //SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
         return sp.getInt(key + "", 0);
     }
 
     public void saveName(String name) {
         if(name != null) {
-            //SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
-            sp.edit().putString(PREF_KEY_NAME, name).apply();
+            sp.edit().putString(context.getString(R.string.key_name), name).apply();
         }
     }
 
     public String getName() {
-        return sp.getString(PREF_KEY_NAME, null);
+        return sp.getString(context.getString(R.string.key_name), null);
     }
 
     public void saveWeek(int week) {
-        //SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
-        sp.edit().putInt(PREF_KEY_WEEK, week).apply();
+        sp.edit().putInt(context.getString(R.string.key_week), week).apply();
     }
 
     public int getWeek() {
-        //SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
-        return sp.getInt(PREF_KEY_WEEK, 1);
+        return sp.getInt(context.getString(R.string.key_week), 1);
     }
 
     public int getNumOfWeekdays() {
-        //SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
         return Integer.parseInt(sp.getString(context.getResources().getString(R.string.key_num_of_weekday), "5"));
     }
 }

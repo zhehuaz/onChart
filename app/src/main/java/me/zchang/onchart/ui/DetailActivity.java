@@ -62,7 +62,7 @@ public class DetailActivity extends AppCompatActivity {
         setResult(RESULT_CANCELED, retIntent);
         retIntent.putExtra(getString(R.string.intent_position), intent.getIntExtra(getString(R.string.intent_position), 0));
         if(course != null) {
-            retIntent.putExtra(getString(R.string.intent_lesson_id), course.getId());
+            retIntent.putExtra(getString(R.string.intent_course_id), course.getId());
             final TextView lessonNameText = (TextView) findViewById(R.id.tv_lesson_name);
             TextView teacherText = (TextView) findViewById(R.id.tv_teacher);
             TextView classroomText = (TextView) findViewById(R.id.tv_classroom);

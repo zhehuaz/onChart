@@ -67,7 +67,7 @@ public class BitJwcSession extends Session{
         super(request);
     }
 
-    public BitJwcSession(SessionListener listener) {
+    public BitJwcSession(SessionStartListener listener) {
         super(listener);
     }
 
@@ -94,7 +94,7 @@ public class BitJwcSession extends Session{
                     return response.getContent();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    listener.onError(ErrorCode.SESSION_EC_FAIL_TO_CONNECT);
+                    listener.onSessionStartError(ErrorCode.SESSION_EC_FAIL_TO_CONNECT);
                     Log.e(TAG, "Can't connect to JWC");
                 }
                 return null;
@@ -104,7 +104,7 @@ public class BitJwcSession extends Session{
             protected void onPostExecute(String result) {
                 if(result != null) {
                     startResponse = result;
-                    listener.onStartOver();
+                    listener.onSessionStartOver();
                 }
             }
         }.execute();
@@ -116,31 +116,25 @@ public class BitJwcSession extends Session{
      * having been authorized required.
      * @return a list of courses.
      */
-    public List<Course> fetchSchedule() {
+    @Override
+    public List<Course> fetchSchedule() throws IOException {
         String path = "/xskbcx.aspx?xh=" + stuNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121603";
         HttpRequest chartRequest = null;
-        try {
-            if(loginUrl != null) {
-                chartRequest = new HttpRequest(loginUrl.toString().substring(0, 43) + path) {
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> param = new HashMap<>();
-                        param.put("Referer", loginUrl.toString());
-                        return param;
-                    }
-                };
-                HttpResponse chartResponse = chartRequest.send();
-                String htmlRes = chartResponse.getContent();
-                Log.i(TAG, "Response : " + chartResponse.getContent());
-                return StudentInfoParser.parseSchedule(htmlRes);
-            }
-            return new ArrayList<>();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(loginUrl != null) {
+            chartRequest = new HttpRequest(loginUrl.toString().substring(0, 43) + path) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> param = new HashMap<>();
+                    param.put("Referer", loginUrl.toString());
+                    return param;
+                }
+            };
+            HttpResponse chartResponse = chartRequest.send();
+            String htmlRes = chartResponse.getContent();
+            Log.i(TAG, "Response : " + chartResponse.getContent());
+            return StudentInfoParser.parseSchedule(htmlRes);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /**
@@ -148,6 +142,7 @@ public class BitJwcSession extends Session{
      * @return current week number.
      * @throws IOException Unable to access to the page.
      */
+    @Override
     public int fetchWeek() throws IOException {
         String path = "http://10.0.6.51";
         HttpRequest weekRequest = null;
@@ -166,6 +161,7 @@ public class BitJwcSession extends Session{
      * Fetch student name, having been authorized required.
      * @return the student name.
      */
+    @Override
     public String fetchName() {
         if(startResponse != null) {
             return StudentInfoParser.parseName(startResponse);

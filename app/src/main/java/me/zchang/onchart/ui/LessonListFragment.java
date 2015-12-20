@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import me.zchang.onchart.R;
@@ -43,7 +44,7 @@ public class LessonListFragment extends Fragment {
     private final static String TAG = "LessonListFragment";
 
     private int Id;
-    RecyclerView lessonList;
+    RecyclerView courseList;
     LessonListAdapter adapter;
 
     /**
@@ -54,6 +55,10 @@ public class LessonListFragment extends Fragment {
      * points to one area of memory so that you need to maintain this list only.
      */
     List<Course> courses;
+
+
+
+    private boolean slideAnimFlag = false;
 
     public LessonListFragment() {
         courses = new ArrayList<>();
@@ -75,8 +80,8 @@ public class LessonListFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG, "Fragment show");
         View rootView = inflater.inflate(R.layout.fragment_lesson_list, container, false);
-        lessonList = (RecyclerView) rootView.findViewById(R.id.rv_lessons);
-        lessonList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        courseList = (RecyclerView) rootView.findViewById(R.id.rv_lessons);
+        courseList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         try {
             adapter.setCourses(courses);
@@ -84,9 +89,19 @@ public class LessonListFragment extends Fragment {
             Toast.makeText(getActivity(), "Unknown lesson time", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-        lessonList.setAdapter(adapter);
+        courseList.setAdapter(adapter);
         //adapter.notifyDataSetChanged();
+        if (slideAnimFlag) {
+            courseList.setLayoutAnimation(
+                    AnimationUtils.loadLayoutAnimation(getActivity(), R.anim.main_recycler_view_layout));
+        }
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        slideAnimFlag = false;
     }
 
     public void clearLesson() {
@@ -123,7 +138,7 @@ public class LessonListFragment extends Fragment {
         }
     }
 
-    public Course findLessonById(int id) {
+    public Course findCourseById(int id) {
         for (Course course : courses) {
             if (course.getId() == id) {
                 return course;
@@ -132,4 +147,15 @@ public class LessonListFragment extends Fragment {
         return null;
     }
 
+    public RecyclerView getCourseList() {
+        return courseList;
+    }
+
+    public boolean isSlideAnimFlag() {
+        return slideAnimFlag;
+    }
+
+    public void setSlideAnimFlag(boolean slideAnimFlag) {
+        this.slideAnimFlag = slideAnimFlag;
+    }
 }

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name" translatable="false">onChart</string>
-    <string name="version_name" translatable="false">v1.0</string>
 
     <string name="hello_world" translatable="false">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -20,15 +19,19 @@
     <string name="weekday_Sat">Sat</string>
     <string name="weekday_Sun">Sun</string>
     <string name="title_login">Login</string>
+    <string name="message_logout">Are you sure to logout?</string>
     <string name="action_share">Share</string>
     <string name="action_about">About</string>
     <string name="action_chart">Chart</string>
     <string name="action_exam">Exam (Coming)</string>
     <string name="action_logout">Logout</string>
+    <string name="action_positive">OK</string>
+    <string name="action_negative">Cancel</string>
     <string name="subtitle_morning">Morning</string>
     <string name="subtitle_afternoon">Afternoon</string>
     <string name="subtitle_evening">Evening</string>
     <string name="weekday_week">Week</string>
+    <string name="null_stu_name">-</string>
 
     <string name="num_weekday_five">5 days</string>
     <string name="num_weekday_with_Sat">5 days and Sat</string>
@@ -37,16 +40,21 @@
 
     <string name="title_num_weekday">Num of days in one week</string>
 
+    <string name="key_logout">logout</string>
     <string name="key_num_of_weekday">num_of_weekday</string>
+    <string name="key_name">name</string>
+    <string name="key_week">week</string>
+    <string name="key_schedule">schedule</string>
     <string name="title_activity_detail">DetailActivity</string>
 
     <string name="intent_lesson">Lesson</string>
     <string name="intent_position">Position</string>
     <string name="intent_frag_index">Fragment</string>
-    <string name="intent_lesson_id">LessonId</string>
+    <string name="intent_course_id">CourseId</string>
     <string name="intent_label_image_index">ImageIndex</string>
 
     <string name="trans_detail_item">DetailItem</string>
     <string name="trans_detail_img">DetailImage</string>
     <string name="title_activity_about">AboutActivity</string>
+
 </resources>
