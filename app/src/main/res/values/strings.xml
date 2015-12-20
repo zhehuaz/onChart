@@ -45,6 +45,7 @@
     <string name="key_name">name</string>
     <string name="key_week">week</string>
     <string name="key_schedule">schedule</string>
+    <string name="key_last_fetch_week_time">last_fetch_week</string>
     <string name="title_activity_detail">DetailActivity</string>
 
     <string name="intent_lesson">Lesson</string>
@@ -57,4 +58,6 @@
     <string name="trans_detail_img">DetailImage</string>
     <string name="title_activity_about">AboutActivity</string>
 
+    <string name="my_github_url">https://github.com/LangleyChang/onChart</string>
+    <string name="wechat_share_title">please star~</string>
 </resources>

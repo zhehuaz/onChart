@@ -117,7 +117,6 @@ public class LessonListFragment extends Fragment {
     }
 
     public void updateList() {
-        //adapter.setList();
         if(adapter != null) {
             try {
                 // TODO　bad logic
@@ -147,7 +146,7 @@ public class LessonListFragment extends Fragment {
         return null;
     }
 
-    public RecyclerView getCourseList() {
+    public RecyclerView getCourseRecyclerView() {
         return courseList;
     }
 

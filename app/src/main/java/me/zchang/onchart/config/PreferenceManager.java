@@ -131,4 +131,12 @@ public class PreferenceManager {
     public int getNumOfWeekdays() {
         return Integer.parseInt(sp.getString(context.getResources().getString(R.string.key_num_of_weekday), "5"));
     }
+
+    public long getLastFetchWeekTime() {
+        return sp.getLong(context.getString(R.string.key_last_fetch_week_time), 0);
+    }
+
+    public void saveLastFetchWeekTime(long value) {
+        sp.edit().putLong(context.getString(R.string.key_last_fetch_week_time), value).apply();
+    }
 }

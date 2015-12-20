@@ -33,6 +33,12 @@ public abstract class Session implements HttpResponse.ResponseListener, HttpResp
     protected HttpResponse response;
     protected SessionStartListener listener;
 
+    protected boolean isStarted = false;
+
+    public boolean isStarted() {
+        return isStarted;
+    }
+
     public void setListener(SessionStartListener listener) {
         this.listener = listener;
     }

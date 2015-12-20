@@ -94,6 +94,7 @@ public class BitJwcSession extends Session{
                     return response.getContent();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    isStarted = false;
                     listener.onSessionStartError(ErrorCode.SESSION_EC_FAIL_TO_CONNECT);
                     Log.e(TAG, "Can't connect to JWC");
                 }
@@ -104,7 +105,9 @@ public class BitJwcSession extends Session{
             protected void onPostExecute(String result) {
                 if(result != null) {
                     startResponse = result;
+                    isStarted = true;
                     listener.onSessionStartOver();
+
                 }
             }
         }.execute();
@@ -194,7 +197,6 @@ public class BitJwcSession extends Session{
 
     @Override
     public void onError(HttpError error) {
-
     }
 
     @Override

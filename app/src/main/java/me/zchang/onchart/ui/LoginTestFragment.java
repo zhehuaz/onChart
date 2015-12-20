@@ -60,7 +60,7 @@ public class LoginTestFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 if(listener != null) {
-                    listener.onFinish(usrNumInput.getText().toString(), pswInput.getText().toString());
+                    listener.onLoginInputFinish(usrNumInput.getText().toString(), pswInput.getText().toString());
                     dismiss();
                 }
             }
@@ -72,6 +72,6 @@ public class LoginTestFragment extends DialogFragment {
 
 
     public interface LoginListener {
-        void onFinish(String usrNum, String psw);
+        void onLoginInputFinish(String usrNum, String psw);
     }
 }

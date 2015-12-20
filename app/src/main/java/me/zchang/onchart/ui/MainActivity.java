@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.PersistableBundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -18,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -70,6 +72,8 @@ public class MainActivity extends AppCompatActivity
     public final static int REQ_POSITION = 0;
     public final static int REQ_SETTING = 1;
 
+    public final static long MILLISECONDS_IN_A_DAY = 24 * 3600 * 1000;
+
     public final static String TAG = "MainActivity";
     private Toolbar mainToolbar;
     private ViewPager mainListPager;
@@ -86,11 +90,13 @@ public class MainActivity extends AppCompatActivity
     private TextView weekdayText;
     private TextView versionText;
     private NavigationView drawerView;
+    private AppBarLayout toolbarContainer;
 
     private PreferenceManager preferenceManager;
 
     private int curWeek;
     private int numOfWeekdays;
+    private Calendar today;
 
     IWXAPI api;
 
@@ -102,6 +108,8 @@ public class MainActivity extends AppCompatActivity
         api.registerApp(MainApp.APP_ID);
 
         preferenceManager = ((MainApp) getApplication()).getPreferenceManager();
+        today = Calendar.getInstance();
+        today.setTimeZone(TimeZone.getDefault());
 
         session = new BitJwcSession(this);
         mainToolbar = (Toolbar) findViewById(R.id.tb_main);
@@ -118,6 +126,8 @@ public class MainActivity extends AppCompatActivity
         weekdayText = (TextView) findViewById(R.id.tv_weekday);
         versionText = (TextView) findViewById(R.id.tv_version);
         drawerView = (NavigationView) findViewById(R.id.nv_drawer);
+        toolbarContainer = (AppBarLayout) findViewById(R.id.appb_container);
+        toolbarContainer.setTranslationY(-220);
 
         if (versionText != null)
             versionText.setText(BuildConfig.VERSION_NAME);
@@ -140,12 +150,11 @@ public class MainActivity extends AppCompatActivity
         numOfWeekdays = preferenceManager.getNumOfWeekdays();
 
         setupDrawer();
-        refreshWeek();
-        //setupFragments();
-        //setupList();// ATTENTION, order of refresh and setup
+        if (today.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY
+                || Math.abs(preferenceManager.getLastFetchWeekTime() - today.get(Calendar.MILLISECOND)) > MILLISECONDS_IN_A_DAY)
+            refreshWeek();
+        // ATTENTION, order of refresh and setup
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
     }
 
     private void setupFragments() {
@@ -187,9 +196,9 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeZone(TimeZone.getDefault());
-        int curWeekDay = cal.get(Calendar.DAY_OF_WEEK);
+        //Calendar cal = Calendar.getInstance();
+        //cal.setTimeZone(TimeZone.getDefault());
+        int curWeekDay = today.get(Calendar.DAY_OF_WEEK);
         curWeekDay = (curWeekDay - 2) % 7;
         if (curWeekDay < mainListAdapter.getCount()) {
             mainListPager.setCurrentItem(curWeekDay);
@@ -211,11 +220,11 @@ public class MainActivity extends AppCompatActivity
                     startActivityForResult(intent, REQ_SETTING);
                 } else if (id == R.id.item_share) {
                     WXWebpageObject webpageObject = new WXWebpageObject();
-                    webpageObject.webpageUrl = "https://github.com/LangleyChang/onChart";
+                    webpageObject.webpageUrl = getString(R.string.my_github_url);
 
                     WXMediaMessage msg = new WXMediaMessage();
                     msg.mediaObject = webpageObject;
-                    msg.description = "求star～";
+                    msg.description = getString(R.string.wechat_share_title);
                     SendMessageToWX.Req req = new SendMessageToWX.Req();
                     req.transaction = String.valueOf(System.currentTimeMillis());
                     req.message = msg;
@@ -246,6 +255,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void refreshWeek() {
+        preferenceManager.saveLastFetchWeekTime(today.get(Calendar.MILLISECOND));
         if(refreshProgress != null)
             refreshProgress.setVisibility(View.VISIBLE);
         new AsyncTask<String, String, Integer>() {
@@ -346,8 +356,6 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             protected void onPostExecute(List<Course> courses) {
-              //  LessonListAdapter adapter = new LessonListAdapter(MainActivity.this, lessons);
-                //int curWeek = preferenceManager.getWeek();
                 try {
                     if(courses != null) {
                         preferenceManager.saveSchedule(courses);
@@ -381,9 +389,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFinish(String usrNum, String psw) {
+    public void onLoginInputFinish(String usrNum, String psw) {
         if (refreshProgress != null)
             refreshProgress.setVisibility(View.VISIBLE);
+
+        if (session.isStarted())
+            session = new BitJwcSession(this);
+
         session.setStuNum(usrNum);
         session.setPsw(psw);
         session.start();
@@ -408,7 +420,17 @@ public class MainActivity extends AppCompatActivity
             nameText.setText(getString(R.string.title_login));
             loginArea.setClickable(true);
         }
+    }
 
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        toolbarContainer.animate()
+                .translationY(0)
+                .setStartDelay(50)
+                .setDuration(120)
+                .setInterpolator(new AccelerateDecelerateInterpolator());
+        fragments.get(mainListPager.getCurrentItem()).getCourseRecyclerView().scheduleLayoutAnimation();
     }
 
     @Override
@@ -429,14 +451,10 @@ public class MainActivity extends AppCompatActivity
                     if(returnWeekday != -1) {
                         flags[0] = true;
                         flags[2] = true;
-                        //numOfWeekdays = returnWeekday;
-                        //setupFragments();
-                        //setupList();
                     }
                     if (isLogout != SettingsActivity.FLAG_NO_LOGOUT) {
                         flags[1] = true;
                         flags[2] = true;
-                        //updateDrawer();
                     }
                     for (int i = 0;i < flags.length; i ++) {
                         if (flags[i]) {
@@ -456,10 +474,6 @@ public class MainActivity extends AppCompatActivity
                             }
                         }
                     }
-//                    if (returnWeekday != -1 || isLogout != SettingsActivity.FLAG_NO_LOGOUT) {
-//                        //updateDrawer();
-//                        setupList();
-//                    }
                 }
                 break;
             case REQ_POSITION:
