@@ -1,10 +1,9 @@
 <resources>
     <string name="title_activity_settings">Settings</string>
 
-    <string name="pref_file_name">onchar_setting</string>
-    <!-- Strings related to Settings -->
+    <string name="pref_file_name" translatable="false">onchar_setting</string>
 
-    <string name="pref_title_add_friends_to_messages">@string/title_num_weekday</string>
+    <string name="pref_title_add_friends_to_messages" translatable="false">@string/title_num_weekday</string>
     <string-array name="pref_example_list_titles">
         <item>@string/num_weekday_five</item>
         <item>@string/num_weekday_with_Sat</item>
@@ -19,5 +18,5 @@
     </string-array>
 
 
-    <string name="pref_week_num">week</string>
+    <string name="pref_week_num" translatable="false">week</string>
 </resources>

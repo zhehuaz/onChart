@@ -25,13 +25,15 @@
     <string name="action_chart">Chart</string>
     <string name="action_exam">Exam (Coming)</string>
     <string name="action_logout">Logout</string>
+    <string name="action_license">Open Source License</string>
     <string name="action_positive">OK</string>
     <string name="action_negative">Cancel</string>
+    <string name="action_donate">Donate</string>
     <string name="subtitle_morning">Morning</string>
     <string name="subtitle_afternoon">Afternoon</string>
     <string name="subtitle_evening">Evening</string>
     <string name="weekday_week">Week</string>
-    <string name="null_stu_name">-</string>
+    <string name="null_stu_name" translatable="false">-</string>
 
     <string name="num_weekday_five">5 days</string>
     <string name="num_weekday_with_Sat">5 days and Sat</string>
@@ -40,24 +42,35 @@
 
     <string name="title_num_weekday">Num of days in one week</string>
 
-    <string name="key_logout">logout</string>
-    <string name="key_num_of_weekday">num_of_weekday</string>
-    <string name="key_name">name</string>
-    <string name="key_week">week</string>
-    <string name="key_schedule">schedule</string>
-    <string name="key_last_fetch_week_time">last_fetch_week</string>
-    <string name="title_activity_detail">DetailActivity</string>
+    <string name="key_logout" translatable="false">logout</string>
+    <string name="key_num_of_weekday" translatable="false">num_of_weekday</string>
+    <string name="key_name" translatable="false">name</string>
+    <string name="key_week" translatable="false">week</string>
+    <string name="key_schedule" translatable="false">schedule</string>
+    <string name="key_last_fetch_week_time" translatable="false">last_fetch_week</string>
+    <string name="key_license" translatable="false">open_source_license</string>
+    <string name="key_about" translatable="false">about</string>
+    <string name="title_activity_detail">Detail</string>
 
-    <string name="intent_lesson">Lesson</string>
-    <string name="intent_position">Position</string>
-    <string name="intent_frag_index">Fragment</string>
-    <string name="intent_course_id">CourseId</string>
-    <string name="intent_label_image_index">ImageIndex</string>
+    <string name="intent_lesson" translatable="false">Lesson</string>
+    <string name="intent_position" translatable="false">Position</string>
+    <string name="intent_frag_index" translatable="false">Fragment</string>
+    <string name="intent_course_id" translatable="false">CourseId</string>
+    <string name="intent_label_image_index" translatable="false">ImageIndex</string>
 
-    <string name="trans_detail_item">DetailItem</string>
-    <string name="trans_detail_img">DetailImage</string>
-    <string name="title_activity_about">AboutActivity</string>
+    <string name="trans_detail_item" translatable="false">DetailItem</string>
+    <string name="trans_detail_img" translatable="false">DetailImage</string>
+    <string name="title_activity_about">About</string>
+    <string name="version_name" translatable="false">1.0</string>
 
-    <string name="my_github_url">https://github.com/LangleyChang/onChart</string>
+    <string name="my_github_url" translatable="false">https://github.com/LangleyChang/onChart</string>
     <string name="wechat_share_title">please star~</string>
+
+    <string name="button_donate">Donate for a cup of coffee</string>
+
+
+    <string name="alert_no_alipay">No Alipay, thanks for your support.Introduce onChart to your friends if you like!</string>
+    <string name="alert_clipboard_complete">My Alipay account has been copied in clipboard,donate 2 yuan to onChart, please.Thanks.</string>
+    <string name="alipay_account">zhehua_xiao@163.com</string>
+
 </resources>

@@ -2,9 +2,6 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
         <item name="android:colorForeground">@android:color/white</item>
         <item name="android:textColorPrimary">@android:color/black</item>
         <item name="colorPrimary">@color/white</item>
@@ -12,7 +9,7 @@
 
     </style>
 
-    <style name="SettingTheme" parent="@style/Theme.AppCompat.Light">
+    <style name="ActionBarTheme" parent="@style/Theme.AppCompat.Light">
         <item name="windowActionBar">true</item>
     </style>
 

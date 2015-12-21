@@ -48,15 +48,13 @@ public class LessonListFragment extends Fragment {
     LessonListAdapter adapter;
 
     /**
-     * This lesson list is handled by Fragment and shared with adapter
+     * This course list is handled by Fragment and shared with adapter
      * for lifecycle consideration.As the data is generated before Fragment attached,
      * the moment the adapter is not instantiated, the data should be stored in
      * Fragment to be passed to adapter later.What's more, the list's pointer
      * points to one area of memory so that you need to maintain this list only.
      */
     List<Course> courses;
-
-
 
     private boolean slideAnimFlag = false;
 
@@ -90,7 +88,6 @@ public class LessonListFragment extends Fragment {
             e.printStackTrace();
         }
         courseList.setAdapter(adapter);
-        //adapter.notifyDataSetChanged();
         if (slideAnimFlag) {
             courseList.setLayoutAnimation(
                     AnimationUtils.loadLayoutAnimation(getActivity(), R.anim.main_recycler_view_layout));

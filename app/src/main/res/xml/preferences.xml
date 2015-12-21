@@ -6,7 +6,7 @@
 
         <ListPreference
             android:key="@string/key_num_of_weekday"
-            android:title="@string/pref_title_add_friends_to_messages"
+            android:title="@string/title_num_weekday"
             android:defaultValue="5"
             android:entries="@array/pref_example_list_titles"
             android:entryValues="@array/pref_example_list_values"
@@ -18,13 +18,15 @@
         android:title="More" >
 
         <Preference
+            android:key="@string/key_about"
             android:title="@string/action_about">
-            <intent
-                android:targetPackage="me.zchang.onchart"
-                android:targetClass="me.zchang.onchart.ui.AboutActivity"
-                />
+
         </Preference>
 
+        <Preference
+            android:key="@string/key_license"
+            android:title="@string/action_license">
+        </Preference>
         <Preference
             android:key="@string/key_logout"
             android:title="@string/action_logout">

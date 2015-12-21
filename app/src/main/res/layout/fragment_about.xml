@@ -1,0 +1,69 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="me.zchang.onchart.ui.AboutActivity">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/ic_logo"
+        android:id="@+id/iv_logo" />
+
+    <TextView
+        android:textSize="25sp"
+        android:id="@+id/tv_app_name"
+        android:layout_below="@+id/iv_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/app_name"
+        android:textStyle="bold"
+        android:paddingTop="8dp"
+        android:paddingRight="8dp"
+        android:paddingEnd="8dp"
+        android:paddingLeft="8dp" />
+
+    <TextView
+        android:id="@+id/tv_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/version_name"
+        android:layout_alignBaseline="@+id/tv_app_name"
+        android:layout_alignBottom="@+id/tv_app_name"
+        android:layout_toRightOf="@+id/tv_app_name"
+        android:layout_toEndOf="@+id/tv_app_name" />
+
+    <TextView
+        android:layout_marginTop="8dp"
+        android:id="@+id/tv_license"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_app_name"
+        android:inputType="text"
+        android:layout_centerHorizontal="true"
+        android:text="\u00a9 2015 Z.Chang, Apache License v2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="zhehuaxiao@gmail.com"
+        android:autoLink="email"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/tv_email_me"
+        android:layout_below="@id/tv_license"/>
+
+    <TextView
+        android:autoLink="web"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/my_github_url"
+        android:id="@+id/tv_fork_me"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tv_email_me"
+        android:inputType="textUri"
+        />
+</RelativeLayout>

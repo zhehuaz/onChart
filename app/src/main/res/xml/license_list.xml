@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:title="Android Open Source Project"
+        android:summary="Apache License v2.0"
+        />
+    <Preference
+        android:title="Android Compatibility Library"
+        android:summary="Apache License v2.0"
+        />
+    <Preference
+        android:title="Android Design Support Library"
+        android:summary="Apache License v2.0"
+        />
+    <Preference
+        android:title="jsoup"
+        android:summary="MIT License"
+        />
+    <Preference
+        android:title="Gson"
+        android:summary="Apache License v2.0"
+        />
+</PreferenceScreen>

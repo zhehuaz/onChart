@@ -18,7 +18,6 @@
     <string name="subtitle_morning">早上</string>
     <string name="weekday_week">周</string>
     <string name="title_activity_settings">设置</string>
-    <string name="version_name"></string>
     <string name="num_weekday_five">5天</string>
     <string name="num_weekday_seven">7天</string>
     <string name="num_weekday_with_Sat">5天加周六</string>
@@ -28,4 +27,12 @@
     <string name="action_negative">取消</string>
     <string name="action_positive">确定</string>
     <string name="message_logout">确定要登出么？</string>
+    <string name="title_activity_about">关于</string>
+    <string name="title_activity_detail">详细</string>
+    <string name="wechat_share_title">求start~</string>
+    <string name="action_license">开放源代码许可</string>
+    <string name="action_donate">感谢作者</string>
+    <string name="button_donate">打赏一杯咖啡</string>
+    <string name="alert_clipboard_complete">我的支付宝账号已经复制到了粘贴板，请向onChart打赏2元，感谢！</string>
+    <string name="alert_no_alipay">您没有安装支付宝。非常感谢您的支持，如果喜欢onChart请推荐给你的朋友！</string>
 </resources>

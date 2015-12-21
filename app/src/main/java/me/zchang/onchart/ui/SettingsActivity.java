@@ -3,10 +3,10 @@ package me.zchang.onchart.ui;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.PreferenceManager;
@@ -27,26 +27,21 @@ import me.zchang.onchart.config.PreferenceManager;
  *    limitations under the License.
  */
 
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends AppCompatActivity {
 
     public final static int FLAG_LOGOUT = -1;
     public final static int FLAG_NO_LOGOUT = 0;
     private final static String TAG = "SettingsActivity";
 
-    SettingsFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(me.zchang.onchart.R.style.SettingTheme);
         super.onCreate(savedInstanceState);
-
-        fragment = new SettingsFragment();
         // bundle = new Bundle();
         //bundle.putParcelable("fs", retIntent);
         //fragment.setArguments();
         getFragmentManager().beginTransaction().replace(android.R.id.content,
-                fragment).commit();
-
+                new SettingsFragment()).commit();
     }
 
 
@@ -73,6 +68,10 @@ public class SettingsActivity extends PreferenceActivity {
 
             Preference logoutPref = findPreference(getString(R.string.key_logout));
             logoutPref.setOnPreferenceClickListener(this);
+            Preference licensePref = findPreference(getString(R.string.key_license));
+            licensePref.setOnPreferenceClickListener(this);
+            Preference aboutPref = findPreference(getString(R.string.key_about));
+            aboutPref.setOnPreferenceClickListener(this);
         }
 
         @Override
@@ -94,8 +93,24 @@ public class SettingsActivity extends PreferenceActivity {
                         .setNegativeButton(getString(R.string.action_negative), null)
                         .setCancelable(true)
                         .show();
+            } else if (preference.getKey().equals(getString(R.string.key_license))) {
+                LicenseFragment fragment = new LicenseFragment();
+                getFragmentManager().beginTransaction().add(android.R.id.content,
+                        fragment).addToBackStack(null).commit();
+            } else if (preference.getKey().equals(getString(R.string.key_about))) {
+                AboutFragment aboutFragment = new AboutFragment();
+                aboutFragment.show(getFragmentManager(), TAG);
             }
             return false;
+        }
+    }
+
+    public static class LicenseFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            addPreferencesFromResource(R.xml.license_list);
         }
     }
 

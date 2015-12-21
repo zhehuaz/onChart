@@ -1,5 +1,7 @@
 package me.zchang.onchart.ui;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -13,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -127,7 +130,7 @@ public class MainActivity extends AppCompatActivity
         versionText = (TextView) findViewById(R.id.tv_version);
         drawerView = (NavigationView) findViewById(R.id.nv_drawer);
         toolbarContainer = (AppBarLayout) findViewById(R.id.appb_container);
-        toolbarContainer.setTranslationY(-220);
+        toolbarContainer.setTranslationY(- toolbarContainer.getLayoutParams().height);
 
         if (versionText != null)
             versionText.setText(BuildConfig.VERSION_NAME);
@@ -151,8 +154,11 @@ public class MainActivity extends AppCompatActivity
 
         setupDrawer();
         if (today.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY
-                || Math.abs(preferenceManager.getLastFetchWeekTime() - today.get(Calendar.MILLISECOND)) > MILLISECONDS_IN_A_DAY)
+                || Math.abs(preferenceManager.getLastFetchWeekTime() - today.getTimeInMillis()) > MILLISECONDS_IN_A_DAY)
             refreshWeek();
+        setupFragments();
+        fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
+        setupList();// ATTENTION, order of refresh and setup
         // ATTENTION, order of refresh and setup
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -196,15 +202,11 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        //Calendar cal = Calendar.getInstance();
-        //cal.setTimeZone(TimeZone.getDefault());
         int curWeekDay = today.get(Calendar.DAY_OF_WEEK);
         curWeekDay = (curWeekDay - 2) % 7;
         if (curWeekDay < mainListAdapter.getCount()) {
             mainListPager.setCurrentItem(curWeekDay);
         }
-
-        fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
     }
 
     private void setupDrawer() {
@@ -229,6 +231,9 @@ public class MainActivity extends AppCompatActivity
                     req.transaction = String.valueOf(System.currentTimeMillis());
                     req.message = msg;
                     api.sendReq(req);
+                } else if (id == R.id.item_donate) {
+                    DonateFragment donateFragment = new DonateFragment();
+                    donateFragment.show(getSupportFragmentManager(), TAG);
                 }
                 return false;
             }
@@ -295,8 +300,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        setupFragments();
-        setupList();// ATTENTION, order of refresh and setup
+
     }
 
     @Override
@@ -430,7 +434,10 @@ public class MainActivity extends AppCompatActivity
                 .setStartDelay(50)
                 .setDuration(120)
                 .setInterpolator(new AccelerateDecelerateInterpolator());
-        fragments.get(mainListPager.getCurrentItem()).getCourseRecyclerView().scheduleLayoutAnimation();
+        RecyclerView recyclerView = fragments.get(mainListPager.getCurrentItem()).getCourseRecyclerView();
+        if (recyclerView != null) {
+           recyclerView.scheduleLayoutAnimation();
+        }
     }
 
     @Override
@@ -508,8 +515,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.d(TAG, "Get shared preference change message :" + key);
-
         if (key.equals(getString(R.string.pref_week_num))) {
             setupList();
             weekdayText.setText(curWeek + "");// TODO update changed items
