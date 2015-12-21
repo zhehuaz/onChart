@@ -33,20 +33,16 @@ public class SettingsActivity extends AppCompatActivity {
     public final static int FLAG_NO_LOGOUT = 0;
     private final static String TAG = "SettingsActivity";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // bundle = new Bundle();
-        //bundle.putParcelable("fs", retIntent);
-        //fragment.setArguments();
 
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content,
                 new SettingsFragment()).commit();
     }
 
 
-    public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener{
+    public static class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener{
         Intent retIntent;
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -103,7 +99,6 @@ public class SettingsActivity extends AppCompatActivity {
                         fragment).hide(this).addToBackStack("license").commit();
             } else if (preference.getKey().equals(getString(R.string.key_about))) {
                 AboutFragment aboutFragment = new AboutFragment();
-                //aboutFragment.show(getFragmentManager(), TAG);
                 aboutFragment.show(getActivity().getSupportFragmentManager(), TAG);
             }
             return false;

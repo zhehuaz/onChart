@@ -47,9 +47,6 @@ public abstract class Session implements HttpResponse.ResponseListener, HttpResp
         this.loginRequest = loginRequest;
     }
 
-    //Queue<HttpRequest> requestQueue;
-    //Queue<HttpResponse> responseQueue;
-
     public Session(HttpRequest request) {
         this.loginRequest = request;
     }

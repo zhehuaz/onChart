@@ -19,6 +19,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.exception.LessonStartTimeException;
@@ -27,8 +29,6 @@ import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.LabelCourse;
 import me.zchang.onchart.ui.DetailActivity;
 import me.zchang.onchart.ui.MainActivity;
-
-import java.util.List;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -149,7 +149,6 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        //Log.d(TAG, "On bind");
         if(holder instanceof ViewHolder) {
             final LabelCourse course = (LabelCourse) courses.get(bitmap[position]);
             final TextView nameText = ((ViewHolder) holder).nameText;
@@ -166,7 +165,6 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((ViewHolder) holder).frame.setLayoutParams(params);
 
             nabImg.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
-            //nabImg.setScaleType(ImageView.);
 
 
             Drawable nab = nabImg.getDrawable();
@@ -215,15 +213,6 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    ((MainActivity) context).getSupportFragmentManager()
-//                            .beginTransaction()
-//                            .addSharedElement(v, context.getString(R.string.trans_detail_item))
-//                            .addSharedElement(v.findViewById(R.id.iv_label), context.getString(R.string.trans_detail_img));
-//                    DetailFragment fragment = new DetailFragment();
-//                    fragment.setLesson(course);
-//                    fragment.setPosition(position);
-//                    fragment.show(((MainActivity)context).getSupportFragmentManager(), MainActivity.TAG);
-
                     Intent intent = new Intent(context, DetailActivity.class);
                     intent.putExtra(context.getString(R.string.intent_frag_index), fragId);
                     intent.putExtra(context.getString(R.string.intent_position), position);

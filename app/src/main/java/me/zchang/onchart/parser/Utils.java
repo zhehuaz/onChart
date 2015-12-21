@@ -53,6 +53,11 @@ public class Utils {
             R.string.weekday_Sun
     };
 
+    /**
+     *
+     * @param i
+     * @return
+     */
     public static String timeFromPeriod(int i) {
         switch (i) {
             case 1:

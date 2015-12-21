@@ -249,9 +249,7 @@ public class Course implements Comparable{
         return labelImgIndex;
     }
 
-    public void setToNextLabelImg() {
-        //this.labelImgIndex = (this.labelImgIndex + 1) % PreferenceManager.labelImgs.length;
-    }
+    public void setToNextLabelImg() { }
 
     public void setLabelImgIndex(int labelImgIndex) {
         this.labelImgIndex = labelImgIndex;

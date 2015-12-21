@@ -2,7 +2,6 @@ package me.zchang.onchart.ui;
 
 
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +29,8 @@ import me.zchang.onchart.R;
  */
 
 /**
- * A simple {@link Fragment} subclass.
+ * Login Fragment, for test only.
+ * TODO replace the fragment
  */
 public class LoginTestFragment extends DialogFragment {
 

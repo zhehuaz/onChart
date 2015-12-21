@@ -114,5 +114,4 @@ public class MorphDrawable extends Drawable {
     public int getOpacity() {
         return paint.getAlpha();
     }
-
 }

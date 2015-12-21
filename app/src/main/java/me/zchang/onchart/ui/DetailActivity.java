@@ -2,8 +2,8 @@ package me.zchang.onchart.ui;
 
 import android.content.Intent;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.transition.ArcMotion;
 import android.transition.ChangeBounds;
 import android.transition.ChangeImageTransform;
@@ -19,6 +19,22 @@ import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.ui.utils.DialogToCard;
+
+/*
+ *    Copyright 2015 Zhehua Chang
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -37,7 +53,6 @@ public class DetailActivity extends AppCompatActivity {
             arcMotion.setMinimumVerticalAngle(50f);
             Interpolator easeInOut = new AccelerateDecelerateInterpolator();
             TransitionSet sharedEnterSet = new TransitionSet();
-            //CardToDialog sharedEnter = new CardToDialog(startColor);
             ChangeBounds sharedEnter = new ChangeBounds();
             sharedEnter.setPathMotion(arcMotion);
             sharedEnter.setInterpolator(easeInOut);
@@ -46,15 +61,12 @@ public class DetailActivity extends AppCompatActivity {
             imgTrans.addTarget(R.id.iv_label);
 
             TransitionSet sharedExitSet = new TransitionSet();
-            //ChangeBounds sharedExit = new ChangeBounds();
             DialogToCard sharedExit = new DialogToCard(startColor);
             sharedExit.setPathMotion(arcMotion);
             sharedExitSet.addTransition(sharedExit);
             sharedExitSet.addTransition(imgTrans);
-            //sharedExit.setInterpolator(easeInOut);
             getWindow().setSharedElementEnterTransition(sharedEnterSet);
             getWindow().setSharedElementReturnTransition(sharedExit);
-            //getWindow().setSharedElementExitTransition(sharedExit);
         }
 
         retIntent = new Intent();
@@ -84,8 +96,6 @@ public class DetailActivity extends AppCompatActivity {
                     // update local storage only.
                     ((MainApp) getApplication()).getPreferenceManager().savePicPathIndex(course.getId(), course.getLabelImgIndex());
                     labelImage.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
-                    //((MainActivity)getActivity()).getListFragment().adapter.notifyItemChanged(position);
-                    //retIntent.putExtra(getString(R.string.intent_frag_index), fragIndex);
                     retIntent.putExtra(getString(R.string.intent_label_image_index), course.getLabelImgIndex());
                     setResult(RESULT_OK, retIntent);
                 }

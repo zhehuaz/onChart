@@ -7,10 +7,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.ui.LessonListFragment;
-
-import java.util.List;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -70,7 +70,5 @@ public class LessonPagerAdapter extends FragmentPagerAdapter {
             return context.getResources().getString(Utils.weekdayFromIndex[position]);
         else
             return context.getResources().getString(Utils.weekdayFromIndex[position + (numOfWeekdays == -6 ? 1 : 0)]);
-        //else
-            //return context.getResources().getString(Utils.weekdayFromIndex[position]);
     }
 }

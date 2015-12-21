@@ -24,14 +24,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import me.zchang.onchart.student.Course;
-import me.zchang.onchart.student.LabelCourse;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import me.zchang.onchart.student.Course;
+import me.zchang.onchart.student.LabelCourse;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -75,7 +76,6 @@ public class StudentInfoParser {
                 dupCourses.clear();
                 if (!e.className().equals("datagridhead")) {
                     Course baseCourse = new LabelCourse();
-                    //dupLessons.add(newLesson);
                     Elements lessonInfo = e.getAllElements();
 
                     baseCourse.setName(lessonInfo.get(1).text());
@@ -92,7 +92,6 @@ public class StudentInfoParser {
                         dupCourses.add(new LabelCourse(baseCourse).setId(lessonId++));
                         dupCourses.get(j).setClassroom(s);
 
-                        //Log.d(TAG, textsTime[j]);
                         if (textsTime[j].length() == 1)
                             dupCourses.get(j).setWeekDay('0');
                         else
@@ -102,7 +101,6 @@ public class StudentInfoParser {
                         Pattern reg = Pattern.compile(pattern);
                         Matcher m = reg.matcher(textsTime[j]);
                         if (m.find()) {
-                            //Log.d(TAG, m.group());
                             dupCourses.get(j).setStartTime(Integer.parseInt(m.group()));
                         }
                         String endTime = null;
@@ -112,7 +110,6 @@ public class StudentInfoParser {
                         if (endTime == null) {
                             dupCourses.get(j).setEndTime(dupCourses.get(j).getStartTime());
                         } else {
-                            //Log.d(TAG, endTime);
                             dupCourses.get(j).setEndTime(Integer.parseInt(endTime));
                         }
 

@@ -50,6 +50,7 @@
     <string name="key_last_fetch_week_time" translatable="false">last_fetch_week</string>
     <string name="key_license" translatable="false">open_source_license</string>
     <string name="key_about" translatable="false">about</string>
+    <string name="key_is_first_launch">first_launch</string>
     <string name="title_activity_detail">Detail</string>
 
     <string name="intent_lesson" translatable="false">Lesson</string>

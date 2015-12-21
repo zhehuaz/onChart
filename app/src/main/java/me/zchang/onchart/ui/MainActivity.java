@@ -1,11 +1,10 @@
 package me.zchang.onchart.ui;
 
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
@@ -14,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -35,6 +33,13 @@ import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.TimeZone;
+
 import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.MainApp;
@@ -44,13 +49,6 @@ import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.ui.adapter.LessonPagerAdapter;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.TimeZone;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -153,9 +151,12 @@ public class MainActivity extends AppCompatActivity
         numOfWeekdays = preferenceManager.getNumOfWeekdays();
 
         setupDrawer();
-        if (today.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY
-                || Math.abs(preferenceManager.getLastFetchWeekTime() - today.getTimeInMillis()) > MILLISECONDS_IN_A_DAY)
+
+        // if haven't refreshed week for a week.
+        if (Math.abs(preferenceManager.getLastFetchWeekTime() - today.getTimeInMillis()) > MILLISECONDS_IN_A_DAY) {
             refreshWeek();
+        }
+
         setupFragments();
         fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
         setupList();// ATTENTION, order of refresh and setup
@@ -271,6 +272,12 @@ public class MainActivity extends AppCompatActivity
                     Toast.makeText(MainActivity.this, "Unable to fetch week", Toast.LENGTH_SHORT).show();
                     return ;
                 }
+                // save the nearest past Monday
+                preferenceManager.saveLastFetchWeekTime(
+                        today.getTimeInMillis()
+                                - ((today.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY) % 7) * MILLISECONDS_IN_A_DAY);
+
+
                 if(curWeek != integer && integer > 0) {
                     curWeek = integer;
                     preferenceManager.saveWeek(curWeek);

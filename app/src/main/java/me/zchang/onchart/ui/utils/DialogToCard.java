@@ -1,4 +1,5 @@
 package me.zchang.onchart.ui.utils;
+
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -13,7 +14,6 @@ import android.transition.TransitionValues;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 
 import me.zchang.onchart.R;
 
@@ -101,12 +101,7 @@ public class DialogToCard extends ChangeBounds {
                 if (v.getId() != R.id.iv_label)
                     v.animate()
                         .alpha(0f)
-                        //.translationY(v.getHeight() / 3)
-                        //.setStartDelay(0L)
                         .setDuration(150L);
-                        //.setInterpolator(AnimationUtils.loadInterpolator(vg.getContext(),
-                        //        android.R.interpolator.fast_out_linear_in))
-                        //.start();
             }
         }
 

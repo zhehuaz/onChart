@@ -6,9 +6,9 @@ Fetch lessons automatically from the [academic affairs office](http://jwc.bit.ed
 ![](http://i.imgur.com/Pdzbks7.png)![](http://i.imgur.com/KsHvvQX.png)
 
 ### Build Environment
-*   Android Studio: 1.4.0
+*   Android Studio: 1.5.0
 
-*   Build tools version: 23.0.1
+*   Build tools version: 23.0.2
 
 *   Gradle version: 1.3.0
 
