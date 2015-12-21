@@ -1,10 +1,9 @@
 package me.zchang.onchart.ui;
 
 
-import android.app.DialogFragment;
-import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

@@ -2,11 +2,11 @@ package me.zchang.onchart.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.PreferenceManager;
@@ -40,23 +40,22 @@ public class SettingsActivity extends AppCompatActivity {
         // bundle = new Bundle();
         //bundle.putParcelable("fs", retIntent);
         //fragment.setArguments();
-        getFragmentManager().beginTransaction().replace(android.R.id.content,
+
+        getSupportFragmentManager().beginTransaction().replace(android.R.id.content,
                 new SettingsFragment()).commit();
     }
 
 
-    public static class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener{
+    public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener{
         Intent retIntent;
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             retIntent = new Intent();
             getPreferenceManager().setSharedPreferencesName(getResources().getString(me.zchang.onchart.R.string.pref_file_name));
-            //View view = getView();
-            //Log.i(TAG, view.getClass());
             addPreferencesFromResource(me.zchang.onchart.R.xml.preferences);
 
-            Preference preference = findPreference(getString(me.zchang.onchart.R.string.key_num_of_weekday));
+            android.support.v7.preference.Preference preference = findPreference(getString(me.zchang.onchart.R.string.key_num_of_weekday));
             preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -72,6 +71,11 @@ public class SettingsActivity extends AppCompatActivity {
             licensePref.setOnPreferenceClickListener(this);
             Preference aboutPref = findPreference(getString(R.string.key_about));
             aboutPref.setOnPreferenceClickListener(this);
+        }
+
+        @Override
+        public void onCreatePreferences(Bundle bundle, String s) {
+
         }
 
         @Override
@@ -95,22 +99,28 @@ public class SettingsActivity extends AppCompatActivity {
                         .show();
             } else if (preference.getKey().equals(getString(R.string.key_license))) {
                 LicenseFragment fragment = new LicenseFragment();
-                getFragmentManager().beginTransaction().add(android.R.id.content,
-                        fragment).addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().add(android.R.id.content,
+                        fragment).hide(this).addToBackStack("license").commit();
             } else if (preference.getKey().equals(getString(R.string.key_about))) {
                 AboutFragment aboutFragment = new AboutFragment();
-                aboutFragment.show(getFragmentManager(), TAG);
+                //aboutFragment.show(getFragmentManager(), TAG);
+                aboutFragment.show(getActivity().getSupportFragmentManager(), TAG);
             }
             return false;
         }
     }
 
-    public static class LicenseFragment extends PreferenceFragment {
+    public static class LicenseFragment extends PreferenceFragmentCompat {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
             addPreferencesFromResource(R.xml.license_list);
+        }
+
+        @Override
+        public void onCreatePreferences(Bundle bundle, String s) {
+
         }
     }
 

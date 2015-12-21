@@ -13,14 +13,18 @@
     <item name="android:windowAllowReturnTransitionOverlap">true</item>
     </style>
 
-    <style name="ActionBarTheme" parent="@style/Theme.AppCompat.Light">
-        <item name="windowActionBar">true</item>
-    </style>
+
 
     <style name="TranslucentActivity" parent="AppTheme">
         <item name="android:windowBackground">@color/scrim</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <style name="ActionBarTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="windowActionBar">true</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="android:windowIsTranslucent">false</item>
     </style>
 </resources>
 

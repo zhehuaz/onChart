@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity
         toolbarContainer.animate()
                 .translationY(0)
                 .setStartDelay(50)
-                .setDuration(120)
+                .setDuration(200)
                 .setInterpolator(new AccelerateDecelerateInterpolator());
         RecyclerView recyclerView = fragments.get(mainListPager.getCurrentItem()).getCourseRecyclerView();
         if (recyclerView != null) {
