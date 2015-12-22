@@ -181,7 +181,6 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                             cardView.setBackground(new ColorDrawable(lightVibrant.getRgb()));
                                         else
                                             cardView.setCardBackgroundColor(lightVibrant.getRgb());
-                                        //timeText.setTextColor(lightVibrant.getRgb());
                                         nameText.setTextColor(lightVibrant.getTitleTextColor());
                                         roomText.setTextColor(lightVibrant.getBodyTextColor());
                                     } else if (vibrant != null) {
@@ -189,7 +188,6 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                             cardView.setBackground(new ColorDrawable(vibrant.getRgb()));
                                         else
                                             cardView.setBackgroundColor(lightVibrant.getRgb());
-                                        //timeText.setTextColor(vibrant.getRgb());
                                         nameText.setTextColor(vibrant.getTitleTextColor());
                                         roomText.setTextColor(vibrant.getBodyTextColor());
                                     } else {
@@ -217,7 +215,6 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     intent.putExtra(context.getString(R.string.intent_frag_index), fragId);
                     intent.putExtra(context.getString(R.string.intent_position), position);
                     intent.putExtra(context.getString(R.string.intent_lesson), course);
-                    //((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                         intent.putExtra("color", ((ColorDrawable)cardView.getBackground()).getColor());
                     else

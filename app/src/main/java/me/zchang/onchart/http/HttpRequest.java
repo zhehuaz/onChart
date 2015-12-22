@@ -2,7 +2,6 @@ package me.zchang.onchart.http;
 
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,7 +42,6 @@ public class HttpRequest {
     private URL requestUrl;
     private RequestMethod method;
     private String charset;
-    //private Map<String, String> params;
 
     /**
      * Constructs a new HttpRequest instance pointing to the host/program specified

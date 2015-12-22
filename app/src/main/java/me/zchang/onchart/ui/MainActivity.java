@@ -66,7 +66,7 @@ import me.zchang.onchart.ui.adapter.LessonPagerAdapter;
  *    limitations under the License.
  */
 
-public class MainActivity extends AppCompatActivity
+public class    MainActivity extends AppCompatActivity
         implements Session.SessionStartListener, LoginTestFragment.LoginListener
         , SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -302,12 +302,6 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         preferenceManager.registerListener(this);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
     }
 
     @Override
