@@ -48,6 +48,7 @@ import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
 import me.zchang.onchart.student.Course;
+import me.zchang.onchart.ui.adapter.DiffTransformer;
 import me.zchang.onchart.ui.adapter.LessonPagerAdapter;
 
 /*
@@ -153,14 +154,14 @@ public class    MainActivity extends AppCompatActivity
         setupDrawer();
 
         // if haven't refreshed week for a week.
-        if (Math.abs(preferenceManager.getLastFetchWeekTime() - today.getTimeInMillis()) > MILLISECONDS_IN_A_DAY) {
+        if (Math.abs(preferenceManager.getLastFetchWeekTime() - today.getTimeInMillis()) >  7 * MILLISECONDS_IN_A_DAY) {
             refreshWeek();
         }
 
         setupFragments();
-        fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
         setupList();// ATTENTION, order of refresh and setup
         // ATTENTION, order of refresh and setup
+        fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -171,6 +172,7 @@ public class    MainActivity extends AppCompatActivity
         }
         mainListAdapter = new LessonPagerAdapter(
                 this, getSupportFragmentManager(), fragments, numOfWeekdays);
+        mainListPager.setPageTransformer(false, new DiffTransformer());
         mainListPager.setAdapter(mainListAdapter);
 
         weekdayTabs.setupWithViewPager(mainListPager);
