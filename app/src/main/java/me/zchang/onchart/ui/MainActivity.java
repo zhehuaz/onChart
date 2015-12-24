@@ -67,7 +67,7 @@ import me.zchang.onchart.ui.adapter.LessonPagerAdapter;
  *    limitations under the License.
  */
 
-public class    MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity
         implements Session.SessionStartListener, LoginTestFragment.LoginListener
         , SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -174,6 +174,9 @@ public class    MainActivity extends AppCompatActivity
                 this, getSupportFragmentManager(), fragments, numOfWeekdays);
         mainListPager.setPageTransformer(false, new DiffTransformer());
         mainListPager.setAdapter(mainListAdapter);
+        mainListPager.setClipChildren(false);
+        mainListPager.setClipToPadding(false);
+        mainListPager.setOffscreenPageLimit(2);
 
         weekdayTabs.setupWithViewPager(mainListPager);
         weekdayTabs.setTabsFromPagerAdapter(mainListAdapter);
