@@ -3,25 +3,27 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="me.zchang.onchart.ui.LoginTestFragment"
+    android:padding="16dp"
+    android:theme="@style/AppTheme"
     android:orientation="vertical">
 
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/et_num"
-                android:layout_gravity="top"/>
+    <EditText
+        android:drawableLeft="@drawable/ic_account_circle_black_24dp"
+        android:drawableStart="@drawable/ic_account_circle_black_24dp"
+        android:hint="@string/title_account"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_num"
+        android:layout_gravity="top"/>
 
     <EditText
+        android:drawableLeft="@drawable/ic_lock_black_24dp"
+        android:drawableStart="@drawable/ic_lock_black_24dp"
+        android:hint="@string/title_psw"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_pwd"
+        android:inputType="textPassword"
         />
-
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/bt_fetch"
-        android:text="fetch"/>
 
 </LinearLayout>

@@ -35,4 +35,6 @@
     <string name="button_donate">打赏一杯咖啡</string>
     <string name="alert_clipboard_complete">我的支付宝账号已经复制到了粘贴板，请向onChart打赏2元，感谢！</string>
     <string name="alert_no_alipay">您没有安装支付宝。非常感谢您的支持，如果喜欢onChart请推荐给你的朋友！</string>
+    <string name="title_psw">密码</string>
+    <string name="title_account">学号</string>
 </resources>

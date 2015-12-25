@@ -11,15 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import me.zchang.onchart.R;
 import me.zchang.onchart.exception.LessonStartTimeException;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.ui.adapter.LessonListAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -93,6 +94,14 @@ public class LessonListFragment extends Fragment {
                     AnimationUtils.loadLayoutAnimation(getActivity(), R.anim.main_recycler_view_layout));
         }
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        FrameLayout frameLayout = (FrameLayout) getView();
+        frameLayout.setClipChildren(false);
+        frameLayout.setClipToPadding(false);
     }
 
     @Override

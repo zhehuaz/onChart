@@ -1,12 +1,13 @@
 package me.zchang.onchart.ui;
 
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.view.LayoutInflater;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -46,30 +47,50 @@ public class LoginTestFragment extends DialogFragment {
     public void setListener(LoginListener listener) {
         this.listener = listener;
     }
+//
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                             Bundle savedInstanceState) {
+//        // Inflate the layout for this fragment
+//        View rootView = inflater.inflate(R.layout.fragment_login_test, container, false);
+//        usrNumInput = (EditText) rootView.findViewById(R.id.et_num);
+//        pswInput = (EditText) rootView.findViewById(R.id.et_pwd);
+//        fetchBtn = (Button) rootView.findViewById(R.id.bt_fetch);
+//
+//        fetchBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(listener != null) {
+//                    listener.onLoginInputFinish(usrNumInput.getText().toString(), pswInput.getText().toString());
+//                    dismiss();
+//                }
+//            }
+//        });
+//        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+//
+//        return rootView;
+//    }
 
+    @NonNull
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_login_test, container, false);
+    public Dialog onCreateDialog(Bundle savedInstance) {
+        View rootView = getActivity().getLayoutInflater().inflate(R.layout.fragment_login_test, null);
         usrNumInput = (EditText) rootView.findViewById(R.id.et_num);
         pswInput = (EditText) rootView.findViewById(R.id.et_pwd);
-        fetchBtn = (Button) rootView.findViewById(R.id.bt_fetch);
 
-        fetchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(listener != null) {
-                    listener.onLoginInputFinish(usrNumInput.getText().toString(), pswInput.getText().toString());
-                    dismiss();
-                }
-            }
-        });
-        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        return rootView;
+        return new AlertDialog.Builder(getActivity())
+                .setPositiveButton(getString(R.string.title_login), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (listener != null) {
+                            listener.onLoginInputFinish(usrNumInput.getText().toString(), pswInput.getText().toString());
+                        }
+                    }
+                })
+                .setView(rootView)
+                .create();
+        //return super.getDialog();
     }
-
 
     public interface LoginListener {
         void onLoginInputFinish(String usrNum, String psw);
