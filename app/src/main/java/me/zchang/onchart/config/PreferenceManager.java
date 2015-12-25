@@ -6,18 +6,17 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import me.zchang.onchart.R;
-import me.zchang.onchart.student.Course;
-import me.zchang.onchart.student.LabelCourse;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
+
+import me.zchang.onchart.R;
+import me.zchang.onchart.student.Course;
+import me.zchang.onchart.student.LabelCourse;
 
 
 /*
@@ -138,5 +137,21 @@ public class PreferenceManager {
 
     public void saveLastFetchWeekTime(long value) {
         sp.edit().putLong(context.getString(R.string.key_last_fetch_week_time), value).apply();
+    }
+
+    public String getStuNo() {
+        return sp.getString(context.getString(R.string.key_stu_no), "");
+    }
+
+    public void saveStuNo(String stuNo) {
+        sp.edit().putString(context.getString(R.string.key_stu_no), stuNo).apply();
+    }
+
+    public String getPassword() {
+        return sp.getString(context.getString(R.string.key_psw), "");
+    }
+
+    public void savePassword(String psw) {
+        sp.edit().putString(context.getString(R.string.key_psw), psw).apply();
     }
 }

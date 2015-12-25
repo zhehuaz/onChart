@@ -7,6 +7,7 @@ import java.util.List;
 import me.zchang.onchart.http.HttpRequest;
 import me.zchang.onchart.http.HttpResponse;
 import me.zchang.onchart.student.Course;
+import me.zchang.onchart.student.Exam;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -32,6 +33,10 @@ public abstract class Session implements HttpResponse.ResponseListener, HttpResp
     protected HttpRequest loginRequest;
     protected HttpResponse response;
     protected SessionStartListener listener;
+
+    protected String stuNum;
+    protected String psw;
+
 
     protected boolean isStarted = false;
 
@@ -65,6 +70,7 @@ public abstract class Session implements HttpResponse.ResponseListener, HttpResp
     public abstract List<Course> fetchSchedule() throws IOException;
     public abstract int fetchWeek() throws IOException;
     public abstract String fetchName() throws IOException;
+    public abstract List<Exam> fetchExams() throws IOException;
 
     public interface SessionStartListener {
         void onSessionStartOver();
@@ -73,6 +79,22 @@ public abstract class Session implements HttpResponse.ResponseListener, HttpResp
 
     public enum ErrorCode {
         SESSION_EC_FAIL_TO_CONNECT
+    }
+
+    public String getStuNum() {
+        return stuNum;
+    }
+
+    public void setStuNum(String stuNum) {
+        this.stuNum = stuNum;
+    }
+
+    public String getPsw() {
+        return psw;
+    }
+
+    public void setPsw(String psw) {
+        this.psw = psw;
     }
 
 }

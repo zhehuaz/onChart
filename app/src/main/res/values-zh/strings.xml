@@ -37,4 +37,5 @@
     <string name="alert_no_alipay">您没有安装支付宝。非常感谢您的支持，如果喜欢onChart请推荐给你的朋友！</string>
     <string name="title_psw">密码</string>
     <string name="title_account">学号</string>
+    <string name="action_refresh">刷新</string>
 </resources>

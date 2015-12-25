@@ -20,7 +20,7 @@ import java.util.List;
 import me.zchang.onchart.R;
 import me.zchang.onchart.exception.LessonStartTimeException;
 import me.zchang.onchart.student.Course;
-import me.zchang.onchart.ui.adapter.LessonListAdapter;
+import me.zchang.onchart.ui.adapter.CourseListAdapter;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -46,7 +46,7 @@ public class LessonListFragment extends Fragment {
 
     private int Id;
     RecyclerView courseList;
-    LessonListAdapter adapter;
+    CourseListAdapter adapter;
 
     /**
      * This course list is handled by Fragment and shared with adapter
@@ -67,7 +67,7 @@ public class LessonListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            adapter = new LessonListAdapter(context, courses, getId());
+            adapter = new CourseListAdapter(context, courses, getId());
         } catch (LessonStartTimeException e) {
             Toast.makeText(getActivity(), "Unknown lesson time", Toast.LENGTH_SHORT).show();
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package me.zchang.onchart.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -48,8 +49,8 @@ import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
 import me.zchang.onchart.student.Course;
+import me.zchang.onchart.ui.adapter.CoursePagerAdapter;
 import me.zchang.onchart.ui.adapter.DiffTransformer;
-import me.zchang.onchart.ui.adapter.LessonPagerAdapter;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -80,10 +81,9 @@ public class MainActivity extends AppCompatActivity
     private Toolbar mainToolbar;
     private ViewPager mainListPager;
     private TabLayout weekdayTabs;
-    private LessonPagerAdapter mainListAdapter;
+    private CoursePagerAdapter mainListAdapter;
     private List<LessonListFragment> fragments;
     private ImageView stuffImage;
-    private BitJwcSession session;
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private RelativeLayout loginArea;
@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity
     private NavigationView drawerView;
     private AppBarLayout toolbarContainer;
 
+    private Session session;
     private PreferenceManager preferenceManager;
 
     private int curWeek;
@@ -146,7 +147,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         ViewGroup.LayoutParams params = stuffImage.getLayoutParams();
-        params.height = getStatusBarHeight();
+        params.height = getStatusBarHeight(this);
         stuffImage.setLayoutParams(params);
 
         numOfWeekdays = preferenceManager.getNumOfWeekdays();
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity
         for (int i = 0;i < Math.abs(numOfWeekdays);i ++) {
             fragments.add(new LessonListFragment());
         }
-        mainListAdapter = new LessonPagerAdapter(
+        mainListAdapter = new CoursePagerAdapter(
                 this, getSupportFragmentManager(), fragments, numOfWeekdays);
         mainListPager.setPageTransformer(false, new DiffTransformer());
         mainListPager.setAdapter(mainListAdapter);
@@ -226,6 +227,9 @@ public class MainActivity extends AppCompatActivity
                     Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
 
                     startActivityForResult(intent, REQ_SETTING);
+                } else if (id == R.id.item_exams) {
+                    Intent intent = new Intent(MainActivity.this, ExamsActivity.class);
+                    startActivity(intent);
                 } else if (id == R.id.item_share) {
                     WXWebpageObject webpageObject = new WXWebpageObject();
                     webpageObject.webpageUrl = getString(R.string.my_github_url);
@@ -369,6 +373,8 @@ public class MainActivity extends AppCompatActivity
                 try {
                     if(courses != null) {
                         preferenceManager.saveSchedule(courses);
+                        preferenceManager.saveStuNo(session.getStuNum());
+                        preferenceManager.savePassword(session.getPsw());
                         setupList();
                     } else {
                         Toast.makeText(MainActivity.this, "Invalid account", Toast.LENGTH_SHORT).show();
@@ -379,7 +385,12 @@ public class MainActivity extends AppCompatActivity
                 }
 
 
-                String stuName = session.fetchName();
+                String stuName = null;
+                try {
+                    stuName = session.fetchName();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 if (stuName != null) {
                     preferenceManager.saveName(stuName);
                     updateDrawer();
@@ -411,11 +422,11 @@ public class MainActivity extends AppCompatActivity
         session.start();
     }
 
-    public int getStatusBarHeight() {
+    public static int getStatusBarHeight(Context context) {
         int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
+            result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
     }

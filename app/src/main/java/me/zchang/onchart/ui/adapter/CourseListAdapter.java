@@ -46,7 +46,7 @@ import me.zchang.onchart.ui.MainActivity;
  *    limitations under the License.
  */
 
-public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final static String TAG = "LessonListAdapter";
     public final static int VIEW_TYPE_HEAD = 0;
     public final static int VIEW_TYPE_LIST = 1;
@@ -67,7 +67,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     Context context;
     private int fragId;
 
-    public LessonListAdapter(Context context, List<Course> courses, int fragId) throws LessonStartTimeException {
+    public CourseListAdapter(Context context, List<Course> courses, int fragId) throws LessonStartTimeException {
 
         bitmap = new byte[20];
         this.courses = courses;

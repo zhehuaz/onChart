@@ -19,12 +19,15 @@
 package me.zchang.onchart.parser;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import me.zchang.onchart.student.Course;
+import me.zchang.onchart.student.Exam;
 import me.zchang.onchart.student.LabelCourse;
 
 /*
@@ -187,6 +191,79 @@ public class StudentInfoParser {
                 return m.group().trim();
             }
 
+        }
+        return null;
+    }
+
+    public static List<Exam> parseExams(@NonNull String htmlText) {
+        Document document = Jsoup.parse(htmlText);
+        Elements elements = document.select("table#DataGrid1");
+        if (elements != null && !elements.isEmpty()) {
+            List<Exam> examList = new ArrayList<>();
+            Element tableRoot = elements.first();
+            Elements exams = tableRoot.select("tr");
+            if (exams != null && !exams.isEmpty()) {
+                for (Element examNode : exams) {
+                    //Exam exam = new Exam();
+                    Elements items = examNode.getAllElements();
+                    String examTime = items.get(4).text();
+                    if (examTime.equals("&nbsp;") || examTime.equals("考试时间"))
+                        continue;
+                    Pattern pattern = Pattern.compile("20\\d{2}-\\d{2}-\\d{2}(?=\\))");
+                    //Pattern pattern2 = Pattern.compile("20\\d{2}年\\d+月\\d+日");
+                    Matcher m = pattern.matcher(examTime);
+                    if (!m.find()) {
+                        pattern = Pattern.compile("20\\d{2}年\\d+月\\d+日");
+                        m = pattern.matcher(examTime);
+                        if (!m.find()) {
+                            continue;
+                        }
+                    }
+
+                    String date = m.group();
+                    if (date != null) {
+                        String[] yearMonthDay = date.split("-|年|月|日");
+                        if (yearMonthDay.length == 3) {
+                            pattern = Pattern.compile("\\d{2}:\\d{2}-\\d{2}:\\d{2}");
+                            m = pattern.matcher(examTime);
+                            if (m.find()) {
+                                String time = m.group();
+                                if (time != null) {
+                                    String[] times = time.split("-");
+                                    if (times.length == 2) {
+                                        Exam exam = new Exam();
+                                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy MM dd kk:mm");
+                                        StringBuffer timeString = new StringBuffer();
+                                        timeString
+                                                .append(yearMonthDay[0])
+                                                .append(" ")
+                                                .append(yearMonthDay[1].length() == 1 ? "0" + yearMonthDay[1] : yearMonthDay[1])
+                                                .append(" ")
+                                                .append(yearMonthDay[2].length() == 1 ? "0" + yearMonthDay[2] : yearMonthDay[2])
+                                                .append(" ");
+                                        String startTimeString = timeString.toString() + times[0];
+                                        String endTimeString = timeString.toString() + times[1];
+
+                                        try {
+                                            exam.setStartTime(dateFormat.parse(startTimeString));
+                                            exam.setEndTime(dateFormat.parse(endTimeString));
+                                        } catch (ParseException e) {
+                                            Log.e(TAG, "exam time parse error");
+                                            e.printStackTrace();
+                                        }
+
+                                        exam.setName(items.get(2).text());
+                                        exam.setPosition(items.get(5).text());
+                                        exam.setSeat(items.get(7).text());
+                                        examList.add(exam);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return examList;
         }
         return null;
     }

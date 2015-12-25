@@ -31,12 +31,12 @@ import me.zchang.onchart.ui.LessonListFragment;
 /**
  * Created by langley on 11/17/15.
  */
-public class LessonPagerAdapter extends FragmentPagerAdapter {
+public class CoursePagerAdapter extends FragmentPagerAdapter {
     private List<LessonListFragment> fragments;
     private Context context;
     private int numOfWeekdays;
 
-    public LessonPagerAdapter(Context context, FragmentManager fm, List<LessonListFragment> fragments, int numOfWeekdays) {
+    public CoursePagerAdapter(Context context, FragmentManager fm, List<LessonListFragment> fragments, int numOfWeekdays) {
         super(fm);
         this.context = context;
         this.fragments = fragments;

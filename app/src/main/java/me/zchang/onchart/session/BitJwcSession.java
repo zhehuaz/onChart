@@ -21,13 +21,6 @@ package me.zchang.onchart.session;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import me.zchang.onchart.http.HttpError;
-import me.zchang.onchart.http.HttpRequest;
-import me.zchang.onchart.http.HttpResponse;
-import me.zchang.onchart.http.RequestMethod;
-import me.zchang.onchart.parser.StudentInfoParser;
-import me.zchang.onchart.student.Course;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,6 +28,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import me.zchang.onchart.http.HttpError;
+import me.zchang.onchart.http.HttpRequest;
+import me.zchang.onchart.http.HttpResponse;
+import me.zchang.onchart.http.RequestMethod;
+import me.zchang.onchart.parser.StudentInfoParser;
+import me.zchang.onchart.student.Course;
+import me.zchang.onchart.student.Exam;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -57,8 +58,6 @@ import java.util.Map;
  */
 public class BitJwcSession extends Session{
     private String TAG = "BitJwcSession";
-    private String stuNum;
-    private String psw;
     private URL loginUrl;
 
     private String startResponse = null;
@@ -172,6 +171,27 @@ public class BitJwcSession extends Session{
         return null;
     }
 
+    @Override
+    public List<Exam> fetchExams() throws IOException {
+        String path = "/xskscx.aspx?xh=" + stuNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121604";
+        HttpRequest chartRequest = null;
+        if(loginUrl != null) {
+            chartRequest = new HttpRequest(loginUrl.toString().substring(0, 43) + path) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> param = new HashMap<>();
+                    param.put("Referer", loginUrl.toString());
+                    return param;
+                }
+            };
+            HttpResponse examsResponse = chartRequest.send();
+            String htmlRes = examsResponse.getContent();
+            Log.i(TAG, "Response : " + examsResponse.getContent());
+            return StudentInfoParser.parseExams(htmlRes);
+        }
+        return new ArrayList<>();
+    }
+
     /**
      * Utility to covert the symbols in the password into unicode.
      * @param psw the input password.
@@ -196,6 +216,11 @@ public class BitJwcSession extends Session{
     }
 
     @Override
+    public void setPsw(String psw) {
+        this.psw = pswToUnicode(psw);
+    }
+
+    @Override
     public void onError(HttpError error) {
     }
 
@@ -213,23 +238,11 @@ public class BitJwcSession extends Session{
         return url.getPath().substring(2,2 + 12);
     }
 
-    public String getStuNum() {
-        return stuNum;
-    }
 
-    public void setStuNum(String stuNum) {
-        this.stuNum = stuNum;
-    }
-
-    public String getPsw() {
-        return psw;
-    }
-
-    public void setPsw(String psw) {
-        this.psw = pswToUnicode(psw);
-    }
 
     public String getStartResponse() {
         return startResponse;
     }
+
+
 }

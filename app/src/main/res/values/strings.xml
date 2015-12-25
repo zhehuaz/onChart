@@ -29,6 +29,7 @@
     <string name="action_positive">OK</string>
     <string name="action_negative">Cancel</string>
     <string name="action_donate">Donate</string>
+    <string name="action_refresh">Refresh</string>
     <string name="subtitle_morning">Morning</string>
     <string name="subtitle_afternoon">Afternoon</string>
     <string name="subtitle_evening">Evening</string>
@@ -51,6 +52,8 @@
     <string name="key_license" translatable="false">open_source_license</string>
     <string name="key_about" translatable="false">about</string>
     <string name="key_is_first_launch">first_launch</string>
+    <string name="key_stu_no">student_number</string>
+    <string name="key_psw">password</string>
     <string name="title_activity_detail">Detail</string>
 
     <string name="intent_lesson" translatable="false">Lesson</string>
@@ -76,4 +79,6 @@
     <string name="alert_clipboard_complete">My Alipay account has been copied in clipboard,donate 2 yuan to onChart, please.Thanks.</string>
     <string name="alipay_account">zhehua_xiao@163.com</string>
 
+
+    <string name="title_activity_exams">ExamsActivity</string>
 </resources>
