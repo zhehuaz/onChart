@@ -7,6 +7,11 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:colorControlNormal">#c5c5c5</item>
+        <item name="android:colorControlActivated">#c5c5c5</item>
+        <item name="android:colorControlHighlight">#c5c5c5</item>
+    <item name="android:colorPrimary">#00397F</item>
+    <item name="android:colorAccent">#0AAEEF</item>
 
     <item name="android:windowContentTransitions">true</item>
     <item name="android:windowAllowEnterTransitionOverlap">true</item>
@@ -25,6 +30,8 @@
         <item name="windowActionBar">true</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:windowIsTranslucent">false</item>
+        <item name="android:colorPrimary">#00397F</item>
+        <item name="android:colorAccent">#0AAEEF</item>
     </style>
 </resources>
 

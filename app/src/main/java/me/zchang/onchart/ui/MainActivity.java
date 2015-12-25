@@ -526,4 +526,5 @@ public class MainActivity extends AppCompatActivity
             weekdayText.setText(curWeek + "");// TODO update changed items
         }
     }
+
 }
