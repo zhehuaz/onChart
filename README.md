@@ -3,7 +3,7 @@
 A Lesson table APP for Beijing Institute of Technology.
 Fetch lessons automatically from the [academic affairs office](http://jwc.bit.edu.cn)(Intranet only) of BIT.
 
-![](http://i.imgur.com/Pdzbks7.png)![](http://i.imgur.com/KsHvvQX.png)
+![](http://i.imgur.com/Pdzbks7.png)
 
 ### Build Environment
 *   Android Studio: 1.5.0
@@ -17,9 +17,9 @@ Fetch lessons automatically from the [academic affairs office](http://jwc.bit.ed
 lesson in this week only.
 *   Lessons in every other week (Odd or even week only) are supported.
 *   Lessons on Saturday and Sunday can be alternatively displayed.
+*   Fetch exam schedule(beta).
 
 ### Coming soon
-*   Fetch exam schedule.
 *   Sharing events to to-do apps like [TickTick](https://ticktick.com/) or [Wunderlist](https://www.wunderlist.com/).
 *   More label images
 *   Data interface for other universities(evaluating)
