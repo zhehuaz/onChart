@@ -23,7 +23,7 @@
     <string name="action_share">Share</string>
     <string name="action_about">About</string>
     <string name="action_chart">Chart</string>
-    <string name="action_exam">Exam (Coming)</string>
+    <string name="action_exam">Exam(beta)</string>
     <string name="action_logout">Logout</string>
     <string name="action_license">Open Source License</string>
     <string name="action_positive">OK</string>
@@ -80,5 +80,5 @@
     <string name="alipay_account">zhehua_xiao@163.com</string>
 
 
-    <string name="title_activity_exams">ExamsActivity</string>
+    <string name="title_activity_exams">Exams</string>
 </resources>

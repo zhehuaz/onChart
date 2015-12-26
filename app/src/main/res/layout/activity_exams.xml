@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -6,7 +6,7 @@
     tools:context="me.zchang.onchart.ui.ExamsActivity">
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:background="@mipmap/main_tb_bg"
+        android:background="@mipmap/exam_tb_bg"
         android:layout_height="75dp"
         >
     <ImageView
@@ -23,9 +23,16 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="6dp"
         android:id="@+id/rv_exams"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:clipToPadding="false"
         />
-</RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_fetch_exams"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"/>
+</FrameLayout>

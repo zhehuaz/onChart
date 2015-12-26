@@ -100,12 +100,15 @@ public class MainActivity extends AppCompatActivity
     private int curWeek;
     private int numOfWeekdays;
     private Calendar today;
+    private boolean firstLaunch = true;
 
     IWXAPI api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null)
+            firstLaunch = false;
         setContentView(R.layout.activity_main);
         api = WXAPIFactory.createWXAPI(MainActivity.this, MainApp.APP_ID, true);
         api.registerApp(MainApp.APP_ID);
@@ -452,7 +455,7 @@ public class MainActivity extends AppCompatActivity
                 .setDuration(200)
                 .setInterpolator(new AccelerateDecelerateInterpolator());
         RecyclerView recyclerView = fragments.get(mainListPager.getCurrentItem()).getCourseRecyclerView();
-        if (recyclerView != null) {
+        if (recyclerView != null && firstLaunch) {
            recyclerView.scheduleLayoutAnimation();
         }
     }

@@ -67,6 +67,6 @@ public class Exam implements Comparable {
 
     @Override
     public int compareTo(Object another) {
-        return this.startTime.before(((Exam)another).getStartTime()) ? 1 : -1;
+        return this.startTime.before(((Exam)another).getStartTime()) ? -1 : 1;
     }
 }

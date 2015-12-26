@@ -263,6 +263,7 @@ public class StudentInfoParser {
                     }
                 }
             }
+            Collections.sort(examList);
             return examList;
         }
         return null;

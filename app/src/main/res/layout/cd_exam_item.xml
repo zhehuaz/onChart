@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:paddingRight="16dp"
+    >
+
+    <TextView
+        android:id="@+id/tv_exam_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:layout_gravity="left|top"
+        android:textSize="10sp"
+        />
+    <TextView
+        android:id="@+id/tv_exam_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time"
+        android:layout_gravity="left"
+        android:textSize="10sp"
+        android:layout_marginTop="12dp"
+        />
+    <android.support.v7.widget.CardView
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        card_view:cardElevation="5dp"
+        card_view:contentPadding="5dp"
+        card_view:cardBackgroundColor="@color/cardview_light_background"
+        android:layout_gravity="right"
+        android:id="@+id/cd_exam"
+        android:layout_marginBottom="8dp"
+        >
+
+        <TextView
+            android:id="@+id/tv_exam_course_name"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Course Name"
+            android:textSize="17sp"
+            android:layout_gravity="center"/>
+        <TextView
+            android:id="@+id/tv_exam_position"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="position"/>
+    </android.support.v7.widget.CardView>
+    </FrameLayout>

@@ -3,13 +3,16 @@ package me.zchang.onchart.ui;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,6 +23,7 @@ import me.zchang.onchart.config.PreferenceManager;
 import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
 import me.zchang.onchart.student.Exam;
+import me.zchang.onchart.ui.adapter.ExamListAdapter;
 
 public class ExamsActivity extends AppCompatActivity implements Session.SessionStartListener{
 
@@ -28,6 +32,8 @@ public class ExamsActivity extends AppCompatActivity implements Session.SessionS
     private Toolbar toolbar;
     private ImageView stuffImage;
     private RecyclerView recyclerView;
+    private ProgressBar loadingProgress;
+    ExamListAdapter adapter;
 
     private PreferenceManager preferenceManager;
     private Session session;
@@ -40,7 +46,11 @@ public class ExamsActivity extends AppCompatActivity implements Session.SessionS
         toolbar = (Toolbar) findViewById(R.id.tb_exams);
         stuffImage = (ImageView) findViewById(R.id.iv_stuff);
         recyclerView = (RecyclerView) findViewById(R.id.rv_exams);
+        loadingProgress = (ProgressBar) findViewById(R.id.pb_fetch_exams);
 
+        adapter = new ExamListAdapter(this, null);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -78,6 +88,9 @@ public class ExamsActivity extends AppCompatActivity implements Session.SessionS
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == android.R.id.home) {
+            this.finish();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -98,9 +111,13 @@ public class ExamsActivity extends AppCompatActivity implements Session.SessionS
             }
 
             @Override
-            protected void onPostExecute(List<Exam> exams) {
-                if (exams != null) {
+            protected void onPostExecute(List<Exam> recExams) {
+                if (recExams != null) {
                     Log.d(TAG, "exams fetch over");
+                    adapter.setExams(recExams);
+                    adapter.notifyDataSetChanged();
+
+                    loadingProgress.setVisibility(View.GONE);
                 }
             }
         }.execute();
