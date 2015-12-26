@@ -1,10 +1,12 @@
 package me.zchang.onchart.ui;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.AppBarLayout;
@@ -133,7 +135,8 @@ public class MainActivity extends AppCompatActivity
         versionText = (TextView) findViewById(R.id.tv_version);
         drawerView = (NavigationView) findViewById(R.id.nv_drawer);
         toolbarContainer = (AppBarLayout) findViewById(R.id.appb_container);
-        toolbarContainer.setTranslationY(- toolbarContainer.getLayoutParams().height);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            toolbarContainer.setTranslationY(- toolbarContainer.getLayoutParams().height);
 
         if (versionText != null)
             versionText.setText(BuildConfig.VERSION_NAME);
@@ -446,6 +449,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @TargetApi(21)
     @Override
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();

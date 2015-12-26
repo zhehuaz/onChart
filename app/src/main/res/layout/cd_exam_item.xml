@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="90dp"
-    android:paddingRight="16dp"
     >
 
     <TextView
         android:id="@+id/tv_exam_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Date"
+        android:text="@string/title_my_birthday"
         android:layout_gravity="left|top"
         android:textSize="10sp"
         />
@@ -18,13 +17,16 @@
         android:id="@+id/tv_exam_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Time"
+        android:text="07:00-08:00"
         android:layout_gravity="left"
         android:textSize="10sp"
         android:layout_marginTop="12dp"
         />
     <android.support.v7.widget.CardView
-        android:layout_width="280dp"
+        android:layout_marginLeft="16dp"
+        android:layout_toEndOf="@+id/tv_exam_time"
+        android:layout_toRightOf="@+id/tv_exam_time"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         card_view:cardElevation="5dp"
         card_view:contentPadding="5dp"
@@ -32,6 +34,8 @@
         android:layout_gravity="right"
         android:id="@+id/cd_exam"
         android:layout_marginBottom="8dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         >
 
         <TextView
@@ -47,6 +51,36 @@
             android:layout_gravity="bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:alpha="0.7"
             android:text="position"/>
+
+        <RelativeLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center"
+            android:id="@+id/rl_countdown"
+            android:visibility="invisible"
+            >
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/tv_exam_countdown"
+            android:text="100"
+            android:textSize="30sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="@color/white" />
+        <TextView
+
+            android:id="@+id/tv_exam_day"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/text_days"
+            android:textSize="12sp"
+            android:layout_toRightOf="@+id/tv_exam_countdown"
+            android:layout_toEndOf="@+id/tv_exam_countdown"
+            android:layout_alignBaseline="@+id/tv_exam_countdown"
+            android:textColor="@color/white"/>
+        </RelativeLayout>
     </android.support.v7.widget.CardView>
-    </FrameLayout>
+    </RelativeLayout>

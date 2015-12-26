@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -71,6 +72,9 @@ public class ExamListAdapter extends RecyclerView.Adapter {
             TextView courseNameText = ((ViewHolder) holder).courseNameText;
             TextView positionText = ((ViewHolder) holder).positionText;
             CardView cardView = ((ViewHolder) holder).cardView;
+            RelativeLayout countdownLayout = ((ViewHolder) holder).countdownContainer;
+            TextView countdownText = ((ViewHolder) holder).countdownText;
+            TextView dayText = ((ViewHolder) holder).dayText;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.CHINA);
             dateText.setText(dateFormat.format(currExamItem.getStartTime()));
@@ -79,20 +83,22 @@ public class ExamListAdapter extends RecyclerView.Adapter {
                     + timeFormat.format(currExamItem.getEndTime()));
             courseNameText.setText(currExamItem.getName());
             positionText.setText(currExamItem.getPosition());
-            if (currExamItem.getStartTime().getTime() - today.getTimeInMillis() > 0) {
-                if (currExamItem.getStartTime().getTime() - today.getTimeInMillis() <= MainActivity.MILLISECONDS_IN_A_DAY * 14) {
-                    cardView.setCardBackgroundColor(Color.parseColor("#E53935"));
-                    dateText.setTextColor(Color.parseColor("#E53935"));
-                    timeText.setTextColor(Color.parseColor("#E53935"));
-                    courseNameText.setTextColor(0xffffffff);
-                    positionText.setTextColor(0xffffffff);
+            long previousMillis = currExamItem.getStartTime().getTime() - today.getTimeInMillis();
+            if (previousMillis > 0) {
+                long previousDays = previousMillis / MainActivity.MILLISECONDS_IN_A_DAY;
+                if (previousDays <= 14) {
+                    countdownText.setTextColor(Color.parseColor("#EE0000"));
+                    dayText.setTextColor(Color.parseColor("#EE0000"));
+                    cardView.setCardBackgroundColor(Color.parseColor("#E57373"));
+                    dateText.setTextColor(Color.parseColor("#E57373"));
+                    timeText.setTextColor(Color.parseColor("#E57373"));
                 } else {
-                    cardView.setCardBackgroundColor(Color.parseColor("#2E7D32"));
-                    dateText.setTextColor(Color.parseColor("#2E7D32"));
-                    timeText.setTextColor(Color.parseColor("#2E7D32"));
-                    courseNameText.setTextColor(0xffffffff);
-                    positionText.setTextColor(0xffffffff);
+                    cardView.setCardBackgroundColor(Color.parseColor("#00B0FF"));
+                    dateText.setTextColor(Color.parseColor("#00B0FF"));
+                    timeText.setTextColor(Color.parseColor("#00B0FF"));
                 }
+                countdownLayout.setVisibility(View.VISIBLE);
+                countdownText.setText(previousDays + "");
             }
         }
     }
@@ -100,7 +106,7 @@ public class ExamListAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         if (exams != null)
-            return exams.size();
+            return exams.size() + 1;
         return 0;
     }
 
@@ -118,6 +124,9 @@ public class ExamListAdapter extends RecyclerView.Adapter {
         TextView courseNameText;
         TextView positionText;
         CardView cardView;
+        TextView countdownText;
+        TextView dayText;
+        RelativeLayout countdownContainer;
         public ViewHolder(View itemView) {
             super(itemView);
             dateText = (TextView) itemView.findViewById(R.id.tv_exam_date);
@@ -125,6 +134,9 @@ public class ExamListAdapter extends RecyclerView.Adapter {
             courseNameText = (TextView) itemView.findViewById(R.id.tv_exam_course_name);
             positionText = (TextView) itemView.findViewById(R.id.tv_exam_position);
             cardView = (CardView) itemView.findViewById(R.id.cd_exam);
+            countdownContainer = (RelativeLayout) itemView.findViewById(R.id.rl_countdown);
+            countdownText = (TextView) countdownContainer.findViewById(R.id.tv_exam_countdown);
+            dayText = (TextView) countdownContainer.findViewById(R.id.tv_exam_day);
         }
     }
 

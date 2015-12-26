@@ -4,6 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="me.zchang.onchart.ui.ExamsActivity">
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="6dp"
+        android:id="@+id/rv_exams"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clipToPadding="false"
+        />
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:background="@mipmap/exam_tb_bg"
@@ -22,13 +31,6 @@
     </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="6dp"
-        android:id="@+id/rv_exams"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:clipToPadding="false"
-        />
 
     <ProgressBar
         android:id="@+id/pb_fetch_exams"

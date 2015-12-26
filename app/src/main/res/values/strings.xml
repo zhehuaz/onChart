@@ -51,9 +51,9 @@
     <string name="key_last_fetch_week_time" translatable="false">last_fetch_week</string>
     <string name="key_license" translatable="false">open_source_license</string>
     <string name="key_about" translatable="false">about</string>
-    <string name="key_is_first_launch">first_launch</string>
-    <string name="key_stu_no">student_number</string>
-    <string name="key_psw">password</string>
+    <string name="key_is_first_launch" translatable="false">first_launch</string>
+    <string name="key_stu_no" translatable="false">student_number</string>
+    <string name="key_psw" translatable="false">password</string>
     <string name="title_activity_detail">Detail</string>
 
     <string name="intent_lesson" translatable="false">Lesson</string>
@@ -67,6 +67,8 @@
     <string name="title_activity_about">About</string>
     <string name="title_account">Stud. No.</string>
     <string name="title_psw">Password</string>
+    <string name="title_my_birthday">1995&#8211;06&#8211;12</string>
+    <string name="text_days">days</string>
     <string name="version_name" translatable="false">1.0</string>
 
     <string name="my_github_url" translatable="false">https://github.com/LangleyChang/onChart</string>

@@ -39,4 +39,5 @@
     <string name="title_account">学号</string>
     <string name="action_refresh">刷新</string>
     <string name="title_activity_exams">考试</string>
+    <string name="text_days">天</string>
 </resources>
