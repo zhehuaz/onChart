@@ -35,7 +35,7 @@ public class DiffTransformer implements ViewPager.PageTransformer {
             if (recyclerView != null && adapter != null) {
                 int count = adapter.getItemCount();
                 for (int i = 0;i < count;i ++) {
-                    if (adapter.getItemViewType(i) == LessonListAdapter.VIEW_TYPE_LIST) {
+                    if (adapter.getItemViewType(i) == CourseListAdapter.VIEW_TYPE_LIST) {
                         View child = recyclerView.getChildAt(i);
                         if (child != null) {
                             View cardView = child.findViewById(R.id.cd_lesson_item);

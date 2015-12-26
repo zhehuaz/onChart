@@ -46,9 +46,9 @@ import me.zchang.onchart.ui.MainActivity;
  *    limitations under the License.
  */
 
-public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final static String TAG = "LessonListAdapter";
-    public final static int VIEW_TYPE_HEAD = 0;
+    public final static int VIEW_TYPE_HEADER = 0;
     public final static int VIEW_TYPE_LIST = 1;
     public final static int VIEW_TYPE_SUBTITLE = 2;
 
@@ -67,7 +67,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     Context context;
     private int fragId;
 
-    public LessonListAdapter(Context context, List<Course> courses, int fragId) throws LessonStartTimeException {
+    public CourseListAdapter(Context context, List<Course> courses, int fragId) throws LessonStartTimeException {
 
         bitmap = new byte[20];
         this.courses = courses;
@@ -136,7 +136,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case VIEW_TYPE_HEAD:
+            case VIEW_TYPE_HEADER:
                 return new HeaderViewHolder(LayoutInflater.from(context).inflate(me.zchang.onchart.R.layout.blank, parent, false));
             case VIEW_TYPE_LIST:
                 return new ViewHolder(LayoutInflater.from(context).inflate(me.zchang.onchart.R.layout.cd_lesson_item, parent, false));
@@ -286,7 +286,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public int getItemViewType(int position) {
         //Log.d(TAG, "Get Items.");
         if(position == 0)
-            return VIEW_TYPE_HEAD;
+            return VIEW_TYPE_HEADER;
         else if(bitmap[position] < 0)
             return VIEW_TYPE_SUBTITLE;
         else
