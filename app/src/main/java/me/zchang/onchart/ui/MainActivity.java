@@ -69,7 +69,7 @@ import me.zchang.onchart.ui.adapter.DiffTransformer;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements Session.SessionStartListener, LoginTestFragment.LoginListener
+        implements Session.SessionStartListener, LoginFragment.LoginListener
         , SharedPreferences.OnSharedPreferenceChangeListener {
 
     public final static int REQ_POSITION = 0;
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity
         loginArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LoginTestFragment dialog = new LoginTestFragment();
+                LoginFragment dialog = new LoginFragment();
                 dialog.setListener(MainActivity.this);
                 dialog.show(getSupportFragmentManager(), TAG);
             }

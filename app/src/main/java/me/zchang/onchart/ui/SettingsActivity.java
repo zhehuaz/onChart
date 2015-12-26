@@ -84,6 +84,8 @@ public class SettingsActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 getPreferenceManager().getSharedPreferences().edit()
                                         .putString(getString(R.string.key_name), getString(R.string.null_stu_name))
+                                        .putString(getString(R.string.key_stu_no), "")
+                                        .putString(getString(R.string.key_psw), "")
                                         .apply();
                                 PreferenceManager.deleteSchedule(getActivity());
                                 retIntent.putExtra(getString(R.string.key_logout), FLAG_LOGOUT);

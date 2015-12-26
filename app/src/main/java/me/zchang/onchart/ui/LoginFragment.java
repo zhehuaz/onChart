@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import me.zchang.onchart.R;
@@ -31,50 +30,25 @@ import me.zchang.onchart.R;
 
 /**
  * Login Fragment, for test only.
- * TODO replace the fragment
  */
-public class LoginTestFragment extends DialogFragment {
+public class LoginFragment extends DialogFragment {
 
     private LoginListener listener = null;
     private EditText usrNumInput;
     private EditText pswInput;
-    private Button fetchBtn;
 
-    public LoginTestFragment() {
+    public LoginFragment() {
 
     }
 
     public void setListener(LoginListener listener) {
         this.listener = listener;
     }
-//
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        View rootView = inflater.inflate(R.layout.fragment_login_test, container, false);
-//        usrNumInput = (EditText) rootView.findViewById(R.id.et_num);
-//        pswInput = (EditText) rootView.findViewById(R.id.et_pwd);
-//        fetchBtn = (Button) rootView.findViewById(R.id.bt_fetch);
-//
-//        fetchBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(listener != null) {
-//                    listener.onLoginInputFinish(usrNumInput.getText().toString(), pswInput.getText().toString());
-//                    dismiss();
-//                }
-//            }
-//        });
-//        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-//
-//        return rootView;
-//    }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstance) {
-        View rootView = getActivity().getLayoutInflater().inflate(R.layout.fragment_login_test, null);
+        View rootView = getActivity().getLayoutInflater().inflate(R.layout.fragment_login, null);
         usrNumInput = (EditText) rootView.findViewById(R.id.et_num);
         pswInput = (EditText) rootView.findViewById(R.id.et_pwd);
 
@@ -89,7 +63,6 @@ public class LoginTestFragment extends DialogFragment {
                 })
                 .setView(rootView)
                 .create();
-        //return super.getDialog();
     }
 
     public interface LoginListener {
