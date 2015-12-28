@@ -87,16 +87,18 @@ public class ExamListAdapter extends RecyclerView.Adapter {
             if (previousMillis > 0) {
                 long previousDays = previousMillis / MainActivity.MILLISECONDS_IN_A_DAY;
                 if (previousDays <= 14) {
-                    countdownText.setTextColor(Color.parseColor("#EE0000"));
-                    dayText.setTextColor(Color.parseColor("#EE0000"));
-                    cardView.setCardBackgroundColor(Color.parseColor("#E57373"));
-                    dateText.setTextColor(Color.parseColor("#E57373"));
-                    timeText.setTextColor(Color.parseColor("#E57373"));
+                    //countdownText.setTextColor(Color.parseColor("#EE0000"));
+                    //dayText.setTextColor(Color.parseColor("#EE0000"));
+                    cardView.setCardBackgroundColor(Color.parseColor("#EF5350"));
+                    dateText.setTextColor(Color.parseColor("#EF5350"));
+                    timeText.setTextColor(Color.parseColor("#EF5350"));
                 } else {
                     cardView.setCardBackgroundColor(Color.parseColor("#00B0FF"));
                     dateText.setTextColor(Color.parseColor("#00B0FF"));
                     timeText.setTextColor(Color.parseColor("#00B0FF"));
                 }
+                courseNameText.setTextColor(0xffffffff);
+                positionText.setTextColor(0xffffffff);
                 countdownLayout.setVisibility(View.VISIBLE);
                 countdownText.setText(previousDays + "");
             }

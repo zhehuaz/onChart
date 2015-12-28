@@ -30,9 +30,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
@@ -236,7 +233,7 @@ public class MainActivity extends AppCompatActivity
                 } else if (id == R.id.item_exams) {
                     Intent intent = new Intent(MainActivity.this, ExamsActivity.class);
                     startActivity(intent);
-                } else if (id == R.id.item_share) {
+                } /*else if (id == R.id.item_share) {
                     WXWebpageObject webpageObject = new WXWebpageObject();
                     webpageObject.webpageUrl = getString(R.string.my_github_url);
 
@@ -247,7 +244,7 @@ public class MainActivity extends AppCompatActivity
                     req.transaction = String.valueOf(System.currentTimeMillis());
                     req.message = msg;
                     api.sendReq(req);
-                } else if (id == R.id.item_donate) {
+                } */else if (id == R.id.item_donate) {
                     DonateFragment donateFragment = new DonateFragment();
                     donateFragment.show(getSupportFragmentManager(), TAG);
                 }
