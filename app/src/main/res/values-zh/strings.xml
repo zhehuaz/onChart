@@ -40,4 +40,7 @@
     <string name="action_refresh">刷新</string>
     <string name="title_activity_exams">考试</string>
     <string name="text_days">天</string>
+    <string name="alert_network_error">连接错误，请检查您的内网连接。</string>
+    <string name="text_share">好用的课表应用，一键导入，北理专属，快去下载！</string>
+    <string name="action_feedback">反馈</string>
 </resources>

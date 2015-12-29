@@ -23,6 +23,11 @@
             android:title="@string/action_about">
 
         </Preference>
+        <Preference
+            android:key="@string/key_feedback"
+            android:title="@string/action_feedback">
+
+        </Preference>
 
         <Preference
             android:key="@string/key_license"

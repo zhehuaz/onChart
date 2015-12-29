@@ -30,9 +30,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -101,16 +98,12 @@ public class MainActivity extends AppCompatActivity
     private Calendar today;
     private boolean firstLaunch = true;
 
-    IWXAPI api;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null)
             firstLaunch = false;
         setContentView(R.layout.activity_main);
-        api = WXAPIFactory.createWXAPI(MainActivity.this, MainApp.APP_ID, true);
-        api.registerApp(MainApp.APP_ID);
 
         preferenceManager = ((MainApp) getApplication()).getPreferenceManager();
         today = Calendar.getInstance();
@@ -132,7 +125,7 @@ public class MainActivity extends AppCompatActivity
         versionText = (TextView) findViewById(R.id.tv_version);
         drawerView = (NavigationView) findViewById(R.id.nv_drawer);
         toolbarContainer = (AppBarLayout) findViewById(R.id.appb_container);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && firstLaunch)
             toolbarContainer.setTranslationY(- toolbarContainer.getLayoutParams().height);
 
         if (versionText != null)
@@ -164,7 +157,6 @@ public class MainActivity extends AppCompatActivity
 
         setupFragments();
         setupList();// ATTENTION, order of refresh and setup
-        // ATTENTION, order of refresh and setup
         fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -233,18 +225,15 @@ public class MainActivity extends AppCompatActivity
                 } else if (id == R.id.item_exams) {
                     Intent intent = new Intent(MainActivity.this, ExamsActivity.class);
                     startActivity(intent);
-                } /*else if (id == R.id.item_share) {
-                    WXWebpageObject webpageObject = new WXWebpageObject();
-                    webpageObject.webpageUrl = getString(R.string.my_github_url);
-
-                    WXMediaMessage msg = new WXMediaMessage();
-                    msg.mediaObject = webpageObject;
-                    msg.description = getString(R.string.wechat_share_title);
-                    SendMessageToWX.Req req = new SendMessageToWX.Req();
-                    req.transaction = String.valueOf(System.currentTimeMillis());
-                    req.message = msg;
-                    api.sendReq(req);
-                } */else if (id == R.id.item_donate) {
+                } else if (id == R.id.item_share) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.text_share)
+                            + "\n\r"
+                            + getString(R.string.url_download));
+                    startActivity(Intent.createChooser(intent, getString(R.string.action_share)));
+                } else if (id == R.id.item_donate) {
                     DonateFragment donateFragment = new DonateFragment();
                     donateFragment.show(getSupportFragmentManager(), TAG);
                 }
@@ -409,7 +398,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSessionStartError(Session.ErrorCode ec) {
-        Toast.makeText(this, "Fail to connect JWC", Toast.LENGTH_SHORT).show();
+        //Looper.prepare();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, getString(R.string.alert_network_error), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

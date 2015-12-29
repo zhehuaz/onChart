@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import me.zchang.onchart.R;
 
@@ -52,7 +54,8 @@ public class LoginFragment extends DialogFragment {
         usrNumInput = (EditText) rootView.findViewById(R.id.et_num);
         pswInput = (EditText) rootView.findViewById(R.id.et_pwd);
 
-        return new AlertDialog.Builder(getActivity())
+
+        final AlertDialog dialog =  new AlertDialog.Builder(getActivity())
                 .setPositiveButton(getString(R.string.title_login), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -63,6 +66,14 @@ public class LoginFragment extends DialogFragment {
                 })
                 .setView(rootView)
                 .create();
+        pswInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
+                return false;
+            }
+        });
+        return dialog;
     }
 
     public interface LoginListener {

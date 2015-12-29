@@ -2,6 +2,7 @@ package me.zchang.onchart.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -67,6 +68,8 @@ public class SettingsActivity extends AppCompatActivity {
             licensePref.setOnPreferenceClickListener(this);
             Preference aboutPref = findPreference(getString(R.string.key_about));
             aboutPref.setOnPreferenceClickListener(this);
+            Preference feedbackPref = findPreference(getString(R.string.key_feedback));
+            feedbackPref.setOnPreferenceClickListener(this);
         }
 
         @Override
@@ -102,6 +105,12 @@ public class SettingsActivity extends AppCompatActivity {
             } else if (preference.getKey().equals(getString(R.string.key_about))) {
                 AboutFragment aboutFragment = new AboutFragment();
                 aboutFragment.show(getActivity().getSupportFragmentManager(), TAG);
+            } else if (preference.getKey().equals(getString(R.string.key_feedback))) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("mailto:" + getString(R.string.url_my_email)));
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Issue in onChart");
+                startActivity(intent);
             }
             return false;
         }

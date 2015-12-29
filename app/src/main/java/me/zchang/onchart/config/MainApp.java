@@ -2,9 +2,6 @@ package me.zchang.onchart.config;
 
 import android.app.Application;
 
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
-
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -24,15 +21,11 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 public class MainApp extends Application {
     public static final String APP_ID = "wx5a0d7c554008997c";
-    public static IWXAPI api;
     private PreferenceManager preferenceManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        api = WXAPIFactory.createWXAPI(this, APP_ID, true);
-        api.registerApp(APP_ID);
 
         preferenceManager = new PreferenceManager(this);
     }

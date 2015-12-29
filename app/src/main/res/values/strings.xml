@@ -30,6 +30,7 @@
     <string name="action_negative">Cancel</string>
     <string name="action_donate">Donate</string>
     <string name="action_refresh">Refresh</string>
+    <string name="action_feedback">Feedback</string>
     <string name="subtitle_morning">Morning</string>
     <string name="subtitle_afternoon">Afternoon</string>
     <string name="subtitle_evening">Evening</string>
@@ -54,6 +55,7 @@
     <string name="key_is_first_launch" translatable="false">first_launch</string>
     <string name="key_stu_no" translatable="false">student_number</string>
     <string name="key_psw" translatable="false">password</string>
+    <string name="key_feedback" translatable="false">feedback</string>
     <string name="title_activity_detail">Detail</string>
 
     <string name="intent_lesson" translatable="false">Lesson</string>
@@ -67,20 +69,24 @@
     <string name="title_activity_about">About</string>
     <string name="title_account">Stud. No.</string>
     <string name="title_psw">Password</string>
-    <string name="title_my_birthday">1995&#8211;06&#8211;12</string>
+    <string name="title_my_birthday" translatable="false">1995&#8211;06&#8211;12</string>
     <string name="text_days">days</string>
     <string name="version_name" translatable="false">1.0</string>
 
-    <string name="my_github_url" translatable="false">https://github.com/LangleyChang/onChart</string>
+    <string name="url_my_github" translatable="false">https://github.com/LangleyChang/onChart</string>
+    <string name="url_download" translatable="false">www.wandoujia.com/apps/me.zchang.onchart</string>
+    <string name="url_my_email" tranlatable="false">zhehuaxiao@gmail.com</string>
+
+    <string name="text_share">An amazing course schedule app for BIT only!Really convenient to import the schedule instantly!Download it here.</string>
     <string name="wechat_share_title">please star~</string>
 
     <string name="button_donate">Donate for a cup of coffee</string>
 
 
     <string name="alert_no_alipay">No Alipay, thanks for your support.Introduce onChart to your friends if you like!</string>
-    <string name="alert_clipboard_complete">My Alipay account has been copied in clipboard,donate 2 yuan to onChart, please.Thanks.</string>
-    <string name="alipay_account">zhehua_xiao@163.com</string>
-
+    <string name="alert_clipboard_complete">My Alipay account has been copied in clipboard, donate 2 yuan to onChart, please.Thanks.</string>
+    <string name="alert_network_error">Connection error.Check your intranet, please.</string>
+    <string name="alipay_account" translatable="false">zhehua_xiao@163.com</string>
 
     <string name="title_activity_exams">Exams</string>
 </resources>

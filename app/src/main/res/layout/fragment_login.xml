@@ -14,6 +14,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_num"
+        android:inputType="number"
         android:layout_gravity="top"/>
 
     <EditText
@@ -24,6 +25,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/et_pwd"
         android:inputType="textPassword"
+        android:imeOptions="actionDone"
         />
 
 </LinearLayout>

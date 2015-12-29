@@ -89,6 +89,8 @@ public class BitJwcSession extends Session{
                     };
                     HttpResponse response = loginRequest.send();
 
+                    if (loginUrl.toString().length() < 42)
+                        throw new IOException("Intranet connection error");
                     sessionId = loginUrl.toString().substring(11,42);
                     return response.getContent();
                 } catch (IOException e) {
