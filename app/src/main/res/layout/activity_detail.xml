@@ -84,7 +84,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_timelapse_black_24dp"/>
+                    android:src="@drawable/ic_schedule_black_24dp"/>
                 <TextView
                     android:id="@+id/tv_week_cycle"
                     android:layout_width="match_parent"
@@ -99,7 +99,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_thumb_up_black_24dp"/>
+                    android:src="@drawable/ic_lock_open_black_24dp"/>
                 <TextView
                     android:id="@+id/tv_credit"
                     android:layout_width="match_parent"

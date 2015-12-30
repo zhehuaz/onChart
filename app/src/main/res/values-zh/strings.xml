@@ -8,6 +8,7 @@
     <string name="weekday_Tue">周二</string>
     <string name="weekday_Wed">周三</string>
     <string name="title_login">点击登录</string>
+    <string name="login_submit">登录</string>
     <string name="action_settings">设置</string>
     <string name="action_share">分享</string>
     <string name="action_about">关于</string>
@@ -17,6 +18,8 @@
     <string name="subtitle_evening">晚上</string>
     <string name="subtitle_morning">早上</string>
     <string name="weekday_week">周</string>
+    <string name="detail_week_pattern">%1$d - %2$d 周</string>
+    <string name="detail_credit_unit">学分</string>
     <string name="title_activity_settings">设置</string>
     <string name="num_weekday_five">5天</string>
     <string name="num_weekday_seven">7天</string>
@@ -29,7 +32,7 @@
     <string name="message_logout">确定要登出么？</string>
     <string name="title_activity_about">关于</string>
     <string name="title_activity_detail">详细</string>
-    <string name="wechat_share_title">求start~</string>
+    <string name="wechat_share_title">求点赞~</string>
     <string name="action_license">开放源代码许可</string>
     <string name="action_donate">感谢作者</string>
     <string name="button_donate">打赏一杯咖啡</string>
