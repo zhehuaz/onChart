@@ -18,7 +18,7 @@
     <string name="subtitle_evening">晚上</string>
     <string name="subtitle_morning">早上</string>
     <string name="weekday_week">周</string>
-    <string name="detail_week_pattern">%1$d - %2$d 周</string>
+    <string name="detail_week_pattern">%1$d - %2$d周</string>
     <string name="detail_credit_unit">学分</string>
     <string name="title_activity_settings">设置</string>
     <string name="num_weekday_five">5天</string>
