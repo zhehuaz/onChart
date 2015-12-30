@@ -83,7 +83,7 @@ public class BitJwcSession extends Session{
                     HttpRequest loginRequest = new HttpRequest(loginUrl.toString(), RequestMethod.POST) {
                         @Override
                         protected String getSentData() {
-                            return "__VIEWSTATE=dDwtMjEzNzcwMzMxNTs7Pj9pP88cTsuxYpAH69XV04GPpkse&TextBox1="+ stuNum +"&TextBox2="+ psw +"&RadioButtonList1=%D1%A7%C9%FA&Button1=+%B5%C7+%C2%BC+\n" +
+                            return "__VIEWSTATE=dDwtMjEzNzcwMzMxNTs7Pj9pP88cTsuxYpAH69XV04GPpkse&TextBox1="+ stuNum +"&TextBox2="+ pswToUnicode(psw) +"&RadioButtonList1=%D1%A7%C9%FA&Button1=+%B5%C7+%C2%BC+\n" +
                                     "Name\t\n";
                         }
                     };
@@ -105,7 +105,7 @@ public class BitJwcSession extends Session{
             @Override
             protected void onPostExecute(String result) {
                 if(result != null) {
-                    startResponse = result;
+                    startResponse = result;// TODO account validation here.
                     isStarted = true;
                     listener.onSessionStartOver();
 
@@ -135,7 +135,7 @@ public class BitJwcSession extends Session{
             };
             HttpResponse chartResponse = chartRequest.send();
             String htmlRes = chartResponse.getContent();
-            Log.i(TAG, "Response : " + chartResponse.getContent());
+            Log.i(TAG, "Response : " + chartResponse.getContent());// TODO account validation here.
             return StudentInfoParser.parseSchedule(htmlRes);
         }
         return new ArrayList<>();
@@ -176,9 +176,9 @@ public class BitJwcSession extends Session{
     @Override
     public List<Exam> fetchExams() throws IOException {
         String path = "/xskscx.aspx?xh=" + stuNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121604";
-        HttpRequest chartRequest = null;
+        HttpRequest examRequest = null;
         if(loginUrl != null) {
-            chartRequest = new HttpRequest(loginUrl.toString().substring(0, 43) + path) {
+            examRequest = new HttpRequest(loginUrl.toString().substring(0, 43) + path) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> param = new HashMap<>();
@@ -186,9 +186,10 @@ public class BitJwcSession extends Session{
                     return param;
                 }
             };
-            HttpResponse examsResponse = chartRequest.send();
-            String htmlRes = examsResponse.getContent();
-            Log.i(TAG, "Response : " + examsResponse.getContent());
+            HttpResponse examResponse = examRequest.send();
+            String htmlRes = examResponse.getContent();
+            Log.i(TAG, "Response : " + examResponse.getContent());
+            // TODO account validation here in case that the password has been changed.
             return StudentInfoParser.parseExams(htmlRes);
         }
         return new ArrayList<>();
@@ -219,7 +220,7 @@ public class BitJwcSession extends Session{
 
     @Override
     public void setPsw(String psw) {
-        this.psw = pswToUnicode(psw);
+        this.psw = psw;
     }
 
     @Override

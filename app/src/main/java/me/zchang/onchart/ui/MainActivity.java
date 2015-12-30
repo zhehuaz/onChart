@@ -369,7 +369,8 @@ public class MainActivity extends AppCompatActivity
                         preferenceManager.savePassword(session.getPsw());
                         setupList();
                     } else {
-                        Toast.makeText(MainActivity.this, "Invalid account", Toast.LENGTH_SHORT).show();
+                        // TODO bad logic.Account validation should be in Session.start()
+                        Toast.makeText(MainActivity.this, getString(R.string.alert_invalid_account), Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
                     Toast.makeText(MainActivity.this, "Save chart error", Toast.LENGTH_SHORT).show();

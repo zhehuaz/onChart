@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
+import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.PreferenceManager;
 
@@ -109,7 +110,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_SENDTO);
                 intent.setData(Uri.parse("mailto:" + getString(R.string.url_my_email)));
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Issue in onChart");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Issue in onChart " + BuildConfig.VERSION_NAME);
                 startActivity(intent);
             }
             return false;

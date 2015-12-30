@@ -86,6 +86,7 @@
     <string name="alert_no_alipay">No Alipay, thanks for your support.Introduce onChart to your friends if you like!</string>
     <string name="alert_clipboard_complete">My Alipay account has been copied in clipboard, donate 2 yuan to onChart, please.Thanks.</string>
     <string name="alert_network_error">Connection error.Check your intranet, please.</string>
+    <string name="alert_invalid_account">Invalid student No. or password.</string>
     <string name="alipay_account" translatable="false">zhehua_xiao@163.com</string>
 
     <string name="title_activity_exams">Exams</string>
