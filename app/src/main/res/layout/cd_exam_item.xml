@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="48dp"
-            android:text="I am a very very long long long long Course Name"
+            android:text="Course Name"
             android:textSize="17sp"
             android:layout_gravity="top"/>
         <TextView
