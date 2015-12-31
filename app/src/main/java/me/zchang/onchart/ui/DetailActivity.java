@@ -85,8 +85,8 @@ public class DetailActivity extends AppCompatActivity {
             lessonNameText.setText(course.getName());
             teacherText.setText(course.getTeacher());
             classroomText.setText(course.getClassroom());
-            weekText.setText(course.getStartWeek() + " - " + course.getEndWeek() + getString(R.string.weekday_week));
-            creditText.setText(course.getCredit() + "");
+            weekText.setText(String.format(getString(R.string.detail_week_pattern), course.getStartWeek(), course.getEndWeek()));
+            creditText.setText(course.getCredit() + getString(R.string.detail_credit_unit));
             labelImage.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
 
             labelImage.setOnClickListener(new View.OnClickListener() {

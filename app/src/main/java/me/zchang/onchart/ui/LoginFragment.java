@@ -56,7 +56,7 @@ public class LoginFragment extends DialogFragment {
 
 
         final AlertDialog dialog =  new AlertDialog.Builder(getActivity())
-                .setPositiveButton(getString(R.string.title_login), new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.login_submit), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (listener != null) {
