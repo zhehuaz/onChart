@@ -17,7 +17,7 @@
     <string name="subtitle_afternoon">下午</string>
     <string name="subtitle_evening">晚上</string>
     <string name="subtitle_morning">早上</string>
-    <string name="weekday_week">周</string>
+    <string name="weekday_week">%1$d 周</string>
     <string name="detail_week_pattern">%1$d - %2$d周</string>
     <string name="detail_credit_unit">学分</string>
     <string name="title_activity_settings">设置</string>
@@ -37,7 +37,7 @@
     <string name="action_donate">感谢作者</string>
     <string name="button_donate">打赏一杯咖啡</string>
     <string name="alert_clipboard_complete">我的支付宝账号已经复制到了粘贴板，请向onChart打赏2元，感谢！</string>
-    <string name="alert_no_alipay">您没有安装支付宝。非常感谢您的支持，如果喜欢onChart请推荐给你的朋友！</string>
+    <string name="alert_no_alipay">您没有安装支付宝。如果喜欢onChart请推荐给你的朋友！</string>
     <string name="title_psw">密码</string>
     <string name="title_account">学号</string>
     <string name="action_refresh">刷新</string>

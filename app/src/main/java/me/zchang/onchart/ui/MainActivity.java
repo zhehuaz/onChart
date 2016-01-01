@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,7 +81,7 @@ public class MainActivity extends AppCompatActivity
     private ImageView stuffImage;
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
-    private RelativeLayout loginArea;
+    private ViewGroup drawerHeader;
     private TextView nameText;
     private ProgressBar refreshProgress;
     private TextView weekdayText;
@@ -119,21 +118,21 @@ public class MainActivity extends AppCompatActivity
         weekdayTabs = (TabLayout) findViewById(R.id.tl_weekday);
         stuffImage = (ImageView) findViewById(R.id.iv_stuff);
         drawerLayout = (DrawerLayout) findViewById(R.id.dl_drawer);
-        loginArea = (RelativeLayout) findViewById(R.id.rl_login_click);
-        nameText = (TextView) findViewById(R.id.tv_stu_name);
-        weekdayText = (TextView) findViewById(R.id.tv_weekday);
-        versionText = (TextView) findViewById(R.id.tv_version);
         drawerView = (NavigationView) findViewById(R.id.nv_drawer);
         toolbarContainer = (AppBarLayout) findViewById(R.id.appb_container);
+        drawerHeader = (ViewGroup) drawerView.getHeaderView(0);
+        nameText = (TextView) drawerHeader.findViewById(R.id.tv_stu_name);
+        weekdayText = (TextView) drawerHeader.findViewById(R.id.tv_week);
+        versionText = (TextView) drawerHeader.findViewById(R.id.tv_version);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && firstLaunch)
             toolbarContainer.setTranslationY(- toolbarContainer.getLayoutParams().height);
 
         if (versionText != null)
             versionText.setText(BuildConfig.VERSION_NAME);
         if (weekdayText != null)
-            weekdayText.setText("" + curWeek);// an int would be considered as a resource id
+            weekdayText.setText(String.format(getString(R.string.weekday_week), curWeek));// an int would be considered as a resource id
 
-        loginArea.setOnClickListener(new View.OnClickListener() {
+        nameText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LoginFragment dialog = new LoginFragment();
@@ -434,11 +433,11 @@ public class MainActivity extends AppCompatActivity
         String stuName = preferenceManager.getName();
         if (stuName != null && !stuName.equals(getString(R.string.null_stu_name))) {
             nameText.setText(stuName);
-            loginArea.setClickable(false);
+            nameText.setClickable(false);
             drawerLayout.closeDrawers();
         } else {
             nameText.setText(getString(R.string.title_login));
-            loginArea.setClickable(true);
+            nameText.setClickable(true);
         }
     }
 
