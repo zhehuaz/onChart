@@ -18,9 +18,7 @@
 
 package me.zchang.onchart.session;
 
-import android.graphics.Path;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
@@ -29,17 +27,10 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import me.zchang.onchart.http.HttpError;
-import me.zchang.onchart.http.HttpRequest;
-import me.zchang.onchart.http.HttpResponse;
-import me.zchang.onchart.http.RequestMethod;
 import me.zchang.onchart.parser.StudentInfoParser;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.Exam;
@@ -70,16 +61,12 @@ public class BitJwcSession extends Session{
     private final OkHttpClient httpClient = new OkHttpClient();
     private String startResponse = null;
 
-    public BitJwcSession(HttpRequest request) {
-        super(request);
-    }
-
     public BitJwcSession(SessionStartListener listener) {
         super(listener);
     }
 
     @Override
-    public HttpRequest start() {
+    public String start() {
         new AsyncTask<String, String, String>() {
             @Override
             protected String doInBackground(String... strings) {
@@ -107,7 +94,7 @@ public class BitJwcSession extends Session{
                             .post(formBody)
                             .build();
                     Response loginResult = httpClient.newCall(loginRequest).execute();
-                    sessionId = loginUrl.substring(11, 42);
+                    //sessionId = loginUrl.substring(11, 42);
                     Request homeRequest = loginResult.request();
                     homeRequest = homeRequest.newBuilder().addHeader("Referer", loginUrl).build();
                     Response homePage = httpClient.newCall(homeRequest).execute();
@@ -172,17 +159,6 @@ public class BitJwcSession extends Session{
             return StudentInfoParser.parseWeek(weekResponse.body().string());
         }
         return 0;
-//
-//        HttpRequest weekRequest = null;
-//
-//        try {
-//            weekRequest = new HttpRequest(path);
-//            HttpResponse response = weekRequest.send();
-//            return StudentInfoParser.parseWeek(response.getContent());
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//        return 0;
     }
 
     /**
@@ -211,24 +187,6 @@ public class BitJwcSession extends Session{
             return StudentInfoParser.parseExams(htmlRes);
         }
         return new ArrayList<>();
-//
-//        HttpRequest examRequest = null;
-//        if(loginUrl != null) {
-//            examRequest = new HttpRequest(loginUrl.substring(0, 43) + path) {
-//                @Override
-//                protected Map<String, String> getParams() {
-//                    Map<String, String> param = new HashMap<>();
-//                    param.put("Referer", loginUrl);
-//                    return param;
-//                }
-//            };
-//            HttpResponse examResponse = examRequest.send();
-//            String htmlRes = examResponse.getContent();
-//            Log.i(TAG, "Response : " + examResponse.getContent());
-//            // TODO account validation here in case that the password has been changed.
-//            return StudentInfoParser.parseExams(htmlRes);
-//        }
-//        return new ArrayList<>();
     }
 
     /**
@@ -259,14 +217,6 @@ public class BitJwcSession extends Session{
         this.psw = psw;
     }
 
-    @Override
-    public void onError(HttpError error) {
-    }
-
-    @Override
-    public void onResponse(HttpResponse response) {
-        this.sessionId = parseSessionId(response.getRequestUrl());
-    }
 
     /**
      * Get session id from the redirected URL.
@@ -276,8 +226,6 @@ public class BitJwcSession extends Session{
     private String parseSessionId(URL url) {
         return url.getPath().substring(2,2 + 12);
     }
-
-
 
     public String getStartResponse() {
         return startResponse;

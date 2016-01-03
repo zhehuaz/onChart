@@ -4,8 +4,6 @@ package me.zchang.onchart.session;
 import java.io.IOException;
 import java.util.List;
 
-import me.zchang.onchart.http.HttpRequest;
-import me.zchang.onchart.http.HttpResponse;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.Exam;
 
@@ -28,10 +26,7 @@ import me.zchang.onchart.student.Exam;
 /**
  * A session to login and fetch interested information.
  */
-public abstract class Session implements HttpResponse.ResponseListener, HttpResponse.ErrorListener{
-    protected String sessionId;
-    protected HttpRequest loginRequest;
-    protected HttpResponse response;
+public abstract class Session{
     protected SessionStartListener listener;
 
     protected String stuNum;
@@ -48,13 +43,6 @@ public abstract class Session implements HttpResponse.ResponseListener, HttpResp
         this.listener = listener;
     }
 
-    public void setLoginRequest(HttpRequest loginRequest) {
-        this.loginRequest = loginRequest;
-    }
-
-    public Session(HttpRequest request) {
-        this.loginRequest = request;
-    }
     public Session() {}
     public Session(SessionStartListener listener) {
         this.listener = listener;
@@ -65,7 +53,7 @@ public abstract class Session implements HttpResponse.ResponseListener, HttpResp
      * via callback interface {@link SessionStartListener]}.
      * @return the HTTP request sent to start.
      */
-    public abstract HttpRequest start();
+    public abstract String start();
 
     public abstract List<Course> fetchSchedule() throws IOException;
     public abstract int fetchWeek() throws IOException;

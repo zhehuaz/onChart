@@ -19,6 +19,7 @@ package me.zchang.onchart.http;
 /**
  * An entity class passed as error message.
  */
+@Deprecated
 public class HttpError {
     public final static int ERROR_CODE_IO = 0x0;
     public final static int EROOR_CODE_MAL_FORMED_URL = 0x1;
