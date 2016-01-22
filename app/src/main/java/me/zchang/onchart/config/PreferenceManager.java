@@ -43,6 +43,7 @@ public class PreferenceManager {
     Context context;
     Gson gson;
     SharedPreferences sp;
+    CourseSQLiteHelper courseSQLiteHelper;
 
     public final static int labelImgs[] = {
             R.mipmap.little_label1,
@@ -68,6 +69,7 @@ public class PreferenceManager {
         SETTING_FILE = context.getString(R.string.pref_file_name);
 
         sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
+        courseSQLiteHelper = new CourseSQLiteHelper(context, context.getString(R.string.course_database_name), null, 1);
     }
 
     public void saveSchedule(List<Course> courses) throws IOException {

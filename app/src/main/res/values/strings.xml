@@ -37,6 +37,7 @@
     <string name="subtitle_evening">Evening</string>
     <string name="weekday_week">Week %1$d</string>
     <string name="detail_week_pattern">Week %1$d - %2$d</string>
+    <string name="detail_course_time">%1$d:%2$d</string>
     <string name="detail_credit_unit">credit</string>
     <string name="null_stu_name" translatable="false">-</string>
 
@@ -75,6 +76,7 @@
     <string name="title_my_birthday" translatable="false">1995&#8211;06&#8211;12</string>
     <string name="text_days">days</string>
     <string name="version_name" translatable="false">1.0</string>
+    <string name="course_database_name" translatable="false">course_data</string>
 
     <string name="url_my_github" translatable="false">https://github.com/LangleyChang/onChart</string>
     <string name="url_download" translatable="false">http://fir.im/onchart?release_id=5685ecfaf2fc423c1100000b&amp;fir_source=inside&amp;fir_campaign=share</string>

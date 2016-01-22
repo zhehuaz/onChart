@@ -28,6 +28,7 @@ public class MainApp extends Application {
         super.onCreate();
 
         preferenceManager = new PreferenceManager(this);
+
     }
 
     public PreferenceManager getPreferenceManager() {

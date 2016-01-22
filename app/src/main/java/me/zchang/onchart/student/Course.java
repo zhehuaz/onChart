@@ -34,6 +34,8 @@ package me.zchang.onchart.student;
  *    limitations under the License.
  */
 
+import java.sql.Time;
+
 import me.zchang.onchart.parser.Utils;
 
 /**
@@ -84,13 +86,15 @@ public class Course implements Comparable{
 
     /**
      * The time when the class begins.
+     * The time should be on the day of Jan. 1st, 1970.
      */
-    protected int startTime;
+    protected Time startTime;
 
     /**
      * The time when the class ends.
+     * The time should be on the day of Jan. 1st, 1970.
      */
-    protected int endTime;
+    protected Time endTime;
 
     /**
      * The first week of the course.
@@ -129,8 +133,8 @@ public class Course implements Comparable{
         teacher = "";
         classroom = "";
         weekDay = 0;
-        startTime = 0;
-        endTime = 0;
+        startTime = new Time(0);
+        endTime = new Time(0);
         startWeek = 0;
         endWeek = 0;
         weekParity = -1;
@@ -150,7 +154,7 @@ public class Course implements Comparable{
         this.weekDay = course.weekDay;
         this.startTime = course.startTime;
         this.endTime = course.endTime;
-        this.startWeek = course.startTime;
+        this.startWeek = course.startWeek;
         this.endWeek = course.endWeek;
         this.weekParity = course.weekParity;
         this.labelImgIndex = course.labelImgIndex;
@@ -205,19 +209,19 @@ public class Course implements Comparable{
         this.weekDay = weekDay;
     }
 
-    public int getStartTime() {
+    public Time getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(int startTime) {
+    public void setStartTime(Time startTime) {
         this.startTime = startTime;
     }
 
-    public int getEndTime() {
+    public Time getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
+    public void setEndTime(Time endTime) {
         this.endTime = endTime;
     }
 
@@ -267,7 +271,7 @@ public class Course implements Comparable{
     @Override
     public int compareTo(Object o) {
         Course l = (Course)o;
-        return this.getStartTime() - l.getStartTime();
+        return this.getStartTime().after(l.getStartTime()) ? 1 : -1;
     }
 
 

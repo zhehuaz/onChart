@@ -105,7 +105,7 @@ public class StudentInfoParser {
                         Pattern reg = Pattern.compile(pattern);
                         Matcher m = reg.matcher(textsTime[j]);
                         if (m.find()) {
-                            dupCourses.get(j).setStartTime(Integer.parseInt(m.group()));
+                            dupCourses.get(j).setStartTime(Utils.periodToTime(Integer.parseInt(m.group())));
                         }
                         String endTime = null;
                         while (m.find() && m.group().length() > 0) {
@@ -114,7 +114,7 @@ public class StudentInfoParser {
                         if (endTime == null) {
                             dupCourses.get(j).setEndTime(dupCourses.get(j).getStartTime());
                         } else {
-                            dupCourses.get(j).setEndTime(Integer.parseInt(endTime));
+                            dupCourses.get(j).setEndTime(Utils.periodToTime(Integer.parseInt(endTime)));
                         }
 
                         pattern = "\\d+(?=-)|\\d+(?=周)";

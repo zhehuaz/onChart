@@ -1,5 +1,7 @@
 package me.zchang.onchart.parser;
 
+import java.sql.Time;
+
 import me.zchang.onchart.R;
 
 /*
@@ -53,41 +55,47 @@ public class Utils {
             R.string.weekday_Sun
     };
 
+    public final static int MILLISECONDS_IN_ONE_HOUR = 1000 * 3600;
+    public final static int MILLISECONDS_IN_ONE_MINUTE = 1000 * 60;
+
+    public final static Time NOON_TIME = new Time(12 * MILLISECONDS_IN_ONE_HOUR);
+    public final static Time EVENING_TIME = new Time(18 * MILLISECONDS_IN_ONE_HOUR);
+
     /**
      *
      * @param i
      * @return
      */
-    public static String timeFromPeriod(int i) {
+    public static Time periodToTime(int i) {
         switch (i) {
             case 1:
-                return "08:00";
+                return new Time(8 * MILLISECONDS_IN_ONE_HOUR);
             case 2:
-                return "08:50";
+                return new Time(8 * MILLISECONDS_IN_ONE_HOUR + 50 * MILLISECONDS_IN_ONE_MINUTE);
             case 3:
-                return "09:50";
+                return new Time(9 * MILLISECONDS_IN_ONE_HOUR + 50 * MILLISECONDS_IN_ONE_MINUTE);
             case 4:
-                return "10:40";
+                return new Time(10 * MILLISECONDS_IN_ONE_HOUR + 40 * MILLISECONDS_IN_ONE_MINUTE);
             case 5:
-                return "11:30";
+                return new Time(11 * MILLISECONDS_IN_ONE_HOUR + 30 * MILLISECONDS_IN_ONE_MINUTE);
             case 6:
-                return "13:20";
+                return new Time(13 * MILLISECONDS_IN_ONE_HOUR + 20 * MILLISECONDS_IN_ONE_MINUTE);
             case 7:
-                return "14:10";
+                return new Time(14 * MILLISECONDS_IN_ONE_HOUR + 10 * MILLISECONDS_IN_ONE_MINUTE);
             case 8:
-                return "15:10";
+                return new Time(15 * MILLISECONDS_IN_ONE_HOUR + 40 * MILLISECONDS_IN_ONE_MINUTE);
             case 9:
-                return "16:10";
+                return new Time(16 * MILLISECONDS_IN_ONE_HOUR + 10 * MILLISECONDS_IN_ONE_MINUTE);
             case 10:
-                return "16:50";
+                return new Time(16 * MILLISECONDS_IN_ONE_HOUR + 50 * MILLISECONDS_IN_ONE_MINUTE);
             case 11:
-                return "18:30";
+                return new Time(18 * MILLISECONDS_IN_ONE_HOUR + 30 * MILLISECONDS_IN_ONE_MINUTE);
             case 12:
-                return "19:20";
+                return new Time(19 * MILLISECONDS_IN_ONE_HOUR + 30 * MILLISECONDS_IN_ONE_MINUTE);
             case 13:
-                return "20:10";
+                return new Time(20 * MILLISECONDS_IN_ONE_HOUR + 30 * MILLISECONDS_IN_ONE_MINUTE);
             default:
-                return "";
+                return new Time(0);
         }
     }
 
