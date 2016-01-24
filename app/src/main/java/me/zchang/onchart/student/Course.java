@@ -78,11 +78,10 @@ public class Course implements Comparable{
     protected String classroom;
 
     /**
-     * The day of the course in Chinese.
-     * You can easily translate it into index calling {@link Utils#parseIndexFromWeekday(char)}.
+     * The day of the course index.
      * The index is from 0 to 6 for Monday to Sunday.
      */
-    protected char weekDay;
+    protected int weekDay;
 
     /**
      * The time when the class begins.
@@ -201,11 +200,11 @@ public class Course implements Comparable{
         this.classroom = classroom;
     }
 
-    public char getWeekDay() {
+    public int getWeekDay() {
         return weekDay;
     }
 
-    public void setWeekDay(char weekDay) {
+    public void setWeekDay(int weekDay) {
         this.weekDay = weekDay;
     }
 

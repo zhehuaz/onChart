@@ -18,6 +18,7 @@
     <string name="weekday_Fri">Fri</string>
     <string name="weekday_Sat">Sat</string>
     <string name="weekday_Sun">Sun</string>
+    <string name="weekday_null">(null)</string>
     <string name="title_login">Login</string>
     <string name="login_submit">Login</string>
     <string name="message_logout">Are you sure to logout?</string>
@@ -60,6 +61,7 @@
     <string name="key_stu_no" translatable="false">student_number</string>
     <string name="key_psw" translatable="false">password</string>
     <string name="key_feedback" translatable="false">feedback</string>
+    <string name="key_last_version_code" translatable="false">last_version_code</string>
     <string name="title_activity_detail">Detail</string>
 
     <string name="intent_lesson" translatable="false">Lesson</string>
@@ -76,7 +78,6 @@
     <string name="title_my_birthday" translatable="false">1995&#8211;06&#8211;12</string>
     <string name="text_days">days</string>
     <string name="version_name" translatable="false">1.0</string>
-    <string name="course_database_name" translatable="false">course_data</string>
 
     <string name="url_my_github" translatable="false">https://github.com/LangleyChang/onChart</string>
     <string name="url_download" translatable="false">http://fir.im/onchart?release_id=5685ecfaf2fc423c1100000b&amp;fir_source=inside&amp;fir_campaign=share</string>
@@ -95,4 +96,8 @@
     <string name="alipay_account" translatable="false">zhehua_xiao@163.com</string>
 
     <string name="title_activity_exams">Exams</string>
+
+
+    <string name="course_database_name" translatable="false">course_data</string>
+    <string name="course_table_name" translatable="false">courses</string>
 </resources>

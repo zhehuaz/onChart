@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity
                 f.clearLesson();
             if (courses != null) {
                 for (Course course : courses) {
-                    int index = Utils.parseIndexFromWeekday(course.getWeekDay());
+                    int index = course.getWeekDay();
                     if (index >= 0 && curWeek >= course.getStartWeek() && curWeek <= course.getEndWeek()) {
                         if (course.getWeekParity() < 0)
                             fragments.get(index).addLesson(course);

@@ -21,6 +21,8 @@ package me.zchang.onchart.parser;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.squareup.okhttp.internal.Util;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -97,9 +99,9 @@ public class StudentInfoParser {
                         dupCourses.get(j).setClassroom(s);
 
                         if (textsTime[j].length() == 1)
-                            dupCourses.get(j).setWeekDay('0');
+                            dupCourses.get(j).setWeekDay(7);// the null value
                         else
-                            dupCourses.get(j).setWeekDay(textsTime[j].charAt(1));
+                            dupCourses.get(j).setWeekDay(Utils.parseIndexFromWeekday(textsTime[j].charAt(1)));
 
                         String pattern = "(\\d)+(?=,)|(\\d+)*(?=节)";
                         Pattern reg = Pattern.compile(pattern);

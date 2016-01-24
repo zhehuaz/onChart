@@ -24,6 +24,7 @@ import me.zchang.onchart.R;
  * Created by langley on 11/17/15.
  */
 public class Utils {
+
     public static int parseIndexFromWeekday(char c) {
         switch (c) {
             case '一' :
@@ -41,7 +42,7 @@ public class Utils {
             case '日':
                 return 6;
             default:
-                return -1;
+                return 7;// index of the null weekday, as default
         }
     }
 
@@ -52,7 +53,8 @@ public class Utils {
             R.string.weekday_Thi,
             R.string.weekday_Fri,
             R.string.weekday_Sat,
-            R.string.weekday_Sun
+            R.string.weekday_Sun,
+            R.string.weekday_null
     };
 
     public final static int MILLISECONDS_IN_ONE_HOUR = 1000 * 3600;

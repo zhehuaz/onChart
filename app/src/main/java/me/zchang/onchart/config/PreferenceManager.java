@@ -2,6 +2,7 @@ package me.zchang.onchart.config;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -14,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
+import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.LabelCourse;
@@ -45,6 +47,8 @@ public class PreferenceManager {
     SharedPreferences sp;
     CourseSQLiteHelper courseSQLiteHelper;
 
+    private boolean firstLaunch = false;
+
     public final static int labelImgs[] = {
             R.mipmap.little_label1,
             R.mipmap.autumn,
@@ -61,8 +65,6 @@ public class PreferenceManager {
         sp.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
-
-
     public PreferenceManager(Context context) {
         this.context = context;
         gson = new Gson();
@@ -70,6 +72,15 @@ public class PreferenceManager {
 
         sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
         courseSQLiteHelper = new CourseSQLiteHelper(context, context.getString(R.string.course_database_name), null, 1);
+
+        if (getLastVersionCode() != BuildConfig.VERSION_CODE) {
+            firstLaunch = true;
+            saveLastVersionCode(BuildConfig.VERSION_CODE);
+            // create the database at the first launch.
+            SQLiteDatabase courseDatabase = courseSQLiteHelper.getWritableDatabase();
+            courseDatabase.close();
+        }
+
     }
 
     public void saveSchedule(List<Course> courses) throws IOException {
@@ -155,5 +166,17 @@ public class PreferenceManager {
 
     public void savePassword(String psw) {
         sp.edit().putString(context.getString(R.string.key_psw), psw).apply();
+    }
+
+    public boolean isFirstLaunch() {
+        return firstLaunch;
+    }
+
+    public int getLastVersionCode() {
+        return sp.getInt(context.getString(R.string.key_last_version_code), 0);
+    }
+
+    public void saveLastVersionCode(int code) {
+        sp.edit().putInt(context.getString(R.string.key_last_version_code), code).apply();
     }
 }
