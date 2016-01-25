@@ -150,7 +150,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             ViewGroup.LayoutParams params = ((ViewHolder) holder).frame.getLayoutParams();
             params.height =(((ViewHolder) holder).cardHeight >> 1 ) *
-                    (((int)course.getEndTime().getTime() - (int)course.getStartTime().getTime()) / Utils.MILLISECONDS_IN_ONE_HOUR + 1);
+                    (((int)course.getEndTime().getTime() - (int)course.getStartTime().getTime()) / Utils.MILLISECONDS_IN_ONE_CLASS + 1);
             ((ViewHolder) holder).frame.setLayoutParams(params);
 
             nabImg.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);

@@ -57,8 +57,9 @@ public class Utils {
             R.string.weekday_null
     };
 
-    public final static int MILLISECONDS_IN_ONE_HOUR = 1000 * 3600;
     public final static int MILLISECONDS_IN_ONE_MINUTE = 1000 * 60;
+    public final static int MILLISECONDS_IN_ONE_HOUR = MILLISECONDS_IN_ONE_MINUTE * 60;
+    public final static int MILLISECONDS_IN_ONE_CLASS = MILLISECONDS_IN_ONE_MINUTE * 50;
 
     public final static Time NOON_TIME = new Time(12 * MILLISECONDS_IN_ONE_HOUR);
     public final static Time EVENING_TIME = new Time(18 * MILLISECONDS_IN_ONE_HOUR);

@@ -5,6 +5,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import me.zchang.onchart.R;
 import me.zchang.onchart.student.Course;
 
@@ -26,7 +31,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
                 "name VARCHAR(100) NOT NULL," +
                 "department VARCHAR(100)," +
                 "credit FLOAT NOT NULL," +
-                "teacher VARCHAR(30) NOT NULL," +
+                "teacher VARCHAR(30)," +
                 "classroom VARCHAR(30) NOT NULL," +
                 "weekDay INT NOT NULL," +
                 "startTime TIME NOT NULL," +
@@ -34,11 +39,11 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
                 "startWeek INT NOT NULL," +
                 "endWeek INT NOT NULL," +
                 "weekParity INT," +
-                "labelImageIndex INT" +
+                "labelImgIndex INT" +
                 ");");
     }
 
-    public void addCourse(Course course) {
+    public void addCourse(Course course) {// TODO validate course
         SQLiteDatabase courseDatabase = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("id", course.getId());
@@ -47,12 +52,18 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
         values.put("credit", course.getCredit());
         values.put("classroom", course.getClassroom());
         values.put("weekDay", course.getWeekDay());
-        //values.put();
-//        courseDatabase.insert(
-//                context.getString(R.string.course_table_name,
-//                null,
-//
-//                        ));
+        values.put("startWeek", course.getStartWeek());
+        values.put("endWeek", course.getEndWeek());
+        DateFormat format = new SimpleDateFormat("HH:mm");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        values.put("startTime", format.format(course.getStartTime()));
+        values.put("endTime", format.format(course.getEndTime()));
+        values.put("weekParity", course.getWeekParity());
+        values.put("labelImgIndex", course.getLabelImgIndex());
+
+        courseDatabase.insert(
+                context.getString(R.string.course_table_name),
+                null,values);
     }
 
     @Override

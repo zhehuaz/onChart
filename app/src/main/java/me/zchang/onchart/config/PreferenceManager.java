@@ -93,8 +93,15 @@ public class PreferenceManager {
         SharedPreferences.Editor editor = sp.edit();
         for (Course course : courses) {
             editor.putInt(course.getId() + "", course.getLabelImgIndex());
+
+
+
+            // test
+            courseSQLiteHelper.addCourse(course);
         }
         editor.apply();
+
+
     }
 
     public List<Course> getSchedule() throws FileNotFoundException {

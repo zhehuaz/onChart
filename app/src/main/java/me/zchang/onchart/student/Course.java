@@ -151,8 +151,8 @@ public class Course implements Comparable{
         this.classroom = new String(course.classroom);
         this.credit = course.credit;
         this.weekDay = course.weekDay;
-        this.startTime = course.startTime;
-        this.endTime = course.endTime;
+        this.startTime = (Time)course.startTime.clone();
+        this.endTime = (Time)course.endTime.clone();
         this.startWeek = course.startWeek;
         this.endWeek = course.endWeek;
         this.weekParity = course.weekParity;

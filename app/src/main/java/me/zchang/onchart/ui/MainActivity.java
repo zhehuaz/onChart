@@ -40,7 +40,6 @@ import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.PreferenceManager;
-import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
 import me.zchang.onchart.student.Course;
@@ -186,15 +185,15 @@ public class MainActivity extends AppCompatActivity
             courses = null;
         } finally {
             for (LessonListFragment f : fragments)
-                f.clearLesson();
+                f.clearCourse();
             if (courses != null) {
                 for (Course course : courses) {
                     int index = course.getWeekDay();
                     if (index >= 0 && curWeek >= course.getStartWeek() && curWeek <= course.getEndWeek()) {
                         if (course.getWeekParity() < 0)
-                            fragments.get(index).addLesson(course);
+                            fragments.get(index).addCourse(course);
                         else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
-                            fragments.get(index).addLesson(course);
+                            fragments.get(index).addCourse(course);
                     }
                 }
             }

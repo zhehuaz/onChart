@@ -28,6 +28,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -114,7 +115,7 @@ public class StudentInfoParser {
                             endTime = m.group();
                         }
                         if (endTime == null) {
-                            dupCourses.get(j).setEndTime(dupCourses.get(j).getStartTime());
+                            dupCourses.get(j).setEndTime((Time)dupCourses.get(j).getStartTime().clone());
                         } else {
                             dupCourses.get(j).setEndTime(Utils.periodToTime(Integer.parseInt(endTime)));
                         }
@@ -130,7 +131,7 @@ public class StudentInfoParser {
                         if (m.find()) {
                             dupCourses.get(j).setEndWeek(Integer.parseInt(m.group()));
                         } else {
-                            dupCourses.get(j).setEndTime(dupCourses.get(j).getStartTime());
+                            dupCourses.get(j).setEndWeek(dupCourses.get(j).getStartWeek());
                         }
 
                         pattern = "(单|双)(?=周)";

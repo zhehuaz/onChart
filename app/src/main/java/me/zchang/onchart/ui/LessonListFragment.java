@@ -106,12 +106,12 @@ public class LessonListFragment extends Fragment {
         slideAnimFlag = false;
     }
 
-    public void clearLesson() {
+    public void clearCourse() {
         if(courses != null)
             courses.clear();
     }
 
-    public void addLesson(Course course) {
+    public void addCourse(Course course) {
         if(course != null) {
             courses.add(course);
         }
