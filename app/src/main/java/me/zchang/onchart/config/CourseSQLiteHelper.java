@@ -43,6 +43,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
         COURSE_END_TIME,
         COURSE_START_WEEK,
         COURSE_END_WEEK,
+        COURSE_WEEK_PARITY,
         COURSE_LABEL_IMG_INDEX
     }
 
@@ -99,6 +100,19 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
             try {
                 newCourse.setStartTime(new Time(timeFormat.parse(sStartTime).getTime()));
                 newCourse.setEndTime(new Time(timeFormat.parse(sEndTime).getTime()));
+                newCourse.setId(cursor.getInt(COURSE_TABLE_INDICES.COURSE_ID.ordinal()));
+                newCourse.setName(cursor.getString(COURSE_TABLE_INDICES.COURSE_NAME.ordinal()));
+                newCourse.setDepartment(cursor.getString(COURSE_TABLE_INDICES.COURSE_DEPARTMENT.ordinal()));
+                newCourse.setCredit(cursor.getFloat(COURSE_TABLE_INDICES.COURSE_CREDIT.ordinal()));
+                newCourse.setTeacher(cursor.getString(COURSE_TABLE_INDICES.COURSE_TEACHER.ordinal()));
+                newCourse.setClassroom(cursor.getString(COURSE_TABLE_INDICES.COURSE_CLASSROOM.ordinal()));
+                newCourse.setWeekDay(cursor.getInt(COURSE_TABLE_INDICES.COURSE_WEEKDAY.ordinal()));
+                newCourse.setStartWeek(cursor.getInt(COURSE_TABLE_INDICES.COURSE_START_WEEK.ordinal()));
+                newCourse.setEndWeek(cursor.getInt(COURSE_TABLE_INDICES.COURSE_END_WEEK.ordinal()));
+                newCourse.setLabelImgIndex(cursor.getInt(COURSE_TABLE_INDICES.COURSE_LABEL_IMG_INDEX.ordinal()));
+                // TODO unchecked, how to get a byte from cursor?
+                newCourse.setWeekParity((byte)cursor.getShort(COURSE_TABLE_INDICES.COURSE_WEEK_PARITY.ordinal()));
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
