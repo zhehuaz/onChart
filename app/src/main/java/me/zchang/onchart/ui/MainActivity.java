@@ -189,12 +189,19 @@ public class MainActivity extends AppCompatActivity
             if (courses != null) {
                 for (Course course : courses) {
                     int index = course.getWeekDay();
-                    if (index >= 0 && curWeek >= course.getStartWeek() && curWeek <= course.getEndWeek()) {
-                        if (course.getWeekParity() < 0)
-                            fragments.get(index).addCourse(course);
-                        else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
-                            fragments.get(index).addCourse(course);
-                    }
+                    // TODO only for test
+                    if (index >= 0 && index < fragments.size())
+                        fragments.get(index).addCourse(course);
+//
+//                    if (index >= 0
+//                            && index < fragments.size()
+//                            && curWeek >= course.getStartWeek()
+//                            && curWeek <= course.getEndWeek()) {
+//                        if (course.getWeekParity() < 0)
+//                            fragments.get(index).addCourse(course);
+//                        else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
+//                            fragments.get(index).addCourse(course);
+//                    }
                 }
             }
             for (LessonListFragment f : fragments) {

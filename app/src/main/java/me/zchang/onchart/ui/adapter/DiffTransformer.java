@@ -50,7 +50,6 @@ public class DiffTransformer implements ViewPager.PageTransformer {
     }
 
     private float offsetOf(int i, float position) {
-        Log.d("DiffTransformer", "position " + position);
         if (position <= 1)
             return ( position / 2 * pageWidth);
         else

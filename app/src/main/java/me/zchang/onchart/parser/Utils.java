@@ -86,9 +86,9 @@ public class Utils {
             case 7:
                 return new Time(14 * MILLISECONDS_IN_ONE_HOUR + 10 * MILLISECONDS_IN_ONE_MINUTE);
             case 8:
-                return new Time(15 * MILLISECONDS_IN_ONE_HOUR + 40 * MILLISECONDS_IN_ONE_MINUTE);
+                return new Time(15 * MILLISECONDS_IN_ONE_HOUR + 10 * MILLISECONDS_IN_ONE_MINUTE);
             case 9:
-                return new Time(16 * MILLISECONDS_IN_ONE_HOUR + 10 * MILLISECONDS_IN_ONE_MINUTE);
+                return new Time(16 * MILLISECONDS_IN_ONE_HOUR);
             case 10:
                 return new Time(16 * MILLISECONDS_IN_ONE_HOUR + 50 * MILLISECONDS_IN_ONE_MINUTE);
             case 11:

@@ -20,7 +20,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.PreferenceManager;
@@ -141,12 +144,9 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             final CardView cardView = ((ViewHolder) holder).cardView;
             nameText.setText(course.getName());
             roomText.setText(course.getClassroom());
-            timeText.setText(
-                    String.format(
-                            context.getString(R.string.detail_course_time),
-                            course.getStartTime().getTime() / Utils.MILLISECONDS_IN_ONE_HOUR,
-                            course.getStartTime().getTime() / Utils.MILLISECONDS_IN_ONE_MINUTE)
-            );
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+            timeText.setText(dateFormat.format(course.getStartTime()));
 
             ViewGroup.LayoutParams params = ((ViewHolder) holder).frame.getLayoutParams();
             params.height =(((ViewHolder) holder).cardHeight >> 1 ) *
