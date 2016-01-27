@@ -94,7 +94,7 @@ public class DetailActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     course.setToNextLabelImg();
                     // update local storage only.
-                    ((MainApp) getApplication()).getPreferenceManager().savePicPathIndex(course.getId(), course.getLabelImgIndex());
+                    ((MainApp) getApplication()).getPreferenceManager().saveImgPathIndex(course.getId(), course.getLabelImgIndex());
                     labelImage.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
                     retIntent.putExtra(getString(R.string.intent_label_image_index), course.getLabelImgIndex());
                     setResult(RESULT_OK, retIntent);

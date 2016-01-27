@@ -4,15 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+
 import java.util.List;
 
 import me.zchang.onchart.BuildConfig;
@@ -43,7 +39,6 @@ public class PreferenceManager {
     final static String CHART_FILE_NAME = "chart.js";
 
     Context context;
-    Gson gson;
     SharedPreferences sp;
     CourseSQLiteHelper courseSQLiteHelper;
 
@@ -67,7 +62,6 @@ public class PreferenceManager {
 
     public PreferenceManager(Context context) {
         this.context = context;
-        gson = new Gson();
         SETTING_FILE = context.getString(R.string.pref_file_name);
 
         sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
@@ -84,36 +78,14 @@ public class PreferenceManager {
     }
 
     public void saveSchedule(List<Course> courses) throws IOException {
-        String json = gson.toJson(courses);
-        FileOutputStream fos = context.openFileOutput(CHART_FILE_NAME, Context.MODE_PRIVATE);
-        fos.write(json.getBytes());
-        fos.close();
-
-        SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
         for (Course course : courses) {
-            editor.putInt(course.getId() + "", course.getLabelImgIndex());
-
-
-
-            // test
             courseSQLiteHelper.addCourse(course);
         }
-        editor.apply();
-
-
     }
 
     public List<Course> getSchedule() throws FileNotFoundException {
-        Reader reader = new InputStreamReader(context.openFileInput(CHART_FILE_NAME));
-        List<Course> courses = gson.fromJson(reader, new TypeToken<List<LabelCourse>>() {
-        }.getType());
 
-        for (Course course : courses) {
-            course.setLabelImgIndex(getPicPathIndex(course.getId()));
-        }
-
-        return courses;
+        return courseSQLiteHelper.getCourses();
     }
 
     public static void deleteSchedule(Context context) {
@@ -121,12 +93,12 @@ public class PreferenceManager {
         file.delete();
     }
 
-    public void savePicPathIndex(int key, int resIndex) {
-        sp.edit().putInt(key + "", resIndex).commit();
+    public void saveImgPathIndex(int key, int resIndex) {
+        courseSQLiteHelper.setImgPathIndex(key, resIndex);
     }
 
-    public int getPicPathIndex(int key) {
-        return sp.getInt(key + "", 0);
+    public int getImgPathIndex(int key) {
+        return courseSQLiteHelper.getImgPathIndex(key, 0);
     }
 
     public void saveName(String name) {
