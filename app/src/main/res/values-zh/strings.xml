@@ -47,4 +47,5 @@
     <string name="text_share">好用的课表应用，一键导入，北理专属，快去下载！</string>
     <string name="action_feedback">反馈</string>
     <string name="alert_invalid_account">学号或密码错误</string>
+    <string name="alert_no_email_app">未找到电子邮件App。请点击“关于”获取我的电子邮箱，并通过邮件反馈。</string>
 </resources>

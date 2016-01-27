@@ -87,8 +87,6 @@ public class PreferenceManager {
     }
 
     public PreferenceManager deleteSchedule() {
-//        File file = new File(context.getFilesDir(), CHART_FILE_NAME);
-//        file.delete();
         courseSQLiteHelper.clearCourses();
         return this;
     }
