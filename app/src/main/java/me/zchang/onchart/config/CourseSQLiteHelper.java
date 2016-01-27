@@ -141,6 +141,11 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
         return courses;
     }
 
+    public void clearCourses() {
+        SQLiteDatabase courseDatabase = getWritableDatabase();
+        courseDatabase.execSQL("DELETE FROM " + context.getString(R.string.course_table_name));
+    }
+
     public void setImgPathIndex(int id, int resIndex) {
         SQLiteDatabase courseDatabase = getWritableDatabase();
 

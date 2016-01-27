@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity
 
     private void setupFragments() {
         fragments = new ArrayList<>();
-        for (int i = 0;i < Math.abs(numOfWeekdays);i ++) {
+        for (int i = 0; i < Math.abs(numOfWeekdays); i ++) {
             fragments.add(new LessonListFragment());
         }
         mainListAdapter = new CoursePagerAdapter(
@@ -177,21 +177,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setupList() {
-
         List<Course> courses = null;
-        try {
-            courses = preferenceManager.getSchedule();
-        } catch (FileNotFoundException e) {
-            courses = null;
-        } finally {
-            for (LessonListFragment f : fragments)
-                f.clearCourse();
-            if (courses != null) {
-                for (Course course : courses) {
-                    int index = course.getWeekDay();
-                    // TODO only for test
-                    if (index >= 0 && index < fragments.size())
-                        fragments.get(index).addCourse(course);
+        courses = preferenceManager.getSchedule();
+        for (LessonListFragment f : fragments)
+            f.clearCourse();
+        if (courses != null) {
+            for (Course course : courses) {
+                int index = course.getWeekDay();
+                // TODO only for test
+                if (index >= 0 && index < fragments.size())
+                    fragments.get(index).addCourse(course);
 //
 //                    if (index >= 0
 //                            && index < fragments.size()
@@ -202,8 +197,8 @@ public class MainActivity extends AppCompatActivity
 //                        else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
 //                            fragments.get(index).addCourse(course);
 //                    }
-                }
             }
+
             for (LessonListFragment f : fragments) {
                 f.updateList();
             }
@@ -217,7 +212,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setupDrawer() {
-
         drawerView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -225,7 +219,6 @@ public class MainActivity extends AppCompatActivity
                 int id = menuItem.getItemId();
                 if(id == R.id.item_settings) {
                     Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-
                     startActivityForResult(intent, REQ_SETTING);
                 } else if (id == R.id.item_exams) {
                     Intent intent = new Intent(MainActivity.this, ExamsActivity.class);
@@ -283,7 +276,6 @@ public class MainActivity extends AppCompatActivity
                         today.getTimeInMillis()
                                 - ((today.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY) % 7) * MILLISECONDS_IN_A_DAY);
 
-
                 if(curWeek != integer && integer > 0) {
                     curWeek = integer;
                     preferenceManager.saveWeek(curWeek);
@@ -332,7 +324,6 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -367,21 +358,15 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             protected void onPostExecute(List<Course> courses) {
-                try {
-                    if(courses != null) {
-                        preferenceManager.saveSchedule(courses);
-                        preferenceManager.saveStuNo(session.getStuNum());
-                        preferenceManager.savePassword(session.getPsw());
-                        setupList();
-                    } else {
-                        // TODO bad logic.Account validation should be in Session.start()
-                        Toast.makeText(MainActivity.this, getString(R.string.alert_invalid_account), Toast.LENGTH_SHORT).show();
-                    }
-                } catch (IOException e) {
-                    Toast.makeText(MainActivity.this, "Save chart error", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
+                if(courses != null) {
+                    preferenceManager.saveSchedule(courses);
+                    preferenceManager.saveStuNo(session.getStuNum());
+                    preferenceManager.savePassword(session.getPsw());
+                    setupList();
+                } else {
+                    // TODO bad logic.Account validation should be in Session.start()
+                    Toast.makeText(MainActivity.this, getString(R.string.alert_invalid_account), Toast.LENGTH_SHORT).show();
                 }
-
 
                 String stuName = null;
                 try {
@@ -404,7 +389,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSessionStartError(Session.ErrorCode ec) {
-        //Looper.prepare();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

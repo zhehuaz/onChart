@@ -11,6 +11,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 
 import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
+import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.PreferenceManager;
 
 /*
@@ -43,7 +44,6 @@ public class SettingsActivity extends AppCompatActivity {
                 new SettingsFragment()).commit();
     }
 
-
     public static class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener{
         Intent retIntent;
         @Override
@@ -51,7 +51,7 @@ public class SettingsActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             retIntent = new Intent();
             getPreferenceManager().setSharedPreferencesName(getResources().getString(me.zchang.onchart.R.string.pref_file_name));
-            addPreferencesFromResource(me.zchang.onchart.R.xml.preferences);
+            addPreferencesFromResource(R.xml.preferences);
 
             android.support.v7.preference.Preference preference = findPreference(getString(me.zchang.onchart.R.string.key_num_of_weekday));
             preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -86,12 +86,12 @@ public class SettingsActivity extends AppCompatActivity {
                         .setPositiveButton(getString(R.string.action_positive), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                getPreferenceManager().getSharedPreferences().edit()
-                                        .putString(getString(R.string.key_name), getString(R.string.null_stu_name))
-                                        .putString(getString(R.string.key_stu_no), "")
-                                        .putString(getString(R.string.key_psw), "")
-                                        .apply();
-                                PreferenceManager.deleteSchedule(getActivity());
+                                ((MainApp)getActivity().getApplication())
+                                        .getPreferenceManager()
+                                        .deleteSchedule()
+                                        .saveName("-")
+                                        .saveStuNo("")
+                                        .savePassword("");
                                 retIntent.putExtra(getString(R.string.key_logout), FLAG_LOGOUT);
                                 getActivity().setResult(RESULT_OK, retIntent);
                             }
@@ -130,5 +130,4 @@ public class SettingsActivity extends AppCompatActivity {
 
         }
     }
-
 }

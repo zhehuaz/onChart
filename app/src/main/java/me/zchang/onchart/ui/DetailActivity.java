@@ -87,7 +87,7 @@ public class DetailActivity extends AppCompatActivity {
             classroomText.setText(course.getClassroom());
             weekText.setText(String.format(getString(R.string.detail_week_pattern), course.getStartWeek(), course.getEndWeek()));
             creditText.setText(course.getCredit() + getString(R.string.detail_credit_unit));
-            labelImage.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
+            labelImage.setImageResource(PreferenceManager.labelImgIndices[course.getLabelImgIndex()]);
 
             labelImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -95,7 +95,7 @@ public class DetailActivity extends AppCompatActivity {
                     course.setToNextLabelImg();
                     // update local storage only.
                     ((MainApp) getApplication()).getPreferenceManager().saveImgPathIndex(course.getId(), course.getLabelImgIndex());
-                    labelImage.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
+                    labelImage.setImageResource(PreferenceManager.labelImgIndices[course.getLabelImgIndex()]);
                     retIntent.putExtra(getString(R.string.intent_label_image_index), course.getLabelImgIndex());
                     setResult(RESULT_OK, retIntent);
                 }

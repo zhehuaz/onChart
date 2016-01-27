@@ -32,7 +32,7 @@ public class LabelCourse extends Course implements Parcelable{
     }
 
     public void setToNextLabelImg() {
-        this.labelImgIndex = (this.labelImgIndex + 1) % PreferenceManager.labelImgs.length;
+        this.labelImgIndex = (this.labelImgIndex + 1) % PreferenceManager.labelImgIndices.length;
     }
 
     @Override

@@ -3,7 +3,7 @@ package me.zchang.onchart.config;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-
+import android.support.v7.preference.Preference;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,7 +14,6 @@ import java.util.List;
 import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
 import me.zchang.onchart.student.Course;
-import me.zchang.onchart.student.LabelCourse;
 
 
 /*
@@ -44,7 +43,7 @@ public class PreferenceManager {
 
     private boolean firstLaunch = false;
 
-    public final static int labelImgs[] = {
+    public final static int labelImgIndices[] = {
             R.mipmap.little_label1,
             R.mipmap.autumn,
             R.mipmap.winter,
@@ -74,45 +73,49 @@ public class PreferenceManager {
             SQLiteDatabase courseDatabase = courseSQLiteHelper.getWritableDatabase();
             courseDatabase.close();
         }
-
     }
 
-    public void saveSchedule(List<Course> courses) throws IOException {
+    public PreferenceManager saveSchedule(List<Course> courses) {
         for (Course course : courses) {
             courseSQLiteHelper.addCourse(course);
         }
+        return this;
     }
 
-    public List<Course> getSchedule() throws FileNotFoundException {
-
+    public List<Course> getSchedule() {
         return courseSQLiteHelper.getCourses();
     }
 
-    public static void deleteSchedule(Context context) {
-        File file = new File(context.getFilesDir(), CHART_FILE_NAME);
-        file.delete();
+    public PreferenceManager deleteSchedule() {
+//        File file = new File(context.getFilesDir(), CHART_FILE_NAME);
+//        file.delete();
+        courseSQLiteHelper.clearCourses();
+        return this;
     }
 
-    public void saveImgPathIndex(int key, int resIndex) {
+    public PreferenceManager saveImgPathIndex(int key, int resIndex) {
         courseSQLiteHelper.setImgPathIndex(key, resIndex);
+        return this;
     }
 
     public int getImgPathIndex(int key) {
         return courseSQLiteHelper.getImgPathIndex(key, 0);
     }
 
-    public void saveName(String name) {
+    public PreferenceManager saveName(String name) {
         if(name != null) {
             sp.edit().putString(context.getString(R.string.key_name), name).apply();
         }
+        return this;
     }
 
     public String getName() {
         return sp.getString(context.getString(R.string.key_name), null);
     }
 
-    public void saveWeek(int week) {
+    public PreferenceManager saveWeek(int week) {
         sp.edit().putInt(context.getString(R.string.key_week), week).apply();
+        return this;
     }
 
     public int getWeek() {
@@ -127,24 +130,27 @@ public class PreferenceManager {
         return sp.getLong(context.getString(R.string.key_last_fetch_week_time), 0);
     }
 
-    public void saveLastFetchWeekTime(long value) {
+    public PreferenceManager saveLastFetchWeekTime(long value) {
         sp.edit().putLong(context.getString(R.string.key_last_fetch_week_time), value).apply();
+        return this;
     }
 
     public String getStuNo() {
         return sp.getString(context.getString(R.string.key_stu_no), "");
     }
 
-    public void saveStuNo(String stuNo) {
+    public PreferenceManager saveStuNo(String stuNo) {
         sp.edit().putString(context.getString(R.string.key_stu_no), stuNo).apply();
+        return this;
     }
 
     public String getPassword() {
         return sp.getString(context.getString(R.string.key_psw), "");
     }
 
-    public void savePassword(String psw) {
+    public PreferenceManager savePassword(String psw) {
         sp.edit().putString(context.getString(R.string.key_psw), psw).apply();
+        return this;
     }
 
     public boolean isFirstLaunch() {
@@ -155,7 +161,8 @@ public class PreferenceManager {
         return sp.getInt(context.getString(R.string.key_last_version_code), 0);
     }
 
-    public void saveLastVersionCode(int code) {
+    public PreferenceManager saveLastVersionCode(int code) {
         sp.edit().putInt(context.getString(R.string.key_last_version_code), code).apply();
+        return this;
     }
 }

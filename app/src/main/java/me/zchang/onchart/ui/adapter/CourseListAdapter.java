@@ -153,7 +153,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     (((int)course.getEndTime().getTime() - (int)course.getStartTime().getTime()) / Utils.MILLISECONDS_IN_ONE_CLASS + 1);
             ((ViewHolder) holder).frame.setLayoutParams(params);
 
-            nabImg.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
+            nabImg.setImageResource(PreferenceManager.labelImgIndices[course.getLabelImgIndex()]);
 
 
             Drawable nab = nabImg.getDrawable();
