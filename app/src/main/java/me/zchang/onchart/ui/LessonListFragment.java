@@ -6,19 +6,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import me.zchang.onchart.R;
-import me.zchang.onchart.exception.LessonStartTimeException;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.ui.adapter.CourseListAdapter;
 
@@ -66,12 +63,8 @@ public class LessonListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try {
-            adapter = new CourseListAdapter(context, courses, getId());
-        } catch (LessonStartTimeException e) {
-            Toast.makeText(getActivity(), "Unknown lesson time", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
+
+        adapter = new CourseListAdapter(context, courses, getId());
     }
 
     @Override
@@ -83,17 +76,14 @@ public class LessonListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "Fragment show");
+        //Log.d(TAG, "Fragment show");
         View rootView = inflater.inflate(R.layout.fragment_lesson_list, container, false);
         courseList = (RecyclerView) rootView.findViewById(R.id.rv_lessons);
         courseList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        try {
-            adapter.setCourses(courses);
-        } catch (LessonStartTimeException e) {
-            Toast.makeText(getActivity(), "Unknown lesson time", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
+
+        adapter.setCourses(courses);
+
         courseList.setAdapter(adapter);
         if (slideAnimFlag) {
             courseList.setLayoutAnimation(
@@ -116,12 +106,12 @@ public class LessonListFragment extends Fragment {
         slideAnimFlag = false;
     }
 
-    public void clearLesson() {
+    public void clearCourse() {
         if(courses != null)
             courses.clear();
     }
 
-    public void addLesson(Course course) {
+    public void addCourse(Course course) {
         if(course != null) {
             courses.add(course);
         }
@@ -130,12 +120,10 @@ public class LessonListFragment extends Fragment {
 
     public void updateList() {
         if(adapter != null) {
-            try {
-                // TODO　bad logic
-                adapter.processLessons();
-            } catch (LessonStartTimeException e) {
-                e.printStackTrace();
-            }
+
+            // TODO　bad logic
+            adapter.processLessons();
+
             adapter.notifyDataSetChanged();
         }
     }

@@ -38,14 +38,7 @@
             android:textSize="14sp"
             android:alpha="0.87"
             android:layout_marginLeft="22dp"/>
-        <TextView
-            android:id="@+id/tv_weekday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/tv_week"
-            android:text="Hello"
-            android:textColor="@color/white"
-            android:layout_centerVertical="true"/>
+
         <TextView
             android:id="@+id/tv_week"
             android:layout_width="wrap_content"

@@ -24,6 +24,7 @@ import java.util.Map;
  * An entity class for a response.A response is sent back from host
  * for a request.
  */
+@Deprecated
 public class HttpResponse {
     private URL requestUrl;
     private String responseContent;

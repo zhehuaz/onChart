@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigationModel
+  ns = "http://schemas.android.com?import=com.android.tools.idea.editors.navigation.model.*">
+  <locations  
+    class = "java.util.ArrayList">
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "me.zchang.onchart.ui.MainActivity"/>
+      <point      
+        x = "512"      
+        y = "32"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.MenuState"      
+        className = "me.zchang.onchart.ui.MainActivity"/>
+      <point      
+        x = "1908"      
+        y = "52"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "me.zchang.onchart.ui.DetailActivity"/>
+      <point      
+        x = "588"      
+        y = "1516"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "me.zchang.onchart.ui.SettingsActivity"/>
+      <point      
+        x = "548"      
+        y = "1528"/>
+    </statePointEntry>
+  </locations>
+</navigationModel>

@@ -40,7 +40,7 @@ public class DiffTransformer implements ViewPager.PageTransformer {
                         if (child != null) {
                             View cardView = child.findViewById(R.id.cd_lesson_item);
                             if (cardView != null) {
-                                cardView.setTranslationX(offsetOf(i, position));
+                                cardView.setTranslationX(offsetOf(position));
                             }
                         }
                     }
@@ -49,8 +49,7 @@ public class DiffTransformer implements ViewPager.PageTransformer {
         }
     }
 
-    private float offsetOf(int i, float position) {
-        Log.d("DiffTransformer", "position " + position);
+    private float offsetOf(float position) {
         if (position <= 1)
             return ( position / 2 * pageWidth);
         else

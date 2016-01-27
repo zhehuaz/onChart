@@ -20,7 +20,6 @@ import android.app.Application;
  */
 
 public class MainApp extends Application {
-    public static final String APP_ID = "wx5a0d7c554008997c";
     private PreferenceManager preferenceManager;
 
     @Override
@@ -28,6 +27,7 @@ public class MainApp extends Application {
         super.onCreate();
 
         preferenceManager = new PreferenceManager(this);
+
     }
 
     public PreferenceManager getPreferenceManager() {

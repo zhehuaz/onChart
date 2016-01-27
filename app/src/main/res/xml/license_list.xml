@@ -17,7 +17,15 @@
         android:summary="MIT License"
         />
     <Preference
-        android:title="Gson"
+        android:title="OkHttp"
+        android:summary="Apache License v2.0"
+        />
+    <Preference
+        android:title="RxJava"
+        android:summary="Apache License v2.0"
+        />
+    <Preference
+        android:title="RxAndroid"
         android:summary="Apache License v2.0"
         />
 </PreferenceScreen>

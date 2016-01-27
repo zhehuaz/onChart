@@ -21,11 +21,14 @@ package me.zchang.onchart.parser;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.squareup.okhttp.internal.Util;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -97,24 +100,24 @@ public class StudentInfoParser {
                         dupCourses.get(j).setClassroom(s);
 
                         if (textsTime[j].length() == 1)
-                            dupCourses.get(j).setWeekDay('0');
+                            dupCourses.get(j).setWeekDay(7);// the null value
                         else
-                            dupCourses.get(j).setWeekDay(textsTime[j].charAt(1));
+                            dupCourses.get(j).setWeekDay(Utils.parseIndexFromWeekday(textsTime[j].charAt(1)));
 
                         String pattern = "(\\d)+(?=,)|(\\d+)*(?=节)";
                         Pattern reg = Pattern.compile(pattern);
                         Matcher m = reg.matcher(textsTime[j]);
                         if (m.find()) {
-                            dupCourses.get(j).setStartTime(Integer.parseInt(m.group()));
+                            dupCourses.get(j).setStartTime(Utils.periodToTime(Integer.parseInt(m.group())));
                         }
                         String endTime = null;
                         while (m.find() && m.group().length() > 0) {
                             endTime = m.group();
                         }
                         if (endTime == null) {
-                            dupCourses.get(j).setEndTime(dupCourses.get(j).getStartTime());
+                            dupCourses.get(j).setEndTime((Time)dupCourses.get(j).getStartTime().clone());
                         } else {
-                            dupCourses.get(j).setEndTime(Integer.parseInt(endTime));
+                            dupCourses.get(j).setEndTime(Utils.periodToTime(Integer.parseInt(endTime)));
                         }
 
                         pattern = "\\d+(?=-)|\\d+(?=周)";
@@ -128,7 +131,7 @@ public class StudentInfoParser {
                         if (m.find()) {
                             dupCourses.get(j).setEndWeek(Integer.parseInt(m.group()));
                         } else {
-                            dupCourses.get(j).setEndTime(dupCourses.get(j).getStartTime());
+                            dupCourses.get(j).setEndWeek(dupCourses.get(j).getStartWeek());
                         }
 
                         pattern = "(单|双)(?=周)";

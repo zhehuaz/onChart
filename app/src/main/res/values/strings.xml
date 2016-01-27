@@ -5,7 +5,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_http_test" translatable="false">HttpTestActivity</string>
 
-<!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
     <string name="drawer_open" translatable="false">Open navigation drawer</string>
@@ -18,6 +17,7 @@
     <string name="weekday_Fri">Fri</string>
     <string name="weekday_Sat">Sat</string>
     <string name="weekday_Sun">Sun</string>
+    <string name="weekday_null">(null)</string>
     <string name="title_login">Login</string>
     <string name="login_submit">Login</string>
     <string name="message_logout">Are you sure to logout?</string>
@@ -35,8 +35,9 @@
     <string name="subtitle_morning">Morning</string>
     <string name="subtitle_afternoon">Afternoon</string>
     <string name="subtitle_evening">Evening</string>
-    <string name="weekday_week">Week</string>
+    <string name="weekday_week">Week %1$d</string>
     <string name="detail_week_pattern">Week %1$d - %2$d</string>
+    <string name="detail_course_time">%1$d:%2$d</string>
     <string name="detail_credit_unit">credit</string>
     <string name="null_stu_name" translatable="false">-</string>
 
@@ -59,6 +60,7 @@
     <string name="key_stu_no" translatable="false">student_number</string>
     <string name="key_psw" translatable="false">password</string>
     <string name="key_feedback" translatable="false">feedback</string>
+    <string name="key_last_version_code" translatable="false">last_version_code</string>
     <string name="title_activity_detail">Detail</string>
 
     <string name="intent_lesson" translatable="false">Lesson</string>
@@ -77,8 +79,8 @@
     <string name="version_name" translatable="false">1.0</string>
 
     <string name="url_my_github" translatable="false">https://github.com/LangleyChang/onChart</string>
-    <string name="url_download" translatable="false">www.wandoujia.com/apps/me.zchang.onchart</string>
-    <string name="url_my_email" tranlatable="false">zhehuaxiao@gmail.com</string>
+    <string name="url_download" translatable="false">http://fir.im/onchart?release_id=5685ecfaf2fc423c1100000b&amp;fir_source=inside&amp;fir_campaign=share</string>
+    <string name="url_my_email" tranlatable="false" translatable="false">zhehuaxiao@gmail.com</string>
 
     <string name="text_share">An amazing course schedule app for BIT only!Really convenient to import the schedule instantly!Download it here.</string>
     <string name="wechat_share_title">please star~</string>
@@ -93,4 +95,8 @@
     <string name="alipay_account" translatable="false">zhehua_xiao@163.com</string>
 
     <string name="title_activity_exams">Exams</string>
+
+
+    <string name="course_database_name" translatable="false">course_data</string>
+    <string name="course_table_name" translatable="false">courses</string>
 </resources>

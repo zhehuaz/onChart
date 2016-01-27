@@ -2,21 +2,18 @@ package me.zchang.onchart.config;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.preference.Preference;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+
 import java.util.List;
 
+import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
 import me.zchang.onchart.student.Course;
-import me.zchang.onchart.student.LabelCourse;
 
 
 /*
@@ -41,10 +38,12 @@ public class PreferenceManager {
     final static String CHART_FILE_NAME = "chart.js";
 
     Context context;
-    Gson gson;
     SharedPreferences sp;
+    CourseSQLiteHelper courseSQLiteHelper;
 
-    public final static int labelImgs[] = {
+    private boolean firstLaunch = false;
+
+    public final static int labelImgIndices[] = {
             R.mipmap.little_label1,
             R.mipmap.autumn,
             R.mipmap.winter,
@@ -60,67 +59,63 @@ public class PreferenceManager {
         sp.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
-
-
     public PreferenceManager(Context context) {
         this.context = context;
-        gson = new Gson();
         SETTING_FILE = context.getString(R.string.pref_file_name);
 
         sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
-    }
+        courseSQLiteHelper = new CourseSQLiteHelper(context, context.getString(R.string.course_database_name), null, 1);
 
-    public void saveSchedule(List<Course> courses) throws IOException {
-        String json = gson.toJson(courses);
-        FileOutputStream fos = context.openFileOutput(CHART_FILE_NAME, Context.MODE_PRIVATE);
-        fos.write(json.getBytes());
-        fos.close();
-
-        SharedPreferences sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        for (Course course : courses) {
-            editor.putInt(course.getId() + "", course.getLabelImgIndex());
+        if (getLastVersionCode() != BuildConfig.VERSION_CODE) {
+            firstLaunch = true;
+            saveLastVersionCode(BuildConfig.VERSION_CODE);
+            // create the database at the first launch.
+            SQLiteDatabase courseDatabase = courseSQLiteHelper.getWritableDatabase();
+            courseDatabase.close();
         }
-        editor.apply();
     }
 
-    public List<Course> getSchedule() throws FileNotFoundException {
-        Reader reader = new InputStreamReader(context.openFileInput(CHART_FILE_NAME));
-        List<Course> courses = gson.fromJson(reader, new TypeToken<List<LabelCourse>>() {
-        }.getType());
-
+    public PreferenceManager saveSchedule(List<Course> courses) {
         for (Course course : courses) {
-            course.setLabelImgIndex(getPicPathIndex(course.getId()));
+            courseSQLiteHelper.addCourse(course);
         }
-
-        return courses;
+        return this;
     }
 
-    public static void deleteSchedule(Context context) {
-        File file = new File(context.getFilesDir(), CHART_FILE_NAME);
-        file.delete();
+    public List<Course> getSchedule() {
+        return courseSQLiteHelper.getCourses();
     }
 
-    public void savePicPathIndex(int key, int resIndex) {
-        sp.edit().putInt(key + "", resIndex).commit();
+    public PreferenceManager deleteSchedule() {
+//        File file = new File(context.getFilesDir(), CHART_FILE_NAME);
+//        file.delete();
+        courseSQLiteHelper.clearCourses();
+        return this;
     }
 
-    public int getPicPathIndex(int key) {
-        return sp.getInt(key + "", 0);
+    public PreferenceManager saveImgPathIndex(int key, int resIndex) {
+        courseSQLiteHelper.setImgPathIndex(key, resIndex);
+        return this;
     }
 
-    public void saveName(String name) {
+    public int getImgPathIndex(int key) {
+        return courseSQLiteHelper.getImgPathIndex(key, 0);
+    }
+
+    public PreferenceManager saveName(String name) {
         if(name != null) {
             sp.edit().putString(context.getString(R.string.key_name), name).apply();
         }
+        return this;
     }
 
     public String getName() {
         return sp.getString(context.getString(R.string.key_name), null);
     }
 
-    public void saveWeek(int week) {
+    public PreferenceManager saveWeek(int week) {
         sp.edit().putInt(context.getString(R.string.key_week), week).apply();
+        return this;
     }
 
     public int getWeek() {
@@ -135,23 +130,39 @@ public class PreferenceManager {
         return sp.getLong(context.getString(R.string.key_last_fetch_week_time), 0);
     }
 
-    public void saveLastFetchWeekTime(long value) {
+    public PreferenceManager saveLastFetchWeekTime(long value) {
         sp.edit().putLong(context.getString(R.string.key_last_fetch_week_time), value).apply();
+        return this;
     }
 
     public String getStuNo() {
         return sp.getString(context.getString(R.string.key_stu_no), "");
     }
 
-    public void saveStuNo(String stuNo) {
+    public PreferenceManager saveStuNo(String stuNo) {
         sp.edit().putString(context.getString(R.string.key_stu_no), stuNo).apply();
+        return this;
     }
 
     public String getPassword() {
         return sp.getString(context.getString(R.string.key_psw), "");
     }
 
-    public void savePassword(String psw) {
+    public PreferenceManager savePassword(String psw) {
         sp.edit().putString(context.getString(R.string.key_psw), psw).apply();
+        return this;
+    }
+
+    public boolean isFirstLaunch() {
+        return firstLaunch;
+    }
+
+    public int getLastVersionCode() {
+        return sp.getInt(context.getString(R.string.key_last_version_code), 0);
+    }
+
+    public PreferenceManager saveLastVersionCode(int code) {
+        sp.edit().putInt(context.getString(R.string.key_last_version_code), code).apply();
+        return this;
     }
 }

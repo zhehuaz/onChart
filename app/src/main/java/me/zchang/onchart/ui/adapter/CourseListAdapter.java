@@ -19,11 +19,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.PreferenceManager;
-import me.zchang.onchart.exception.LessonStartTimeException;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.LabelCourse;
@@ -67,7 +70,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     Context context;
     private int fragId;
 
-    public CourseListAdapter(Context context, List<Course> courses, int fragId) throws LessonStartTimeException {
+    public CourseListAdapter(Context context, List<Course> courses, int fragId) {
 
         bitmap = new byte[20];
         this.courses = courses;
@@ -78,40 +81,23 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     }
 
-    public void setCourses(List<Course> courses) throws LessonStartTimeException {
+    public void setCourses(List<Course> courses) {
         this.courses = courses;
         processLessons();
     }
 
-    public void processLessons() throws LessonStartTimeException {
+    public void processLessons() {
         morningCount = 0;
         afternoonCount = 0;
         eveningCount = 0;
-        for(Course l : courses) {
-            int startTime = l.getStartTime();
-            switch (startTime) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                    morningCount ++;
-                    break;
-                case 6:
-                case 7:
-                case 8:
-                case 9:
-                case 10:
-                    afternoonCount ++;
-                    break;
-                case 11:
-                case 12:
-                case 13:
-                    eveningCount ++;
-                    break;
-                default:
-                    throw new LessonStartTimeException();
-            }
+        for (Course l : courses) {
+            Time startTime = l.getStartTime();
+            if (startTime.before(Utils.NOON_TIME))
+                morningCount++;
+            else if (startTime.before(Utils.EVENING_TIME))
+                afternoonCount++;
+            else
+                eveningCount++;
         }
 
         int length = getItemCount();
@@ -158,13 +144,16 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             final CardView cardView = ((ViewHolder) holder).cardView;
             nameText.setText(course.getName());
             roomText.setText(course.getClassroom());
-            timeText.setText(Utils.timeFromPeriod(course.getStartTime()));
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+            timeText.setText(dateFormat.format(course.getStartTime()));
 
             ViewGroup.LayoutParams params = ((ViewHolder) holder).frame.getLayoutParams();
-            params.height =(((ViewHolder) holder).cardHeight >> 1 ) * (course.getEndTime() - course.getStartTime() + 1);
+            params.height =(((ViewHolder) holder).cardHeight >> 1 ) *
+                    (((int)course.getEndTime().getTime() - (int)course.getStartTime().getTime()) / Utils.MILLISECONDS_IN_ONE_CLASS + 1);
             ((ViewHolder) holder).frame.setLayoutParams(params);
 
-            nabImg.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
+            nabImg.setImageResource(PreferenceManager.labelImgIndices[course.getLabelImgIndex()]);
 
 
             Drawable nab = nabImg.getDrawable();

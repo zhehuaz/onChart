@@ -34,6 +34,8 @@ package me.zchang.onchart.student;
  *    limitations under the License.
  */
 
+import java.sql.Time;
+
 import me.zchang.onchart.parser.Utils;
 
 /**
@@ -76,21 +78,22 @@ public class Course implements Comparable{
     protected String classroom;
 
     /**
-     * The day of the course in Chinese.
-     * You can easily translate it into index calling {@link Utils#parseIndexFromWeekday(char)}.
+     * The day of the course index.
      * The index is from 0 to 6 for Monday to Sunday.
      */
-    protected char weekDay;
+    protected int weekDay;
 
     /**
      * The time when the class begins.
+     * The time should be on the day of Jan. 1st, 1970.
      */
-    protected int startTime;
+    protected Time startTime;
 
     /**
      * The time when the class ends.
+     * The time should be on the day of Jan. 1st, 1970.
      */
-    protected int endTime;
+    protected Time endTime;
 
     /**
      * The first week of the course.
@@ -129,8 +132,8 @@ public class Course implements Comparable{
         teacher = "";
         classroom = "";
         weekDay = 0;
-        startTime = 0;
-        endTime = 0;
+        startTime = new Time(0);
+        endTime = new Time(0);
         startWeek = 0;
         endWeek = 0;
         weekParity = -1;
@@ -148,9 +151,9 @@ public class Course implements Comparable{
         this.classroom = new String(course.classroom);
         this.credit = course.credit;
         this.weekDay = course.weekDay;
-        this.startTime = course.startTime;
-        this.endTime = course.endTime;
-        this.startWeek = course.startTime;
+        this.startTime = (Time)course.startTime.clone();
+        this.endTime = (Time)course.endTime.clone();
+        this.startWeek = course.startWeek;
         this.endWeek = course.endWeek;
         this.weekParity = course.weekParity;
         this.labelImgIndex = course.labelImgIndex;
@@ -197,27 +200,27 @@ public class Course implements Comparable{
         this.classroom = classroom;
     }
 
-    public char getWeekDay() {
+    public int getWeekDay() {
         return weekDay;
     }
 
-    public void setWeekDay(char weekDay) {
+    public void setWeekDay(int weekDay) {
         this.weekDay = weekDay;
     }
 
-    public int getStartTime() {
+    public Time getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(int startTime) {
+    public void setStartTime(Time startTime) {
         this.startTime = startTime;
     }
 
-    public int getEndTime() {
+    public Time getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
+    public void setEndTime(Time endTime) {
         this.endTime = endTime;
     }
 
@@ -267,7 +270,7 @@ public class Course implements Comparable{
     @Override
     public int compareTo(Object o) {
         Course l = (Course)o;
-        return this.getStartTime() - l.getStartTime();
+        return this.getStartTime().after(l.getStartTime()) ? 1 : -1;
     }
 
 

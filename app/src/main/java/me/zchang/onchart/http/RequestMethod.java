@@ -21,6 +21,7 @@ package me.zchang.onchart.http;
 /**
  * Request methods.
  */
+@Deprecated
 public enum RequestMethod {
     GET, POST
 }
