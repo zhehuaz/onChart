@@ -29,7 +29,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity
     private ViewGroup drawerHeader;
     private TextView nameText;
     private ProgressBar refreshProgress;
-    private TextView weekdayText;
+    private TextView weekNumText;
     private TextView versionText;
     private NavigationView drawerView;
     private AppBarLayout toolbarContainer;
@@ -121,15 +120,14 @@ public class MainActivity extends AppCompatActivity
         toolbarContainer = (AppBarLayout) findViewById(R.id.appb_container);
         drawerHeader = (ViewGroup) drawerView.getHeaderView(0);
         nameText = (TextView) drawerHeader.findViewById(R.id.tv_stu_name);
-        weekdayText = (TextView) drawerHeader.findViewById(R.id.tv_week);
+        weekNumText = (TextView) drawerHeader.findViewById(R.id.tv_week);
         versionText = (TextView) drawerHeader.findViewById(R.id.tv_version);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && firstLaunch)
-            toolbarContainer.setTranslationY(- toolbarContainer.getLayoutParams().height);
+            toolbarContainer.setTranslationY(-toolbarContainer.getLayoutParams().height);
 
         if (versionText != null)
             versionText.setText(BuildConfig.VERSION_NAME);
-        if (weekdayText != null)
-            weekdayText.setText(String.format(getString(R.string.weekday_week), curWeek));// an int would be considered as a resource id
+
 
         nameText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,19 +182,19 @@ public class MainActivity extends AppCompatActivity
         if (courses != null) {
             for (Course course : courses) {
                 int index = course.getWeekDay();
-                // TODO only for test
-                if (index >= 0 && index < fragments.size())
-                    fragments.get(index).addCourse(course);
-//
-//                    if (index >= 0
-//                            && index < fragments.size()
-//                            && curWeek >= course.getStartWeek()
-//                            && curWeek <= course.getEndWeek()) {
-//                        if (course.getWeekParity() < 0)
-//                            fragments.get(index).addCourse(course);
-//                        else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
-//                            fragments.get(index).addCourse(course);
-//                    }
+//                //  show all the courses, only for test
+//                if (index >= 0 && index < fragments.size())
+//                    fragments.get(index).addCourse(course);
+
+                if (index >= 0
+                        && index < fragments.size()
+                        && curWeek >= course.getStartWeek()
+                        && curWeek <= course.getEndWeek()) {
+                    if (course.getWeekParity() < 0)
+                        fragments.get(index).addCourse(course);
+                    else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
+                        fragments.get(index).addCourse(course);
+                }
             }
 
             for (LessonListFragment f : fragments) {
@@ -204,11 +202,16 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+        // change to page of this day
         int curWeekDay = today.get(Calendar.DAY_OF_WEEK);
         curWeekDay = (curWeekDay - 2) % 7;
         if (curWeekDay < mainListAdapter.getCount()) {
             mainListPager.setCurrentItem(curWeekDay);
         }
+
+        // update week number
+        if (weekNumText != null)
+            weekNumText.setText(String.format(getString(R.string.weekday_week), curWeek));
     }
 
     private void setupDrawer() {
@@ -217,7 +220,7 @@ public class MainActivity extends AppCompatActivity
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 drawerLayout.closeDrawers();
                 int id = menuItem.getItemId();
-                if(id == R.id.item_settings) {
+                if (id == R.id.item_settings) {
                     Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                     startActivityForResult(intent, REQ_SETTING);
                 } else if (id == R.id.item_exams) {
@@ -522,8 +525,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_week_num))) {
+            // TODO update changed items
             setupList();
-            weekdayText.setText(curWeek + "");// TODO update changed items
         }
     }
 

@@ -85,27 +85,29 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(createStatement);
     }
 
-    public void addCourse(Course course) {// TODO validate course
-        SQLiteDatabase courseDatabase = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_ID.ordinal()], course.getId());
-        values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_NAME.ordinal()], course.getName());
-        values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_DEPARTMENT.ordinal()], course.getDepartment());
-        values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_CREDIT.ordinal()], course.getCredit());
-        values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_TEACHER.ordinal()], course.getTeacher());
-        values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_CLASSROOM.ordinal()], course.getClassroom());
-        values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_WEEKDAY.ordinal()], course.getWeekDay());
-        values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_WEEK.ordinal()], course.getStartWeek());
-        values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_WEEK.ordinal()], course.getEndWeek());
+    public void addCourse(Course course) {
+        if (course != null) {
+            SQLiteDatabase courseDatabase = getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_ID.ordinal()], course.getId());
+            values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_NAME.ordinal()], course.getName());
+            values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_DEPARTMENT.ordinal()], course.getDepartment());
+            values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_CREDIT.ordinal()], course.getCredit());
+            values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_TEACHER.ordinal()], course.getTeacher());
+            values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_CLASSROOM.ordinal()], course.getClassroom());
+            values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_WEEKDAY.ordinal()], course.getWeekDay());
+            values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_WEEK.ordinal()], course.getStartWeek());
+            values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_WEEK.ordinal()], course.getEndWeek());
 
-        values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_TIME.ordinal()], timeFormat.format(course.getStartTime()));
-        values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_TIME.ordinal()], timeFormat.format(course.getEndTime()));
-        values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_WEEK_PARITY.ordinal()], course.getWeekParity());
-        values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_LABEL_IMG_INDEX.ordinal()], course.getLabelImgIndex());
+            values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_TIME.ordinal()], timeFormat.format(course.getStartTime()));
+            values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_TIME.ordinal()], timeFormat.format(course.getEndTime()));
+            values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_WEEK_PARITY.ordinal()], course.getWeekParity());
+            values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_LABEL_IMG_INDEX.ordinal()], course.getLabelImgIndex());
 
-        courseDatabase.insert(
-                context.getString(R.string.course_table_name),
-                null,values);
+            courseDatabase.insert(
+                    context.getString(R.string.course_table_name),
+                    null, values);
+        }
     }
 
     public List<Course> getCourses() {
@@ -130,8 +132,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
                 newCourse.setStartWeek(cursor.getInt(COURSE_TABLE_INDICES.COURSE_START_WEEK.ordinal()));
                 newCourse.setEndWeek(cursor.getInt(COURSE_TABLE_INDICES.COURSE_END_WEEK.ordinal()));
                 newCourse.setLabelImgIndex(cursor.getInt(COURSE_TABLE_INDICES.COURSE_LABEL_IMG_INDEX.ordinal()));
-                // TODO unchecked, how to get a byte from cursor?
-                newCourse.setWeekParity((byte)cursor.getShort(COURSE_TABLE_INDICES.COURSE_WEEK_PARITY.ordinal()));
+                newCourse.setWeekParity((byte)cursor.getInt(COURSE_TABLE_INDICES.COURSE_WEEK_PARITY.ordinal()));
 
                 courses.add(newCourse);
             } catch (ParseException e) {
