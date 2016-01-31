@@ -3,11 +3,6 @@ package me.zchang.onchart.config;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.preference.Preference;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import java.util.List;
 
@@ -76,9 +71,7 @@ public class PreferenceManager {
     }
 
     public PreferenceManager saveSchedule(List<Course> courses) {
-        for (Course course : courses) {
-            courseSQLiteHelper.addCourse(course);
-        }
+        courseSQLiteHelper.addCourses(courses);
         return this;
     }
 

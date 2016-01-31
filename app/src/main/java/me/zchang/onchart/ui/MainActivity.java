@@ -62,472 +62,471 @@ import me.zchang.onchart.ui.adapter.DiffTransformer;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements Session.SessionStartListener, LoginFragment.LoginListener
-        , SharedPreferences.OnSharedPreferenceChangeListener {
+		implements Session.SessionStartListener, LoginFragment.LoginListener
+		, SharedPreferences.OnSharedPreferenceChangeListener {
 
-    public final static int REQ_POSITION = 0;
-    public final static int REQ_SETTING = 1;
+	public final static int REQ_POSITION = 0;
+	public final static int REQ_SETTING = 1;
 
-    public final static long MILLISECONDS_IN_A_DAY = 24 * 3600 * 1000;
+	public final static long MILLISECONDS_IN_A_DAY = 24 * 3600 * 1000;
 
-    public final static String TAG = "MainActivity";
-    private Toolbar mainToolbar;
-    private ViewPager mainListPager;
-    private TabLayout weekdayTabs;
-    private CoursePagerAdapter mainListAdapter;
-    private List<LessonListFragment> fragments;
-    private ImageView stuffImage;
-    private ActionBarDrawerToggle drawerToggle;
-    private DrawerLayout drawerLayout;
-    private ViewGroup drawerHeader;
-    private TextView nameText;
-    private ProgressBar refreshProgress;
-    private TextView weekNumText;
-    private TextView versionText;
-    private NavigationView drawerView;
-    private AppBarLayout toolbarContainer;
+	public final static String TAG = "MainActivity";
+	private Toolbar mainToolbar;
+	private ViewPager mainListPager;
+	private TabLayout weekdayTabs;
+	private CoursePagerAdapter mainListAdapter;
+	private List<LessonListFragment> fragments;
+	private ImageView stuffImage;
+	private ActionBarDrawerToggle drawerToggle;
+	private DrawerLayout drawerLayout;
+	private ViewGroup drawerHeader;
+	private TextView nameText;
+	private ProgressBar refreshProgress;
+	private TextView weekNumText;
+	private TextView versionText;
+	private NavigationView drawerView;
+	private AppBarLayout toolbarContainer;
 
-    private Session session;
-    private PreferenceManager preferenceManager;
+	private Session session;
+	private PreferenceManager preferenceManager;
 
-    private int curWeek;
-    private int numOfWeekdays;
-    private Calendar today;
-    private boolean firstLaunch = true;
+	private int curWeek;
+	private int numOfWeekdays;
+	private Calendar today;
+	private boolean firstLaunch = true;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null)
-            firstLaunch = false;
-        setContentView(R.layout.activity_main);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if (savedInstanceState != null)
+			firstLaunch = false;
+		setContentView(R.layout.activity_main);
 
-        preferenceManager = ((MainApp) getApplication()).getPreferenceManager();
-        today = Calendar.getInstance();
-        today.setTimeZone(TimeZone.getDefault());
+		preferenceManager = ((MainApp) getApplication()).getPreferenceManager();
+		today = Calendar.getInstance();
+		today.setTimeZone(TimeZone.getDefault());
 
-        session = new BitJwcSession(this);
-        mainToolbar = (Toolbar) findViewById(R.id.tb_main);
-        setSupportActionBar(mainToolbar);
+		session = new BitJwcSession(this);
+		mainToolbar = (Toolbar) findViewById(R.id.tb_main);
+		setSupportActionBar(mainToolbar);
 
-        curWeek = preferenceManager.getWeek();
+		curWeek = preferenceManager.getWeek();
 
-        mainListPager = (ViewPager) findViewById(R.id.vp_lessons);
-        weekdayTabs = (TabLayout) findViewById(R.id.tl_weekday);
-        stuffImage = (ImageView) findViewById(R.id.iv_stuff);
-        drawerLayout = (DrawerLayout) findViewById(R.id.dl_drawer);
-        drawerView = (NavigationView) findViewById(R.id.nv_drawer);
-        toolbarContainer = (AppBarLayout) findViewById(R.id.appb_container);
-        drawerHeader = (ViewGroup) drawerView.getHeaderView(0);
-        nameText = (TextView) drawerHeader.findViewById(R.id.tv_stu_name);
-        weekNumText = (TextView) drawerHeader.findViewById(R.id.tv_week);
-        versionText = (TextView) drawerHeader.findViewById(R.id.tv_version);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && firstLaunch)
-            toolbarContainer.setTranslationY(-toolbarContainer.getLayoutParams().height);
+		mainListPager = (ViewPager) findViewById(R.id.vp_lessons);
+		weekdayTabs = (TabLayout) findViewById(R.id.tl_weekday);
+		stuffImage = (ImageView) findViewById(R.id.iv_stuff);
+		drawerLayout = (DrawerLayout) findViewById(R.id.dl_drawer);
+		drawerView = (NavigationView) findViewById(R.id.nv_drawer);
+		toolbarContainer = (AppBarLayout) findViewById(R.id.appb_container);
+		drawerHeader = (ViewGroup) drawerView.getHeaderView(0);
+		nameText = (TextView) drawerHeader.findViewById(R.id.tv_stu_name);
+		weekNumText = (TextView) drawerHeader.findViewById(R.id.tv_week);
+		versionText = (TextView) drawerHeader.findViewById(R.id.tv_version);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && firstLaunch)
+			toolbarContainer.setTranslationY(-toolbarContainer.getLayoutParams().height);
 
-        if (versionText != null)
-            versionText.setText(BuildConfig.VERSION_NAME);
-
-
-        nameText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LoginFragment dialog = new LoginFragment();
-                dialog.setListener(MainActivity.this);
-                dialog.show(getSupportFragmentManager(), TAG);
-            }
-        });
-
-        ViewGroup.LayoutParams params = stuffImage.getLayoutParams();
-        params.height = getStatusBarHeight(this);
-        stuffImage.setLayoutParams(params);
-
-        numOfWeekdays = preferenceManager.getNumOfWeekdays();
-
-        setupDrawer();
-
-        // if haven't refreshed week for a week.
-        if (Math.abs(preferenceManager.getLastFetchWeekTime() - today.getTimeInMillis()) >  7 * MILLISECONDS_IN_A_DAY) {
-            refreshWeek();
-        }
-
-        setupFragments();
-        setupList();// ATTENTION, order of refresh and setup
-        fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    private void setupFragments() {
-        fragments = new ArrayList<>();
-        for (int i = 0; i < Math.abs(numOfWeekdays); i ++) {
-            fragments.add(new LessonListFragment());
-        }
-        mainListAdapter = new CoursePagerAdapter(
-                this, getSupportFragmentManager(), fragments, numOfWeekdays);
-        mainListPager.setPageTransformer(false, new DiffTransformer());
-        mainListPager.setAdapter(mainListAdapter);
-        mainListPager.setClipChildren(false);
-        mainListPager.setClipToPadding(false);
-        mainListPager.setOffscreenPageLimit(2);
-
-        weekdayTabs.setupWithViewPager(mainListPager);
-        weekdayTabs.setTabsFromPagerAdapter(mainListAdapter);
-    }
-
-    private void setupList() {
-        List<Course> courses = null;
-        courses = preferenceManager.getSchedule();
-        for (LessonListFragment f : fragments)
-            f.clearCourse();
-        if (courses != null) {
-            for (Course course : courses) {
-                int index = course.getWeekDay();
-//                //  show all the courses, only for test
-//                if (index >= 0 && index < fragments.size())
-//                    fragments.get(index).addCourse(course);
-
-                if (index >= 0
-                        && index < fragments.size()
-                        && curWeek >= course.getStartWeek()
-                        && curWeek <= course.getEndWeek()) {
-                    if (course.getWeekParity() < 0)
-                        fragments.get(index).addCourse(course);
-                    else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
-                        fragments.get(index).addCourse(course);
-                }
-            }
-
-            for (LessonListFragment f : fragments) {
-                f.updateList();
-            }
-        }
-
-        // change to page of this day
-        int curWeekDay = today.get(Calendar.DAY_OF_WEEK);
-        curWeekDay = (curWeekDay - 2) % 7;
-        if (curWeekDay < mainListAdapter.getCount()) {
-            mainListPager.setCurrentItem(curWeekDay);
-        }
-
-        // update week number
-        if (weekNumText != null)
-            weekNumText.setText(String.format(getString(R.string.weekday_week), curWeek));
-    }
-
-    private void setupDrawer() {
-        drawerView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                drawerLayout.closeDrawers();
-                int id = menuItem.getItemId();
-                if (id == R.id.item_settings) {
-                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                    startActivityForResult(intent, REQ_SETTING);
-                } else if (id == R.id.item_exams) {
-                    Intent intent = new Intent(MainActivity.this, ExamsActivity.class);
-                    startActivity(intent);
-                } else if (id == R.id.item_share) {
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_SEND);
-                    intent.setType("text/plain");
-                    intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.text_share)
-                            + "\n\r"
-                            + getString(R.string.url_download));
-                    startActivity(Intent.createChooser(intent, getString(R.string.action_share)));
-                } else if (id == R.id.item_donate) {
-                    DonateFragment donateFragment = new DonateFragment();
-                    donateFragment.show(getSupportFragmentManager(), TAG);
-                }
-                return false;
-            }
-        });
+		if (versionText != null)
+			versionText.setText(BuildConfig.VERSION_NAME);
 
 
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                invalidateOptionsMenu();
-            }
+		nameText.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				LoginFragment dialog = new LoginFragment();
+				dialog.setListener(MainActivity.this);
+				dialog.show(getSupportFragmentManager(), TAG);
+			}
+		});
 
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                invalidateOptionsMenu();
-            }
-        };
-        drawerToggle.setDrawerIndicatorEnabled(true);
-        drawerLayout.setDrawerListener(drawerToggle);
-        drawerToggle.syncState();
-        updateDrawer();
-    }
+		ViewGroup.LayoutParams params = stuffImage.getLayoutParams();
+		params.height = getStatusBarHeight(this);
+		stuffImage.setLayoutParams(params);
 
-    public void refreshWeek() {
-        preferenceManager.saveLastFetchWeekTime(today.get(Calendar.MILLISECOND));
-        if(refreshProgress != null)
-            refreshProgress.setVisibility(View.VISIBLE);
-        new AsyncTask<String, String, Integer>() {
+		numOfWeekdays = preferenceManager.getNumOfWeekdays();
 
-            @Override
-            protected void onPostExecute(Integer integer) {
-                if(integer == 0) {
-                    Toast.makeText(MainActivity.this, "Unable to fetch week", Toast.LENGTH_SHORT).show();
-                    return ;
-                }
-                // save the nearest past Monday
-                preferenceManager.saveLastFetchWeekTime(
-                        today.getTimeInMillis()
-                                - ((today.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY) % 7) * MILLISECONDS_IN_A_DAY);
+		setupDrawer();
 
-                if(curWeek != integer && integer > 0) {
-                    curWeek = integer;
-                    preferenceManager.saveWeek(curWeek);
-                }
-                if(refreshProgress != null)
-                    refreshProgress.setVisibility(View.INVISIBLE);
-            }
+		// if haven't refreshed week for a week.
+		if (Math.abs(preferenceManager.getLastFetchWeekTime() - today.getTimeInMillis()) > 7 * MILLISECONDS_IN_A_DAY) {
+			refreshWeek();
+		}
 
-            @Override
-            protected Integer doInBackground(String... params) {
-                try {
-                    return session.fetchWeek();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
-        }.execute();
-    }
+		setupFragments();
+		setupList();// ATTENTION, order of refresh and setup
+		fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+	}
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        preferenceManager.registerListener(this);
-    }
+	private void setupFragments() {
+		fragments = new ArrayList<>();
+		for (int i = 0; i < Math.abs(numOfWeekdays); i++) {
+			fragments.add(new LessonListFragment());
+		}
+		mainListAdapter = new CoursePagerAdapter(
+				this, getSupportFragmentManager(), fragments, numOfWeekdays);
+		mainListPager.setPageTransformer(false, new DiffTransformer());
+		mainListPager.setAdapter(mainListAdapter);
+		mainListPager.setClipChildren(false);
+		mainListPager.setClipToPadding(false);
+		mainListPager.setOffscreenPageLimit(2);
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        preferenceManager.unRegisterListener(this);
-    }
+		weekdayTabs.setupWithViewPager(mainListPager);
+		weekdayTabs.setTabsFromPagerAdapter(mainListAdapter);
+	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+	private void setupList() {
+		List<Course> courses = null;
+		courses = preferenceManager.getSchedule();
+		for (LessonListFragment f : fragments)
+			f.clearCourse();
+		if (courses != null) {
+			for (Course course : courses) {
+				int index = course.getWeekDay();
+				//  show all the courses, only for test
+				if (index >= 0 && index < fragments.size())
+					fragments.get(index).addCourse(course);
 
-        refreshProgress = (ProgressBar) menu.findItem(R.id.item_refresh).getActionView().findViewById(R.id.pb_refresh);
-        return true;
-    }
+//                if (index >= 0
+//                        && index < fragments.size()
+//                        && curWeek >= course.getStartWeek()
+//                        && curWeek <= course.getEndWeek()) {
+//                    if (course.getWeekParity() < 0)
+//                        fragments.get(index).addCourse(course);
+//                    else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
+//                        fragments.get(index).addCourse(course);
+//                }
+			}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+			for (LessonListFragment f : fragments) {
+				f.updateList();
+			}
+		}
 
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
+		// change to page of this day
+		int curWeekDay = today.get(Calendar.DAY_OF_WEEK);
+		curWeekDay = (curWeekDay - 2) % 7;
+		if (curWeekDay < mainListAdapter.getCount()) {
+			mainListPager.setCurrentItem(curWeekDay);
+		}
 
-        return super.onOptionsItemSelected(item);
-    }
+		// update week number
+		if (weekNumText != null)
+			weekNumText.setText(String.format(getString(R.string.weekday_week), curWeek));
+	}
 
-    @Override
-    public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onPostCreate(savedInstanceState, persistentState);
-        drawerToggle.syncState();
-    }
+	private void setupDrawer() {
+		drawerView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+			@Override
+			public boolean onNavigationItemSelected(MenuItem menuItem) {
+				drawerLayout.closeDrawers();
+				int id = menuItem.getItemId();
+				if (id == R.id.item_settings) {
+					Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+					startActivityForResult(intent, REQ_SETTING);
+				} else if (id == R.id.item_exams) {
+					Intent intent = new Intent(MainActivity.this, ExamsActivity.class);
+					startActivity(intent);
+				} else if (id == R.id.item_share) {
+					Intent intent = new Intent();
+					intent.setAction(Intent.ACTION_SEND);
+					intent.setType("text/plain");
+					intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.text_share)
+							+ "\n\r"
+							+ getString(R.string.url_download));
+					startActivity(Intent.createChooser(intent, getString(R.string.action_share)));
+				} else if (id == R.id.item_donate) {
+					DonateFragment donateFragment = new DonateFragment();
+					donateFragment.show(getSupportFragmentManager(), TAG);
+				}
+				return false;
+			}
+		});
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        drawerToggle.onConfigurationChanged(newConfig);
-    }
 
-    @Override
-    public void onSessionStartOver() {
-        new AsyncTask<String, String, List<Course>>() {
-            @Override
-            protected List<Course> doInBackground(String... strings) {
-                try {
-                    return session.fetchSchedule();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
+		drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
+			@Override
+			public void onDrawerOpened(View drawerView) {
+				super.onDrawerOpened(drawerView);
+				invalidateOptionsMenu();
+			}
 
-            @Override
-            protected void onPostExecute(List<Course> courses) {
-                if(courses != null) {
-                    preferenceManager.saveSchedule(courses);
-                    preferenceManager.saveStuNo(session.getStuNum());
-                    preferenceManager.savePassword(session.getPsw());
-                    setupList();
-                } else {
-                    // TODO bad logic.Account validation should be in Session.start()
-                    Toast.makeText(MainActivity.this, getString(R.string.alert_invalid_account), Toast.LENGTH_SHORT).show();
-                }
+			@Override
+			public void onDrawerClosed(View drawerView) {
+				super.onDrawerClosed(drawerView);
+				invalidateOptionsMenu();
+			}
+		};
+		drawerToggle.setDrawerIndicatorEnabled(true);
+		drawerLayout.setDrawerListener(drawerToggle);
+		drawerToggle.syncState();
+		updateDrawer();
+	}
 
-                String stuName = null;
-                try {
-                    stuName = session.fetchName();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (stuName != null) {
-                    preferenceManager.saveName(stuName);
-                    updateDrawer();
-                } else {
-                    Toast.makeText(MainActivity.this, "Invalid account", Toast.LENGTH_SHORT).show();
-                }
-                if(refreshProgress != null)
-                    refreshProgress.setVisibility(View.INVISIBLE);
-            }
-        }.execute();
+	public void refreshWeek() {
+		preferenceManager.saveLastFetchWeekTime(today.get(Calendar.MILLISECOND));
+		if (refreshProgress != null)
+			refreshProgress.setVisibility(View.VISIBLE);
+		new AsyncTask<String, String, Integer>() {
 
-    }
+			@Override
+			protected void onPostExecute(Integer integer) {
+				if (integer == 0) {
+					Toast.makeText(MainActivity.this, "Unable to fetch week", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				// save the nearest past Monday
+				preferenceManager.saveLastFetchWeekTime(
+						today.getTimeInMillis()
+								- ((today.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY) % 7) * MILLISECONDS_IN_A_DAY);
 
-    @Override
-    public void onSessionStartError(Session.ErrorCode ec) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(MainActivity.this, getString(R.string.alert_network_error), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+				if (curWeek != integer && integer > 0) {
+					curWeek = integer;
+					preferenceManager.saveWeek(curWeek);
+				}
+				if (refreshProgress != null)
+					refreshProgress.setVisibility(View.INVISIBLE);
+			}
 
-    @Override
-    public void onLoginInputFinish(String usrNum, String psw) {
-        if (refreshProgress != null)
-            refreshProgress.setVisibility(View.VISIBLE);
+			@Override
+			protected Integer doInBackground(String... params) {
+				try {
+					return session.fetchWeek();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return 0;
+			}
+		}.execute();
+	}
 
-        if (session.isStarted())
-            session = new BitJwcSession(this);
+	@Override
+	protected void onResume() {
+		super.onResume();
+		preferenceManager.registerListener(this);
+	}
 
-        session.setStuNum(usrNum);
-        session.setPsw(psw);
-        session.start();
-    }
+	@Override
+	protected void onPause() {
+		super.onPause();
+		preferenceManager.unRegisterListener(this);
+	}
 
-    public static int getStatusBarHeight(Context context) {
-        int result = 0;
-        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = context.getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.menu_main, menu);
 
-    private void updateDrawer() {
-        String stuName = preferenceManager.getName();
-        if (stuName != null && !stuName.equals(getString(R.string.null_stu_name))) {
-            nameText.setText(stuName);
-            nameText.setClickable(false);
-            drawerLayout.closeDrawers();
-        } else {
-            nameText.setText(getString(R.string.title_login));
-            nameText.setClickable(true);
-        }
-    }
+		refreshProgress = (ProgressBar) menu.findItem(R.id.item_refresh).getActionView().findViewById(R.id.pb_refresh);
+		return true;
+	}
 
-    @TargetApi(21)
-    @Override
-    public void onEnterAnimationComplete() {
-        super.onEnterAnimationComplete();
-        toolbarContainer.animate()
-                .translationY(0)
-                .setStartDelay(50)
-                .setDuration(200)
-                .setInterpolator(new AccelerateDecelerateInterpolator());
-        RecyclerView recyclerView = fragments.get(mainListPager.getCurrentItem()).getCourseRecyclerView();
-        if (recyclerView != null && firstLaunch) {
-           recyclerView.scheduleLayoutAnimation();
-        }
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+		if (drawerToggle.onOptionsItemSelected(item)) {
+			return true;
+		}
 
-        switch (requestCode) {
-            case REQ_SETTING:
-                if (resultCode == RESULT_OK) {
-                    int returnWeekday = data.getIntExtra(getString(R.string.key_num_of_weekday), -1);
-                    int isLogout = data.getIntExtra(getString(R.string.key_logout), SettingsActivity.FLAG_NO_LOGOUT);
-                    /**
-                     * 0 assign num of weekdays and setupFragments
-                     * 1 updateDrawer
-                     * 2 setupList
-                     */
-                    boolean flags[] = new boolean[4];
-                    if(returnWeekday != -1) {
-                        flags[0] = true;
-                        flags[2] = true;
-                    }
-                    if (isLogout != SettingsActivity.FLAG_NO_LOGOUT) {
-                        flags[1] = true;
-                        flags[2] = true;
-                    }
-                    for (int i = 0;i < flags.length; i ++) {
-                        if (flags[i]) {
-                            switch (i) {
-                                case 0:
-                                    numOfWeekdays = returnWeekday;
-                                    setupFragments();
-                                    break;
-                                case 1:
-                                    updateDrawer();
-                                    break;
-                                case 2:
-                                    setupList();
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                }
-                break;
-            case REQ_POSITION:
-                LessonListFragment curFragment = fragments.get(mainListPager.getCurrentItem());
-                int pos = data.getIntExtra(getString(R.string.intent_position), 0);
+		return super.onOptionsItemSelected(item);
+	}
 
-                if (resultCode == RESULT_OK) {
-                    Course course = curFragment.findCourseById(data.getIntExtra(getString(R.string.intent_course_id), -1));
-                    if (course != null) {
-                        course.setLabelImgIndex(data.getIntExtra(getString(R.string.intent_label_image_index), 0));
-                    }
+	@Override
+	public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
+		super.onPostCreate(savedInstanceState, persistentState);
+		drawerToggle.syncState();
+	}
 
-                    if (curFragment == null)
-                        Log.e(TAG, "curFragment is null");
-                    if (curFragment.adapter == null)
-                        Log.e(TAG, "adapater is null");
-                    curFragment.adapter
-                        .notifyItemChanged(pos);
-                }
-                break;
-        }
-    }
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		drawerToggle.onConfigurationChanged(newConfig);
+	}
 
-    PreferenceManager getPreferenceManager()
-    {
-        return preferenceManager;
-    }
+	@Override
+	public void onSessionStartOver() {
+		new AsyncTask<String, String, List<Course>>() {
+			@Override
+			protected List<Course> doInBackground(String... strings) {
+				try {
+					return session.fetchSchedule();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return null;
+			}
 
-    LessonListFragment getListFragment() {
-        return fragments.get(mainListPager.getCurrentItem());
-    }
+			@Override
+			protected void onPostExecute(List<Course> courses) {
+				if (courses != null) {
+					preferenceManager.saveSchedule(courses);
+					preferenceManager.saveStuNo(session.getStuNum());
+					preferenceManager.savePassword(session.getPsw());
+					setupList();
+				} else {
+					// TODO bad logic.Account validation should be in Session.start()
+					Toast.makeText(MainActivity.this, getString(R.string.alert_invalid_account), Toast.LENGTH_SHORT).show();
+				}
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.pref_week_num))) {
-            // TODO update changed items
-            setupList();
-        }
-    }
+				String stuName = null;
+				try {
+					stuName = session.fetchName();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if (stuName != null) {
+					preferenceManager.saveName(stuName);
+					updateDrawer();
+				} else {
+					Toast.makeText(MainActivity.this, "Invalid account", Toast.LENGTH_SHORT).show();
+				}
+				if (refreshProgress != null)
+					refreshProgress.setVisibility(View.INVISIBLE);
+			}
+		}.execute();
+
+	}
+
+	@Override
+	public void onSessionStartError(Session.ErrorCode ec) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				Toast.makeText(MainActivity.this, getString(R.string.alert_network_error), Toast.LENGTH_SHORT).show();
+			}
+		});
+	}
+
+	@Override
+	public void onLoginInputFinish(String usrNum, String psw) {
+		if (refreshProgress != null)
+			refreshProgress.setVisibility(View.VISIBLE);
+
+		if (session.isStarted())
+			session = new BitJwcSession(this);
+
+		session.setStuNum(usrNum);
+		session.setPsw(psw);
+		session.start();
+	}
+
+	public static int getStatusBarHeight(Context context) {
+		int result = 0;
+		int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+		if (resourceId > 0) {
+			result = context.getResources().getDimensionPixelSize(resourceId);
+		}
+		return result;
+	}
+
+	private void updateDrawer() {
+		String stuName = preferenceManager.getName();
+		if (stuName != null && !stuName.equals(getString(R.string.null_stu_name))) {
+			nameText.setText(stuName);
+			nameText.setClickable(false);
+			drawerLayout.closeDrawers();
+		} else {
+			nameText.setText(getString(R.string.title_login));
+			nameText.setClickable(true);
+		}
+	}
+
+	@TargetApi(21)
+	@Override
+	public void onEnterAnimationComplete() {
+		super.onEnterAnimationComplete();
+		toolbarContainer.animate()
+				.translationY(0)
+				.setStartDelay(50)
+				.setDuration(200)
+				.setInterpolator(new AccelerateDecelerateInterpolator());
+		RecyclerView recyclerView = fragments.get(mainListPager.getCurrentItem()).getCourseRecyclerView();
+		if (recyclerView != null && firstLaunch) {
+			recyclerView.scheduleLayoutAnimation();
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		switch (requestCode) {
+			case REQ_SETTING:
+				if (resultCode == RESULT_OK) {
+					int returnWeekday = data.getIntExtra(getString(R.string.key_num_of_weekday), -1);
+					int isLogout = data.getIntExtra(getString(R.string.key_logout), SettingsActivity.FLAG_NO_LOGOUT);
+					/**
+					 * 0 assign num of weekdays and setupFragments
+					 * 1 updateDrawer
+					 * 2 setupList
+					 */
+					boolean flags[] = new boolean[4];
+					if (returnWeekday != -1) {
+						flags[0] = true;
+						flags[2] = true;
+					}
+					if (isLogout != SettingsActivity.FLAG_NO_LOGOUT) {
+						flags[1] = true;
+						flags[2] = true;
+					}
+					for (int i = 0; i < flags.length; i++) {
+						if (flags[i]) {
+							switch (i) {
+								case 0:
+									numOfWeekdays = returnWeekday;
+									setupFragments();
+									break;
+								case 1:
+									updateDrawer();
+									break;
+								case 2:
+									setupList();
+									break;
+								default:
+									break;
+							}
+						}
+					}
+				}
+				break;
+			case REQ_POSITION:
+				LessonListFragment curFragment = fragments.get(mainListPager.getCurrentItem());
+				int pos = data.getIntExtra(getString(R.string.intent_position), 0);
+
+				if (resultCode == RESULT_OK) {
+					Course course = curFragment.findCourseById(data.getIntExtra(getString(R.string.intent_course_id), -1));
+					if (course != null) {
+						course.setLabelImgIndex(data.getIntExtra(getString(R.string.intent_label_image_index), 0));
+					}
+
+					if (curFragment == null)
+						Log.e(TAG, "curFragment is null");
+					if (curFragment.adapter == null)
+						Log.e(TAG, "adapater is null");
+					curFragment.adapter
+							.notifyItemChanged(pos);
+				}
+				break;
+		}
+	}
+
+	PreferenceManager getPreferenceManager() {
+		return preferenceManager;
+	}
+
+	LessonListFragment getListFragment() {
+		return fragments.get(mainListPager.getCurrentItem());
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		if (key.equals(getString(R.string.pref_week_num))) {
+			// TODO update changed items
+			setupList();
+		}
+	}
 
 }

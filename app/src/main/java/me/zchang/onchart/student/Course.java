@@ -85,15 +85,15 @@ public class Course implements Comparable{
 
     /**
      * The time when the class begins.
-     * The time should be on the day of Jan. 1st, 1970.
+     * The time should be on the day of Jan. 1st, 1970 GMT.
      */
-    protected Time startTime;
+    protected long startTime;
 
     /**
      * The time when the class ends.
-     * The time should be on the day of Jan. 1st, 1970.
+     * The time should be on the day of Jan. 1st, 1970 GMT.
      */
-    protected Time endTime;
+    protected long endTime;
 
     /**
      * The first week of the course.
@@ -132,8 +132,8 @@ public class Course implements Comparable{
         teacher = "";
         classroom = "";
         weekDay = 0;
-        startTime = new Time(0);
-        endTime = new Time(0);
+        startTime = 0;
+        endTime = 0;
         startWeek = 0;
         endWeek = 0;
         weekParity = -1;
@@ -145,14 +145,14 @@ public class Course implements Comparable{
      * @param course
      */
     public Course(Course course) {
-        this.name = new String(course.name);
-        this.department = new String(course.department);
-        this.teacher = new String(course.teacher);
-        this.classroom = new String(course.classroom);
+        this.name = course.name;
+        this.department = course.department;
+        this.teacher = course.teacher;
+        this.classroom = course.classroom; // safe and efficient.
         this.credit = course.credit;
         this.weekDay = course.weekDay;
-        this.startTime = (Time)course.startTime.clone();
-        this.endTime = (Time)course.endTime.clone();
+        this.startTime = course.startTime;
+        this.endTime = course.endTime;
         this.startWeek = course.startWeek;
         this.endWeek = course.endWeek;
         this.weekParity = course.weekParity;
@@ -208,19 +208,19 @@ public class Course implements Comparable{
         this.weekDay = weekDay;
     }
 
-    public Time getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
 
-    public Time getEndTime() {
+    public long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
 
@@ -270,7 +270,7 @@ public class Course implements Comparable{
     @Override
     public int compareTo(Object o) {
         Course l = (Course)o;
-        return this.getStartTime().after(l.getStartTime()) ? 1 : -1;
+        return(int)(this.getStartTime() - l.getStartTime());
     }
 
 
