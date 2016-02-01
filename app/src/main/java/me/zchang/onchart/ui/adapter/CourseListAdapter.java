@@ -91,10 +91,10 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         afternoonCount = 0;
         eveningCount = 0;
         for (Course l : courses) {
-            Time startTime = l.getStartTime();
-            if (startTime.before(Utils.NOON_TIME))
+            long startTime = l.getStartTime();
+            if (startTime < Utils.NOON_TIME)
                 morningCount++;
-            else if (startTime.before(Utils.EVENING_TIME))
+            else if (startTime < Utils.EVENING_TIME)
                 afternoonCount++;
             else
                 eveningCount++;
@@ -106,7 +106,8 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         for(int position = 1; position < length; position ++) {
             if (position == 1 && morningCount > 0) {
                 bitmap[position] = MORNING_FLAG;
-            } else if (position == ((morningCount + 1) * (morningCount > 0 ? 1 : 0) + 1) && afternoonCount > 0) {
+            } else if (position == ((morningCount + 1) * (morningCount > 0 ? 1 : 0) + 1)
+                    && afternoonCount > 0) {
                 bitmap[position] = AFTERNOON_FLAG;
             } else if (position == ((morningCount + 1) * (morningCount > 0 ? 1 : 0)
                     + (afternoonCount + 1) * (afternoonCount > 0 ? 1 : 0) + 1)
@@ -150,7 +151,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             ViewGroup.LayoutParams params = ((ViewHolder) holder).frame.getLayoutParams();
             params.height =(((ViewHolder) holder).cardHeight >> 1 ) *
-                    (((int)course.getEndTime().getTime() - (int)course.getStartTime().getTime()) / Utils.MILLISECONDS_IN_ONE_CLASS + 1);
+                    (((int) course.getEndTime() - (int) course.getStartTime()) / Utils.MILLISECONDS_IN_ONE_CLASS + 1);
             ((ViewHolder) holder).frame.setLayoutParams(params);
 
             nabImg.setImageResource(PreferenceManager.labelImgIndices[course.getLabelImgIndex()]);

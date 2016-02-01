@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.sql.Time;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,8 +73,8 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_TEACHER.ordinal()] + " VARCHAR(30)," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_CLASSROOM.ordinal()] + " VARCHAR(30) NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_WEEKDAY.ordinal()] + " INT NOT NULL," +
-						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_TIME.ordinal()] + " LONG NOT NULL," +
-						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_TIME.ordinal()] + " LONG NOT NULL," +
+						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_TIME.ordinal()] + " INTEGER NOT NULL," +
+						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_TIME.ordinal()] + " INTEGER NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_WEEK.ordinal()] + " INT NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_WEEK.ordinal()] + " INT NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_WEEK_PARITY.ordinal()] + " INT," +
@@ -106,8 +104,8 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_WEEK.ordinal()], course.getStartWeek());
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_WEEK.ordinal()], course.getEndWeek());
 
-		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_TIME.ordinal()], timeFormat.format(course.getStartTime()));
-		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_TIME.ordinal()], timeFormat.format(course.getEndTime()));
+		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_TIME.ordinal()], course.getStartTime());
+		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_TIME.ordinal()], course.getEndTime());
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_WEEK_PARITY.ordinal()], course.getWeekParity());
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_LABEL_IMG_INDEX.ordinal()], course.getLabelImgIndex());
 
@@ -142,21 +140,21 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 
 		while (cursor.moveToNext()) {
 			Course newCourse = new LabelCourse();
-				newCourse.setStartTime(cursor.getLong(COURSE_TABLE_INDICES.COURSE_START_TIME.ordinal()));
-				newCourse.setEndTime(cursor.getLong(COURSE_TABLE_INDICES.COURSE_END_TIME.ordinal()));
-				newCourse.setId(cursor.getInt(COURSE_TABLE_INDICES.COURSE_ID.ordinal()));
-				newCourse.setName(cursor.getString(COURSE_TABLE_INDICES.COURSE_NAME.ordinal()));
-				newCourse.setDepartment(cursor.getString(COURSE_TABLE_INDICES.COURSE_DEPARTMENT.ordinal()));
-				newCourse.setCredit(cursor.getFloat(COURSE_TABLE_INDICES.COURSE_CREDIT.ordinal()));
-				newCourse.setTeacher(cursor.getString(COURSE_TABLE_INDICES.COURSE_TEACHER.ordinal()));
-				newCourse.setClassroom(cursor.getString(COURSE_TABLE_INDICES.COURSE_CLASSROOM.ordinal()));
-				newCourse.setWeekDay(cursor.getInt(COURSE_TABLE_INDICES.COURSE_WEEKDAY.ordinal()));
-				newCourse.setStartWeek(cursor.getInt(COURSE_TABLE_INDICES.COURSE_START_WEEK.ordinal()));
-				newCourse.setEndWeek(cursor.getInt(COURSE_TABLE_INDICES.COURSE_END_WEEK.ordinal()));
-				newCourse.setLabelImgIndex(cursor.getInt(COURSE_TABLE_INDICES.COURSE_LABEL_IMG_INDEX.ordinal()));
-				newCourse.setWeekParity((byte) cursor.getInt(COURSE_TABLE_INDICES.COURSE_WEEK_PARITY.ordinal()));
+			newCourse.setStartTime(cursor.getLong(COURSE_TABLE_INDICES.COURSE_START_TIME.ordinal()));
+			newCourse.setEndTime(cursor.getLong(COURSE_TABLE_INDICES.COURSE_END_TIME.ordinal()));
+			newCourse.setId(cursor.getInt(COURSE_TABLE_INDICES.COURSE_ID.ordinal()));
+			newCourse.setName(cursor.getString(COURSE_TABLE_INDICES.COURSE_NAME.ordinal()));
+			newCourse.setDepartment(cursor.getString(COURSE_TABLE_INDICES.COURSE_DEPARTMENT.ordinal()));
+			newCourse.setCredit(cursor.getFloat(COURSE_TABLE_INDICES.COURSE_CREDIT.ordinal()));
+			newCourse.setTeacher(cursor.getString(COURSE_TABLE_INDICES.COURSE_TEACHER.ordinal()));
+			newCourse.setClassroom(cursor.getString(COURSE_TABLE_INDICES.COURSE_CLASSROOM.ordinal()));
+			newCourse.setWeekDay(cursor.getInt(COURSE_TABLE_INDICES.COURSE_WEEKDAY.ordinal()));
+			newCourse.setStartWeek(cursor.getInt(COURSE_TABLE_INDICES.COURSE_START_WEEK.ordinal()));
+			newCourse.setEndWeek(cursor.getInt(COURSE_TABLE_INDICES.COURSE_END_WEEK.ordinal()));
+			newCourse.setLabelImgIndex(cursor.getInt(COURSE_TABLE_INDICES.COURSE_LABEL_IMG_INDEX.ordinal()));
+			newCourse.setWeekParity((byte) cursor.getInt(COURSE_TABLE_INDICES.COURSE_WEEK_PARITY.ordinal()));
 
-				courses.add(newCourse);
+			courses.add(newCourse);
 		}
 		return courses;
 	}

@@ -115,7 +115,7 @@ public class StudentInfoParser {
                             endTime = m.group();
                         }
                         if (endTime == null) {
-                            dupCourses.get(j).setEndTime((Time)dupCourses.get(j).getStartTime().clone());
+                            dupCourses.get(j).setEndTime(dupCourses.get(j).getStartTime());
                         } else {
                             dupCourses.get(j).setEndTime(Utils.periodToTime(Integer.parseInt(endTime)));
                         }
