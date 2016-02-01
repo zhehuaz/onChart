@@ -45,7 +45,7 @@
         android:layout_below="@+id/tv_app_name"
         android:inputType="text"
         android:layout_centerHorizontal="true"
-        android:text="\u00a9 2015 Z.Chang, Apache License v2" />
+        android:text="@string/text_about_copyright"/>
 
     <TextView
         android:layout_width="wrap_content"

@@ -84,12 +84,31 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Insert a new course in database.
-	 *
-	 * @param course
+	 * Insert a new course in database.Besides, conflict is detected.
+	 * This method is intent for inserting a course manually to schedule.
+	 * Don't call this to insert plenty of courses, inefficiently.If you have to,
+	 * use {@link #addCourses(List)} instead.
+	 * @param course The course to be inserted.
+	 * @return If the inserted course is valid,
 	 */
-	public void insertCourse(Course course) {
+	public boolean insertCourse(Course course) {
+		SQLiteDatabase courseDatabase = getWritableDatabase();
 
+		Cursor cursor = courseDatabase.query(context.getString(R.string.course_table_name),
+				new String[]{"id"},
+				"WHERE startTime <= ? || endTime >= ?",
+				new String[]{course.getEndTime() + "", course.getStartTime() + ""},
+				null,
+				null,
+				null);
+		boolean result = true;
+		if (cursor.moveToFirst())
+			result = false;
+		else {
+			addCourse(courseDatabase, course);
+		}
+		cursor.close();
+		return result;
 	}
 
 	private void addCourse(SQLiteDatabase courseDatabase, Course course) {
@@ -117,9 +136,10 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	/**
 	 * Add a list of courses to the database.
 	 * Conflict is not detected, so you should make sure the courses don't overlap one anther.
-	 * <p/>
+	 *
 	 * This method is used for initializing the schedule, which means to add courses to an empty
 	 * course table.
+	 * If you have detect the conflict, use {@link #insertCourse(Course)} instead.
 	 *
 	 * @param courses The courses to be added.
 	 */
