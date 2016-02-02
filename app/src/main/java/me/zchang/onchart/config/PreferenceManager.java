@@ -84,7 +84,7 @@ public class PreferenceManager {
         return this;
     }
 
-    public PreferenceManager saveImgPathIndex(int key, int resIndex) {
+    public PreferenceManager saveImgPathIndex(long key, int resIndex) {
         courseSQLiteHelper.setImgPathIndex(key, resIndex);
         return this;
     }

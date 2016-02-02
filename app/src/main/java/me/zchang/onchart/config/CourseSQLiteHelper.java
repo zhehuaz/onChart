@@ -16,6 +16,22 @@ import me.zchang.onchart.R;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.LabelCourse;
 
+/*
+ *    Copyright 2015 Zhehua Chang
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 /**
  * SQLite helper of courses table.
  */
@@ -66,7 +82,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		final String createStatement =
 				"CREATE TABLE " + context.getString(R.string.course_table_name) + " (" +
-						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_ID.ordinal()] + " INT PRIMARY KEY," +
+						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_ID.ordinal()] + " INTEGER PRIMARY KEY," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_NAME.ordinal()] + " VARCHAR(100) NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_DEPARTMENT.ordinal()] + " VARCHAR(100)," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_CREDIT.ordinal()] + " FLOAT NOT NULL," +
@@ -102,16 +118,49 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 				null,
 				null);
 		boolean result = true;
-		if (cursor.moveToFirst())
+		if (cursor != null && cursor.moveToFirst())
 			result = false;
 		else {
 			addCourse(courseDatabase, course);
 		}
 		cursor.close();
+		courseDatabase.close();
 		return result;
 	}
 
+	public boolean deleteCourse(int id) {
+		SQLiteDatabase courseDatabase = getWritableDatabase();
+		boolean result = true;
+		int affectedId = courseDatabase.delete(context.getString(R.string.course_table_name),
+				"WHERE id = ?", new String[]{id + ""});
+		if (affectedId != id)
+			result = false;
+		courseDatabase.close();
+		return result;
+	}
+
+	/**
+	 * Replace the course when ID conflict occurs.
+	 * If not, insert it as calling {@link #insertCourse(Course)}.
+	 *
+	 * @param course The new course to be set, shares the ID field with the old one.
+	 */
+	public void replaceCourse(Course course) {
+		SQLiteDatabase courseDatabase = getWritableDatabase();
+
+		courseDatabase.replace(context.getString(R.string.course_table_name),
+				null,
+				putCourseValues(course));
+	}
+
 	private void addCourse(SQLiteDatabase courseDatabase, Course course) {
+		courseDatabase.insert(
+				context.getString(R.string.course_table_name),
+				null,
+				putCourseValues(course));
+	}
+
+	private ContentValues putCourseValues(Course course) {
 		ContentValues values = new ContentValues();
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_ID.ordinal()], course.getId());
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_NAME.ordinal()], course.getName());
@@ -128,9 +177,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_WEEK_PARITY.ordinal()], course.getWeekParity());
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_LABEL_IMG_INDEX.ordinal()], course.getLabelImgIndex());
 
-		courseDatabase.insert(
-				context.getString(R.string.course_table_name),
-				null, values);
+		return values;
 	}
 
 	/**
@@ -162,7 +209,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 			Course newCourse = new LabelCourse();
 			newCourse.setStartTime(cursor.getLong(COURSE_TABLE_INDICES.COURSE_START_TIME.ordinal()));
 			newCourse.setEndTime(cursor.getLong(COURSE_TABLE_INDICES.COURSE_END_TIME.ordinal()));
-			newCourse.setId(cursor.getInt(COURSE_TABLE_INDICES.COURSE_ID.ordinal()));
+			newCourse.setId(cursor.getLong(COURSE_TABLE_INDICES.COURSE_ID.ordinal()));
 			newCourse.setName(cursor.getString(COURSE_TABLE_INDICES.COURSE_NAME.ordinal()));
 			newCourse.setDepartment(cursor.getString(COURSE_TABLE_INDICES.COURSE_DEPARTMENT.ordinal()));
 			newCourse.setCredit(cursor.getFloat(COURSE_TABLE_INDICES.COURSE_CREDIT.ordinal()));
@@ -185,7 +232,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 		courseDatabase.close();
 	}
 
-	public void setImgPathIndex(int id, int resIndex) {
+	public void setImgPathIndex(long id, int resIndex) {
 		SQLiteDatabase courseDatabase = getWritableDatabase();
 
 		ContentValues value = new ContentValues();
@@ -216,7 +263,5 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	}
 
 	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-	}
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) { }
 }

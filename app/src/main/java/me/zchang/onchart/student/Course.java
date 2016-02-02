@@ -25,7 +25,7 @@ public class Course implements Comparable{
      * The ID of each course to identify the blocks in the schedule.
      * That's to say, the ID identifies a lesson at certain time in a week.
      */
-    protected int id;
+    protected long id;
 
     /**
      * The name of the course.
@@ -236,11 +236,11 @@ public class Course implements Comparable{
         this.labelImgIndex = labelImgIndex;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public Course setId(int id) {
+    public Course setId(long id) {
         this.id = id;
         return this;
     }
