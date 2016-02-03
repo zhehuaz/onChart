@@ -104,18 +104,19 @@ public class Course implements Comparable{
      * Constructor of Course.
      */
     public Course() {
+        this.id = -1;
         this.name = "";
         this.department = "";
-        credit = 0f;
-        teacher = "";
-        classroom = "";
-        weekDay = 0;
-        startTime = 0;
-        endTime = 0;
-        startWeek = 0;
-        endWeek = 0;
-        weekParity = -1;
-        labelImgIndex = 0;
+        this.credit = 0f;
+        this.teacher = "";
+        this.classroom = "";
+        this.weekDay = 0;
+        this.startTime = 0;
+        this.endTime = 0;
+        this.startWeek = 0;
+        this.endWeek = 0;
+        this.weekParity = -1;
+        this.labelImgIndex = 0;
     }
 
     /**

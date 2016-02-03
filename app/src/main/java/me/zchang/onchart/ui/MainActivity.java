@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity
 	private TextView versionText;
 	private NavigationView drawerView;
 	private AppBarLayout toolbarContainer;
+	private FloatingActionButton addButton;
 
 	private Session session;
 	private PreferenceManager preferenceManager;
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity
 		drawerLayout = (DrawerLayout) findViewById(R.id.dl_drawer);
 		drawerView = (NavigationView) findViewById(R.id.nv_drawer);
 		toolbarContainer = (AppBarLayout) findViewById(R.id.appb_container);
+		addButton = (FloatingActionButton) findViewById(R.id.fab_add_course);
 		drawerHeader = (ViewGroup) drawerView.getHeaderView(0);
 		nameText = (TextView) drawerHeader.findViewById(R.id.tv_stu_name);
 		weekNumText = (TextView) drawerHeader.findViewById(R.id.tv_week);
@@ -128,6 +131,12 @@ public class MainActivity extends AppCompatActivity
 		if (versionText != null)
 			versionText.setText(BuildConfig.VERSION_NAME);
 
+		addButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+
+			}
+		});
 
 		nameText.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -497,17 +506,18 @@ public class MainActivity extends AppCompatActivity
 				int pos = data.getIntExtra(getString(R.string.intent_position), 0);
 
 				if (resultCode == RESULT_OK) {
-					Course course = curFragment.findCourseById(data.getIntExtra(getString(R.string.intent_course_id), -1));
+					Course course = curFragment.findCourseById(data.getLongExtra(getString(R.string.intent_course_id), -1));
 					if (course != null) {
 						course.setLabelImgIndex(data.getIntExtra(getString(R.string.intent_label_image_index), 0));
+						curFragment.adapter
+								.notifyItemChanged(pos);
 					}
 
 					if (curFragment == null)
 						Log.e(TAG, "curFragment is null");
 					if (curFragment.adapter == null)
 						Log.e(TAG, "adapater is null");
-					curFragment.adapter
-							.notifyItemChanged(pos);
+
 				}
 				break;
 		}
