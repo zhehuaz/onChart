@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -93,8 +94,11 @@ public class LessonListFragment extends Fragment {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        Log.i(TAG, "action down");
+                        isMoving = false;
                         break;
                     case MotionEvent.ACTION_MOVE:
+                        Log.i(TAG, "action move and " + isMoving);
                         if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.getItemCount() - 1
                                 || linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
                             if (!isMoving) {
@@ -114,7 +118,7 @@ public class LessonListFragment extends Fragment {
                                         position = i;
                                     else
                                         position = courseCount - i;
-                                    int offset = (int) (deltaY * (1 + position) / 25);
+                                    int offset = (int) (deltaY * (1 + position * 0.8) / 25);
                                     if (childView != null)
                                         childView.setTranslationY(offset);
                                 }
@@ -122,6 +126,7 @@ public class LessonListFragment extends Fragment {
                         }
                         break;
                     case MotionEvent.ACTION_UP:
+                        Log.i(TAG, "action up");
                         if (isMoving) {
                             deltaY = 0;
                             for (int i = 1; i < courseCount; i++) {

@@ -125,11 +125,16 @@ public class MainActivity extends AppCompatActivity
 		nameText = (TextView) drawerHeader.findViewById(R.id.tv_stu_name);
 		weekNumText = (TextView) drawerHeader.findViewById(R.id.tv_week);
 		versionText = (TextView) drawerHeader.findViewById(R.id.tv_version);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && firstLaunch)
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && firstLaunch) {
 			toolbarContainer.setTranslationY(-toolbarContainer.getLayoutParams().height);
+			addButton.setScaleX(0.f);
+			addButton.setScaleY(0.f);
+			addButton.setAlpha(0.f);
+		}
 
 		if (versionText != null)
 			versionText.setText(BuildConfig.VERSION_NAME);
+
 
 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -177,7 +182,6 @@ public class MainActivity extends AppCompatActivity
 		mainListPager.setAdapter(mainListAdapter);
 		mainListPager.setClipChildren(false);
 		mainListPager.setClipToPadding(false);
-		mainListPager.setOffscreenPageLimit(2);
 
 		weekdayTabs.setupWithViewPager(mainListPager);
 		weekdayTabs.setTabsFromPagerAdapter(mainListAdapter);
@@ -456,6 +460,12 @@ public class MainActivity extends AppCompatActivity
 		if (recyclerView != null && firstLaunch) {
 			recyclerView.scheduleLayoutAnimation();
 		}
+		addButton.animate()
+				.alpha(1.f)
+				.scaleX(1.f)
+				.scaleY(1.f)
+				.setDuration(200)
+				.setStartDelay(200);
 	}
 
 	@Override
