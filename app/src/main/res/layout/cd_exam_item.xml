@@ -31,6 +31,7 @@
         card_view:cardElevation="5dp"
         card_view:contentPadding="5dp"
         card_view:cardBackgroundColor="@color/cardview_light_background"
+        card_view:cardCornerRadius="10dp"
         android:layout_gravity="right"
         android:id="@+id/cd_exam"
         android:layout_marginLeft="16dp"

@@ -6,10 +6,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
@@ -78,28 +79,66 @@ public class LessonListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_lesson_list, container, false);
         courseList = (RecyclerView) rootView.findViewById(R.id.rv_lessons);
-        courseList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        courseList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                switch (newState) {
-                    case RecyclerView.SCROLL_STATE_IDLE:
-                        Log.i(TAG, "idle");
-                        break;
-                    case RecyclerView.SCROLL_STATE_DRAGGING:
-                        Log.i(TAG, "dragging");
-                        break;
-                    case RecyclerView.SCROLL_STATE_SETTLING:
-                        Log.i(TAG, "settling");
-                        break;
-                }
-            }
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        courseList.setLayoutManager(linearLayoutManager);
+        courseList.setOnTouchListener(new View.OnTouchListener() {
+            float firstY = 0;
+            float curY = 0;
+            float deltaY = 0;
+            boolean isMoving = false;
+            int courseCount = 0;
+
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                Log.i(TAG, "dy is " + dy);
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.getItemCount() - 1
+                                || linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                            if (!isMoving) {
+                                // start to move
+                                isMoving = true;
+                                courseCount = courseList.getChildCount();
+                                curY = motionEvent.getY();
+                                firstY = curY;
+                            } else {
+                                // is moving
+                                curY = motionEvent.getY();
+                                deltaY = curY - firstY;
+                                for (int i = 1; i < courseCount; i++) {
+                                    View childView = courseList.getChildAt(i);
+                                    int position = 0;
+                                    if (deltaY > 0)
+                                        position = i;
+                                    else
+                                        position = courseCount - i;
+                                    int offset = (int) (deltaY * (1 + position) / 25);
+                                    if (childView != null)
+                                        childView.setTranslationY(offset);
+                                }
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (isMoving) {
+                            deltaY = 0;
+                            for (int i = 1; i < courseCount; i++) {
+                                final View childView = courseList.getChildAt(i);
+                                if (childView != null) {
+                                    childView.animate()
+                                            .setInterpolator(new AccelerateDecelerateInterpolator())
+                                            .translationY(0)
+                                            .setDuration(260)
+                                            .setStartDelay(20);
+                                }
+                            }
+                        }
+                        isMoving = false;
+                        break;
+                }
+                return false;
             }
         });
 
