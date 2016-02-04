@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.File;
 import java.sql.Date;
@@ -115,25 +117,21 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	public boolean insertCourse(Course course) {
 		SQLiteDatabase courseDatabase = getWritableDatabase();
 
-		Cursor cursor = courseDatabase.query(context.getString(R.string.course_table_name),
-				new String[]{"id"},
-				"WHERE (startTime <= ? || endTime >= ?) && (startWeek <= ? || endWeek >= ?)",
-				new String[]{course.getEndTime() + "",
-						course.getStartTime() + "",
-						course.getEndWeek() + "",
-						course.getStartWeek() + ""},
-				null, null, null);
-		boolean result = true;
-		if (cursor != null && cursor.moveToFirst()) {
-			result = false;
-			cursor.close();
-		} else {
+		boolean success = false;
+		if (checkConflict(courseDatabase, course) == null) {
 			addCourse(courseDatabase, course);
+			success = true;
 		}
 		courseDatabase.close();
-		return result;
+		return success;
 	}
 
+	/**
+	 * Delete a course specified by ID.
+	 *
+	 * @param id The ID of the course to be deleted.
+	 * @return If it is deleted successfully.
+	 */
 	public boolean deleteCourse(long id) {
 		SQLiteDatabase courseDatabase = getWritableDatabase();
 		boolean result = true;
@@ -148,16 +146,19 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	/**
 	 * Replace the course when ID conflict occurs.
 	 * If not, insert it as calling {@link #insertCourse(Course)}.
-	 *
+	 * This method will also check time conflict.If any, the transaction will be stopped.
 	 * @param course The new course to be set, shares the ID field with the old one.
 	 */
 	public void replaceCourse(Course course) {
-		// TODO: 2/4/16 check conflict
 		SQLiteDatabase courseDatabase = getWritableDatabase();
 
-		courseDatabase.replace(context.getString(R.string.course_table_name),
-				null,
-				putCourseValues(course));
+		List<Long> conflicts = checkConflict(courseDatabase, course);
+		if (conflicts == null || (conflicts.size() == 1 && conflicts.get(0) == course.getId()))
+			courseDatabase.replace(context.getString(R.string.course_table_name),
+					null,
+					putCourseValues(course));
+		else if (conflicts.size() != 1)
+			Log.e(TAG, "More than one conflicts occurred.");
 	}
 
 	private long addCourse(SQLiteDatabase courseDatabase, Course course) {
@@ -172,7 +173,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	 *
 	 * @param course if ID of the course is -1, the id is AUTOINCREMENT.
 	 */
-	private ContentValues putCourseValues(Course course) {
+	private ContentValues putCourseValues(@NonNull Course course) {
 		ContentValues values = new ContentValues();
 		if (course.getId() != -1)
 			values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_ID.ordinal()], course.getId());
@@ -191,6 +192,36 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_LABEL_IMG_INDEX.ordinal()], course.getLabelImgIndex());
 
 		return values;
+	}
+
+	/**
+	 * Check if the course has conflicts in the database.
+	 * If any, conflict courses' IDs are returned.
+	 *
+	 * @param courseDatabase The database to check.
+	 * @param course         The course to check.
+	 * @return The conflict courses' IDs.If no, returns null.
+	 */
+	private List<Long> checkConflict(SQLiteDatabase courseDatabase, @NonNull Course course) {
+		Cursor cursor = courseDatabase.query(context.getString(R.string.course_table_name),
+				new String[]{"id"},
+				"WHERE semester IS ? AND (startTime <= ? OR endTime >= ?) AND (startWeek <= ? OR endWeek >= ?)",
+				new String[]{course.getSemester(),
+						course.getEndTime() + "",
+						course.getStartTime() + "",
+						course.getEndWeek() + "",
+						course.getStartWeek() + ""},
+				null, null, null);
+		if (cursor != null && cursor.moveToFirst()) {
+			List<Long> retIds = new ArrayList<>();
+			do {
+				retIds.add(cursor.getLong(COURSE_TABLE_INDICES.COURSE_ID.ordinal()));
+			} while (cursor.moveToNext());
+			cursor.close();
+			return retIds;
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -213,10 +244,27 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 		}
 	}
 
+	/**
+	 * Get all the courses from database.
+	 * @return The list of courses.
+	 */
 	public List<Course> getCourses() {
+		return getCourses(null);
+	}
+
+	/**
+	 * Get courses from database.
+	 *
+	 * @param whereClause The where clause in query state, "WHERE" is included.
+	 *                    All the courses will be returned if null.
+	 * @return The list of courses.
+	 */
+	public List<Course> getCourses(String whereClause) {
 		List<Course> courses = new ArrayList<>();
 		SQLiteDatabase courseDatabase = getReadableDatabase();
-		Cursor cursor = courseDatabase.rawQuery("SELECT * from " + context.getString(R.string.course_table_name), null);
+		if (whereClause == null)
+			whereClause = "";
+		Cursor cursor = courseDatabase.rawQuery("SELECT * from " + context.getString(R.string.course_table_name) + " " + whereClause, null);
 
 		while (cursor.moveToNext()) {
 			Course newCourse = new LabelCourse();
