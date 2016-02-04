@@ -282,20 +282,4 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         else
             return VIEW_TYPE_LIST;
     }
-
-    /**
-     * Find the position of lesson in the list by id.
-     * @param id ID of the lesson
-     * @return the position of lesson in the list
-     */
-    public int findLessonById(int id) {
-        if(!courses.isEmpty()) {
-            for (int i = 0; i < bitmap.length; i++) {
-                if (bitmap[i] >= 0 && (courses.get(bitmap[i]).getId() == id)) {
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
 }

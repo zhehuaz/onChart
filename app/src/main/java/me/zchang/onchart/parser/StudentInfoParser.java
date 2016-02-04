@@ -51,14 +51,14 @@ public class StudentInfoParser {
      * @param htmlText the source html text.
      * @return the list of courses parsed from the source.Return null if failed.
      */
-    public static List<Course> parseSchedule(@NonNull String htmlText)
+    public static List<Course> parseCourses(@NonNull String htmlText)
     {
-        Document doc = Jsoup.parse(htmlText);
+	    // TODO: 2/4/16 parse and add semester information
+	    Document doc = Jsoup.parse(htmlText);
         Element chartTable = doc.select("table#dgrdKb").first();
         if(chartTable != null) {
             Elements lessonEles = chartTable.select("tr");
             List<Course> courses = new ArrayList<>();
-            int lessonId = 0;
 
             List<Course> dupCourses = new ArrayList<>();
             for (Element e : lessonEles) {
@@ -78,8 +78,8 @@ public class StudentInfoParser {
                     String[] textClassrooms = textClassroom.split(";");
                     int j = 0;
                     for (String s : textClassrooms) {
-                        dupCourses.add(new LabelCourse(baseCourse).setId(lessonId++));
-                        dupCourses.get(j).setClassroom(s);
+	                    dupCourses.add(new LabelCourse(baseCourse));
+	                    dupCourses.get(j).setClassroom(s);
 
                         if (textTimes[j].length() == 1)
                             dupCourses.get(j).setWeekDay(7);// the null value

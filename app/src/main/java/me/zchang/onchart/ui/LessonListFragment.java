@@ -94,11 +94,9 @@ public class LessonListFragment extends Fragment {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        Log.i(TAG, "action down");
                         isMoving = false;
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        Log.i(TAG, "action move and " + isMoving);
                         if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.getItemCount() - 1
                                 || linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
                             if (!isMoving) {
@@ -113,7 +111,7 @@ public class LessonListFragment extends Fragment {
                                 deltaY = curY - firstY;
                                 for (int i = 1; i < courseCount; i++) {
                                     View childView = courseList.getChildAt(i);
-                                    int position = 0;
+                                    int position;
                                     if (deltaY > 0)
                                         position = i;
                                     else
@@ -126,7 +124,6 @@ public class LessonListFragment extends Fragment {
                         }
                         break;
                     case MotionEvent.ACTION_UP:
-                        Log.i(TAG, "action up");
                         if (isMoving) {
                             deltaY = 0;
                             for (int i = 1; i < courseCount; i++) {

@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.io.File;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +61,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 		COURSE_START_WEEK,
 		COURSE_END_WEEK,
 		COURSE_WEEK_PARITY,
+		COURSE_SEMESTER,
 		COURSE_LABEL_IMG_INDEX
 	}
 
@@ -75,6 +78,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 			"startWeek",
 			"endWeek",
 			"weekParity",
+			"semester",
 			"labelImgIndex"
 	};
 
@@ -82,7 +86,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		final String createStatement =
 				"CREATE TABLE " + context.getString(R.string.course_table_name) + " (" +
-						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_ID.ordinal()] + " INTEGER PRIMARY KEY," +
+						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_ID.ordinal()] + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_NAME.ordinal()] + " VARCHAR(100) NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_DEPARTMENT.ordinal()] + " VARCHAR(100)," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_CREDIT.ordinal()] + " FLOAT NOT NULL," +
@@ -91,9 +95,10 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_WEEKDAY.ordinal()] + " INT NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_TIME.ordinal()] + " INTEGER NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_TIME.ordinal()] + " INTEGER NOT NULL," +
-						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_WEEK.ordinal()] + " INT NOT NULL," +
-						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_WEEK.ordinal()] + " INT NOT NULL," +
+						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_WEEK.ordinal()] + " INTEGER NOT NULL," +
+						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_WEEK.ordinal()] + " INTEGER NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_WEEK_PARITY.ordinal()] + " INT," +
+						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_SEMESTER.ordinal()] + " CHAR(6)," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_LABEL_IMG_INDEX.ordinal()] + " INT" +
 						")";
 		db.execSQL(createStatement);
@@ -112,23 +117,24 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 
 		Cursor cursor = courseDatabase.query(context.getString(R.string.course_table_name),
 				new String[]{"id"},
-				"WHERE startTime <= ? || endTime >= ?",
-				new String[]{course.getEndTime() + "", course.getStartTime() + ""},
-				null,
-				null,
-				null);
+				"WHERE (startTime <= ? || endTime >= ?) && (startWeek <= ? || endWeek >= ?)",
+				new String[]{course.getEndTime() + "",
+						course.getStartTime() + "",
+						course.getEndWeek() + "",
+						course.getStartWeek() + ""},
+				null, null, null);
 		boolean result = true;
-		if (cursor != null && cursor.moveToFirst())
+		if (cursor != null && cursor.moveToFirst()) {
 			result = false;
-		else {
+			cursor.close();
+		} else {
 			addCourse(courseDatabase, course);
 		}
-		cursor.close();
 		courseDatabase.close();
 		return result;
 	}
 
-	public boolean deleteCourse(int id) {
+	public boolean deleteCourse(long id) {
 		SQLiteDatabase courseDatabase = getWritableDatabase();
 		boolean result = true;
 		int affectedId = courseDatabase.delete(context.getString(R.string.course_table_name),
@@ -146,6 +152,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	 * @param course The new course to be set, shares the ID field with the old one.
 	 */
 	public void replaceCourse(Course course) {
+		// TODO: 2/4/16 check conflict
 		SQLiteDatabase courseDatabase = getWritableDatabase();
 
 		courseDatabase.replace(context.getString(R.string.course_table_name),
@@ -153,16 +160,22 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 				putCourseValues(course));
 	}
 
-	private void addCourse(SQLiteDatabase courseDatabase, Course course) {
-		courseDatabase.insert(
+	private long addCourse(SQLiteDatabase courseDatabase, Course course) {
+		return courseDatabase.insert(
 				context.getString(R.string.course_table_name),
 				null,
 				putCourseValues(course));
 	}
 
+	/**
+	 * Convert a {@link Course} to {@link ContentValues}.
+	 *
+	 * @param course if ID of the course is -1, the id is AUTOINCREMENT.
+	 */
 	private ContentValues putCourseValues(Course course) {
 		ContentValues values = new ContentValues();
-		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_ID.ordinal()], course.getId());
+		if (course.getId() != -1)
+			values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_ID.ordinal()], course.getId());
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_NAME.ordinal()], course.getName());
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_DEPARTMENT.ordinal()], course.getDepartment());
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_CREDIT.ordinal()], course.getCredit());
@@ -186,7 +199,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	 *
 	 * This method is used for initializing the schedule, which means to add courses to an empty
 	 * course table.
-	 * If you have detect the conflict, use {@link #insertCourse(Course)} instead.
+	 * If you have detected the conflict, use {@link #insertCourse(Course)} instead.
 	 *
 	 * @param courses The courses to be added.
 	 */
@@ -223,6 +236,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 
 			courses.add(newCourse);
 		}
+		cursor.close();
 		return courses;
 	}
 
@@ -242,7 +256,6 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	}
 
 	public int getImgPathIndex(int id, int defaultResIndex) {
-
 		SQLiteDatabase courseDatabase = getReadableDatabase();
 
 		Cursor cursor =

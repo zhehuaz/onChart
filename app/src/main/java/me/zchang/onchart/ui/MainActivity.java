@@ -135,7 +135,6 @@ public class MainActivity extends AppCompatActivity
 		if (versionText != null)
 			versionText.setText(BuildConfig.VERSION_NAME);
 
-
 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -343,7 +342,6 @@ public class MainActivity extends AppCompatActivity
 		if (drawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
-
 		return super.onOptionsItemSelected(item);
 	}
 

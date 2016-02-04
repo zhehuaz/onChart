@@ -91,6 +91,13 @@ public class Course implements Comparable{
      */
     protected byte weekParity;
 
+	/**
+	 * The semester this course is in.
+	 * The format is "YYYY-N", which means the nth semester in the year of YYYY-YYYY+!.
+	 * For example, "2015-1" means the 1st semester in 2015-2016.
+	 */
+	protected String semester;
+
     /**
      * The label image for the course, which can be shown on screen.
      * This integer refers to a image,and you can define the map yourself.
@@ -116,12 +123,13 @@ public class Course implements Comparable{
         this.startWeek = 0;
         this.endWeek = 0;
         this.weekParity = -1;
-        this.labelImgIndex = 0;
+	    this.semester = "";
+	    this.labelImgIndex = 0;
     }
 
     /**
      * Copy another course, and refer to different objects.
-     * @param course
+     * @param course The course to be copied.
      */
     public Course(Course course) {
         this.name = course.name;
@@ -135,7 +143,8 @@ public class Course implements Comparable{
         this.startWeek = course.startWeek;
         this.endWeek = course.endWeek;
         this.weekParity = course.weekParity;
-        this.labelImgIndex = course.labelImgIndex;
+	    this.semester = course.semester;
+	    this.labelImgIndex = course.labelImgIndex;
         this.id = course.id;
     }
 
@@ -246,8 +255,16 @@ public class Course implements Comparable{
         return this;
     }
 
-    @Override
-    public int compareTo(Object o) {
+	public String getSemester() {
+		return semester;
+	}
+
+	public void setSemester(String semester) {
+		this.semester = semester;
+	}
+
+	@Override
+	public int compareTo(Object o) {
         Course l = (Course)o;
         return(int)(this.getStartTime() - l.getStartTime());
     }

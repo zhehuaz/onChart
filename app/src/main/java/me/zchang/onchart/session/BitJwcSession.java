@@ -135,7 +135,7 @@ public class BitJwcSession extends Session{
                     .build();
             Response scheduleResponse = httpClient.newCall(scheduleRequest).execute();
             if (scheduleResponse.isSuccessful()) {
-                return StudentInfoParser.parseSchedule(scheduleResponse.body().string());
+                return StudentInfoParser.parseCourses(scheduleResponse.body().string());
             }
         }
         return new ArrayList<>();
