@@ -8,8 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import java.io.File;
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +91,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_DEPARTMENT.ordinal()] + " VARCHAR(100)," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_CREDIT.ordinal()] + " FLOAT NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_TEACHER.ordinal()] + " VARCHAR(30)," +
-						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_CLASSROOM.ordinal()] + " VARCHAR(30) NOT NULL," +
+						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_CLASSROOM.ordinal()] + " VARCHAR(30)," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_WEEKDAY.ordinal()] + " INT NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_TIME.ordinal()] + " INTEGER NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_TIME.ordinal()] + " INTEGER NOT NULL," +
@@ -136,7 +134,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 		SQLiteDatabase courseDatabase = getWritableDatabase();
 		boolean result = true;
 		int affectedId = courseDatabase.delete(context.getString(R.string.course_table_name),
-				"WHERE id = ?", new String[]{id + ""});
+				"id = ?", new String[]{id + ""});
 		if (affectedId != id)
 			result = false;
 		courseDatabase.close();
@@ -205,12 +203,13 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	private List<Long> checkConflict(SQLiteDatabase courseDatabase, @NonNull Course course) {
 		Cursor cursor = courseDatabase.query(context.getString(R.string.course_table_name),
 				new String[]{"id"},
-				"WHERE semester IS ? AND (startTime <= ? OR endTime >= ?) AND (startWeek <= ? OR endWeek >= ?)",
+				"semester IS ? AND (startTime <= ? OR endTime >= ?) AND (startWeek <= ? OR endWeek >= ?) AND weekDay IS ?",
 				new String[]{course.getSemester(),
 						course.getEndTime() + "",
 						course.getStartTime() + "",
 						course.getEndWeek() + "",
-						course.getStartWeek() + ""},
+						course.getStartWeek() + "",
+						course.getWeekDay() + ""},
 				null, null, null);
 		if (cursor != null && cursor.moveToFirst()) {
 			List<Long> retIds = new ArrayList<>();

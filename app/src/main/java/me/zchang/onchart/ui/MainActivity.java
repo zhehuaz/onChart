@@ -30,6 +30,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.okhttp.internal.Util;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,11 +40,14 @@ import java.util.TimeZone;
 
 import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
+import me.zchang.onchart.config.CourseSQLiteHelper;
 import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.PreferenceManager;
+import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
 import me.zchang.onchart.student.Course;
+import me.zchang.onchart.student.LabelCourse;
 import me.zchang.onchart.ui.adapter.CoursePagerAdapter;
 import me.zchang.onchart.ui.adapter.DiffTransformer;
 
@@ -138,7 +143,16 @@ public class MainActivity extends AppCompatActivity
 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-
+				Course course = new LabelCourse();
+				course.setName("new course");
+				course.setStartWeek(1);
+				course.setEndWeek(20);
+				course.setStartTime(Utils.periodToTime(1));
+				course.setEndTime(Utils.periodToTime(4));
+				course.setWeekDay(4);
+				course.setClassroom("hello");
+				course.setTeacher("Mr. hehe");
+				Log.d(TAG, preferenceManager.insertCourse(course) + "");
 			}
 		});
 

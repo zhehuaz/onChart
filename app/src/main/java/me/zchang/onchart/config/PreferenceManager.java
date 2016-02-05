@@ -2,6 +2,7 @@ package me.zchang.onchart.config;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.List;
@@ -82,6 +83,10 @@ public class PreferenceManager {
     public PreferenceManager deleteSchedule() {
         courseSQLiteHelper.clearCourses();
         return this;
+    }
+
+    public boolean insertCourse(Course course) {
+        return courseSQLiteHelper.insertCourse(course);
     }
 
     public PreferenceManager saveImgPathIndex(long key, int resIndex) {
