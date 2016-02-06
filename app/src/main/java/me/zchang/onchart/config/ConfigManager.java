@@ -90,8 +90,8 @@ public class ConfigManager {
 
     public boolean insertCourse(Course course) {
 	    boolean result = courseSQLiteHelper.insertCourse(course);
-	    if (configChangeListner != null)
-		    configChangeListner.onInsertCourse(course);
+        if (configChangeListner != null && result)
+            configChangeListner.onInsertCourse(course);
 	    return result;
     }
 
