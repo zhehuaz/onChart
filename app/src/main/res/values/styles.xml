@@ -14,7 +14,6 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:windowIsTranslucent">false</item>
         <item name="colorAccent">#0AAEEF</item>
-        <item name="colorControlNormal">#c5c5c5</item>
     </style>
 
     <style name="DetailTexts">

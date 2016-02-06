@@ -1,21 +1,3 @@
-/*
- *
- *  *    Copyright 2015 Zhehua Chang
- *  *
- *  *    Licensed under the Apache License, Version 2.0 (the "License");
- *  *    you may not use this file except in compliance with the License.
- *  *    You may obtain a copy of the License at
- *  *
- *  *        http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  *    Unless required by applicable law or agreed to in writing, software
- *  *    distributed under the License is distributed on an "AS IS" BASIS,
- *  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *    See the License for the specific language governing permissions and
- *  *    limitations under the License.
- *
- */
-
 package me.zchang.onchart.student;
 
 /*
@@ -34,8 +16,6 @@ package me.zchang.onchart.student;
  *    limitations under the License.
  */
 
-import me.zchang.onchart.parser.Utils;
-
 /**
  * Entity class representative of a block in the schedule.
  */
@@ -45,7 +25,7 @@ public class Course implements Comparable{
      * The ID of each course to identify the blocks in the schedule.
      * That's to say, the ID identifies a lesson at certain time in a week.
      */
-    protected int id;
+    protected long id;
 
     /**
      * The name of the course.
@@ -76,21 +56,22 @@ public class Course implements Comparable{
     protected String classroom;
 
     /**
-     * The day of the course in Chinese.
-     * You can easily translate it into index calling {@link Utils#parseIndexFromWeekday(char)}.
+     * The day of the course index.
      * The index is from 0 to 6 for Monday to Sunday.
      */
-    protected char weekDay;
+    protected int weekDay;
 
     /**
      * The time when the class begins.
+     * The time should be on the day of Jan. 1st, 1970 GMT.
      */
-    protected int startTime;
+    protected long startTime;
 
     /**
      * The time when the class ends.
+     * The time should be on the day of Jan. 1st, 1970 GMT.
      */
-    protected int endTime;
+    protected long endTime;
 
     /**
      * The first week of the course.
@@ -110,6 +91,13 @@ public class Course implements Comparable{
      */
     protected byte weekParity;
 
+	/**
+	 * The semester this course is in.
+	 * The format is "YYYY-N", which means the nth semester in the year of YYYY-YYYY+!.
+	 * For example, "2015-1" means the 1st semester in 2015-2016.
+	 */
+	protected String semester;
+
     /**
      * The label image for the course, which can be shown on screen.
      * This integer refers to a image,and you can define the map yourself.
@@ -123,37 +111,40 @@ public class Course implements Comparable{
      * Constructor of Course.
      */
     public Course() {
+        this.id = -1;
         this.name = "";
         this.department = "";
-        credit = 0f;
-        teacher = "";
-        classroom = "";
-        weekDay = 0;
-        startTime = 0;
-        endTime = 0;
-        startWeek = 0;
-        endWeek = 0;
-        weekParity = -1;
-        labelImgIndex = 0;
+        this.credit = 0f;
+        this.teacher = "";
+        this.classroom = "";
+        this.weekDay = 0;
+        this.startTime = 0;
+        this.endTime = 0;
+        this.startWeek = 0;
+        this.endWeek = 0;
+        this.weekParity = -1;
+	    this.semester = "";
+	    this.labelImgIndex = 0;
     }
 
     /**
      * Copy another course, and refer to different objects.
-     * @param course
+     * @param course The course to be copied.
      */
     public Course(Course course) {
-        this.name = new String(course.name);
-        this.department = new String(course.department);
-        this.teacher = new String(course.teacher);
-        this.classroom = new String(course.classroom);
+        this.name = course.name;
+        this.department = course.department;
+        this.teacher = course.teacher;
+        this.classroom = course.classroom; // safe and efficient.
         this.credit = course.credit;
         this.weekDay = course.weekDay;
         this.startTime = course.startTime;
         this.endTime = course.endTime;
-        this.startWeek = course.startTime;
+        this.startWeek = course.startWeek;
         this.endWeek = course.endWeek;
         this.weekParity = course.weekParity;
-        this.labelImgIndex = course.labelImgIndex;
+	    this.semester = course.semester;
+	    this.labelImgIndex = course.labelImgIndex;
         this.id = course.id;
     }
 
@@ -197,27 +188,27 @@ public class Course implements Comparable{
         this.classroom = classroom;
     }
 
-    public char getWeekDay() {
+    public int getWeekDay() {
         return weekDay;
     }
 
-    public void setWeekDay(char weekDay) {
+    public void setWeekDay(int weekDay) {
         this.weekDay = weekDay;
     }
 
-    public int getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(int startTime) {
+    public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
 
-    public int getEndTime() {
+    public long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
+    public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
 
@@ -255,19 +246,27 @@ public class Course implements Comparable{
         this.labelImgIndex = labelImgIndex;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public Course setId(int id) {
+    public Course setId(long id) {
         this.id = id;
         return this;
     }
 
-    @Override
-    public int compareTo(Object o) {
+	public String getSemester() {
+		return semester;
+	}
+
+	public void setSemester(String semester) {
+		this.semester = semester;
+	}
+
+	@Override
+	public int compareTo(Object o) {
         Course l = (Course)o;
-        return this.getStartTime() - l.getStartTime();
+        return(int)(this.getStartTime() - l.getStartTime());
     }
 
 

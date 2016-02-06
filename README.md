@@ -1,9 +1,13 @@
 
 # onChart
+ 
+![](https://github.com/LangleyChang/onChart/blob/dev/app/src/main/res/mipmap-xxhdpi/ic_logo.png?raw=true)
 A Lesson table APP for Beijing Institute of Technology.
-Fetch lessons automatically from the [academic affairs office](http://jwc.bit.edu.cn)(Intranet only) of BIT.
 
-![](http://i.imgur.com/Pdzbks7.png)
+# Download
+
+Now in the [Wandoujia](http://www.wandoujia.com/apps/me.zchang.onchart),
+and the preview version in [fir.im](http://fir.im/onchart).
 
 ### Build Environment
 *   Android Studio: 1.5.0
@@ -21,11 +25,12 @@ lesson in this week only.
 
 ### Coming soon
 *   Sharing events to to-do apps like [TickTick](https://ticktick.com/) or [Wunderlist](https://www.wunderlist.com/).
-*   More label images
-*   Data interface for other universities(evaluating)
+*   Data interface for other universities(refactoring on [dev branch](https://github.com/LangleyChang/onChart/tree/dev)).
+*   Modifying course items freely.
 
 ### Attention
-    If any images used in the app have copyright infringement, contact me please and I'll remove it ASAP.
+*    If any images used in the app have copyright infringement, contact me please and I'll remove it ASAP.
+*    New pull requests to `dev` branch please.
 
 ### License
 

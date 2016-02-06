@@ -31,6 +31,7 @@
         card_view:cardElevation="5dp"
         card_view:contentPadding="5dp"
         card_view:cardBackgroundColor="@color/cardview_light_background"
+        card_view:cardCornerRadius="10dp"
         android:layout_gravity="right"
         android:id="@+id/cd_exam"
         android:layout_marginLeft="16dp"
@@ -42,12 +43,12 @@
         <TextView
             android:id="@+id/tv_exam_course_name"
             android:textStyle="bold"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="48dp"
             android:text="Course Name"
             android:textSize="17sp"
-            android:layout_gravity="top"/>
+            android:layout_gravity="center|left"/>
         <TextView
             android:id="@+id/tv_exam_position"
             android:layout_gravity="bottom"

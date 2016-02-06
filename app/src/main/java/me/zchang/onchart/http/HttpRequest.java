@@ -34,6 +34,7 @@ import java.util.Map;
  * Instances of HttpRequest are not reusable; you must use a different instance for
  * each request to a host.
  */
+ @Deprecated
 public class HttpRequest {
     // TODO Builder pattern
     private int sequence;

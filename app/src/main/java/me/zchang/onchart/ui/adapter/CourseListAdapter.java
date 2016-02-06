@@ -19,11 +19,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import me.zchang.onchart.R;
-import me.zchang.onchart.config.PreferenceManager;
-import me.zchang.onchart.exception.LessonStartTimeException;
+import me.zchang.onchart.config.ConfigManager;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.LabelCourse;
@@ -67,7 +69,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     Context context;
     private int fragId;
 
-    public CourseListAdapter(Context context, List<Course> courses, int fragId) throws LessonStartTimeException {
+    public CourseListAdapter(Context context, List<Course> courses, int fragId) {
 
         bitmap = new byte[20];
         this.courses = courses;
@@ -78,40 +80,23 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     }
 
-    public void setCourses(List<Course> courses) throws LessonStartTimeException {
+    public void setCourses(List<Course> courses) {
         this.courses = courses;
         processLessons();
     }
 
-    public void processLessons() throws LessonStartTimeException {
+    public void processLessons() {
         morningCount = 0;
         afternoonCount = 0;
         eveningCount = 0;
-        for(Course l : courses) {
-            int startTime = l.getStartTime();
-            switch (startTime) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                    morningCount ++;
-                    break;
-                case 6:
-                case 7:
-                case 8:
-                case 9:
-                case 10:
-                    afternoonCount ++;
-                    break;
-                case 11:
-                case 12:
-                case 13:
-                    eveningCount ++;
-                    break;
-                default:
-                    throw new LessonStartTimeException();
-            }
+        for (Course l : courses) {
+            long startTime = l.getStartTime();
+            if (startTime < Utils.NOON_TIME)
+                morningCount++;
+            else if (startTime < Utils.EVENING_TIME)
+                afternoonCount++;
+            else
+                eveningCount++;
         }
 
         int length = getItemCount();
@@ -120,7 +105,8 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         for(int position = 1; position < length; position ++) {
             if (position == 1 && morningCount > 0) {
                 bitmap[position] = MORNING_FLAG;
-            } else if (position == ((morningCount + 1) * (morningCount > 0 ? 1 : 0) + 1) && afternoonCount > 0) {
+            } else if (position == ((morningCount + 1) * (morningCount > 0 ? 1 : 0) + 1)
+                    && afternoonCount > 0) {
                 bitmap[position] = AFTERNOON_FLAG;
             } else if (position == ((morningCount + 1) * (morningCount > 0 ? 1 : 0)
                     + (afternoonCount + 1) * (afternoonCount > 0 ? 1 : 0) + 1)
@@ -158,13 +144,16 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             final CardView cardView = ((ViewHolder) holder).cardView;
             nameText.setText(course.getName());
             roomText.setText(course.getClassroom());
-            timeText.setText(Utils.timeFromPeriod(course.getStartTime()));
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+            timeText.setText(dateFormat.format(course.getStartTime()));
 
             ViewGroup.LayoutParams params = ((ViewHolder) holder).frame.getLayoutParams();
-            params.height =(((ViewHolder) holder).cardHeight >> 1 ) * (course.getEndTime() - course.getStartTime() + 1);
+            params.height =(((ViewHolder) holder).cardHeight >> 1 ) *
+                    (((int) course.getEndTime() - (int) course.getStartTime()) / Utils.MILLISECONDS_IN_ONE_CLASS + 1);
             ((ViewHolder) holder).frame.setLayoutParams(params);
 
-            nabImg.setImageResource(PreferenceManager.labelImgs[course.getLabelImgIndex()]);
+            nabImg.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
 
 
             Drawable nab = nabImg.getDrawable();
@@ -291,21 +280,5 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return VIEW_TYPE_SUBTITLE;
         else
             return VIEW_TYPE_LIST;
-    }
-
-    /**
-     * Find the position of lesson in the list by id.
-     * @param id ID of the lesson
-     * @return the position of lesson in the list
-     */
-    public int findLessonById(int id) {
-        if(!courses.isEmpty()) {
-            for (int i = 0; i < bitmap.length; i++) {
-                if (bitmap[i] >= 0 && (courses.get(bitmap[i]).getId() == id)) {
-                    return i;
-                }
-            }
-        }
-        return -1;
     }
 }

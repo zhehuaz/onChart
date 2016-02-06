@@ -1,31 +1,16 @@
-/*
- *
- *  *    Copyright 2015 Zhehua Chang
- *  *
- *  *    Licensed under the Apache License, Version 2.0 (the "License");
- *  *    you may not use this file except in compliance with the License.
- *  *    You may obtain a copy of the License at
- *  *
- *  *        http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  *    Unless required by applicable law or agreed to in writing, software
- *  *    distributed under the License is distributed on an "AS IS" BASIS,
- *  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *    See the License for the specific language governing permissions and
- *  *    limitations under the License.
- *
- */
-
 package me.zchang.onchart.parser;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+
+import com.squareup.okhttp.internal.Util;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,14 +51,13 @@ public class StudentInfoParser {
      * @param htmlText the source html text.
      * @return the list of courses parsed from the source.Return null if failed.
      */
-    public static List<Course> parseSchedule(@NonNull String htmlText)
+    public static List<Course> parseCourses(@NonNull String htmlText)
     {
-        Document doc = Jsoup.parse(htmlText);
+	    Document doc = Jsoup.parse(htmlText);
         Element chartTable = doc.select("table#dgrdKb").first();
         if(chartTable != null) {
             Elements lessonEles = chartTable.select("tr");
             List<Course> courses = new ArrayList<>();
-            int lessonId = 0;
 
             List<Course> dupCourses = new ArrayList<>();
             for (Element e : lessonEles) {
@@ -82,30 +66,32 @@ public class StudentInfoParser {
                     Course baseCourse = new LabelCourse();
                     Elements lessonInfo = e.getAllElements();
 
-                    baseCourse.setName(lessonInfo.get(1).text());
+	                // TODO: 2/4/16 parse and add semester information
+	                baseCourse.setSemester("2015-2");
+	                baseCourse.setName(lessonInfo.get(1).text());
                     baseCourse.setCredit(Float.parseFloat(lessonInfo.get(2).text()));
                     baseCourse.setDepartment(lessonInfo.get(5).text());
                     baseCourse.setTeacher(lessonInfo.get(7).text());
 
                     String textTime = lessonInfo.get(8).text();
-                    String[] textsTime = textTime.split(";");
+                    String[] textTimes = textTime.split(";");
                     String textClassroom = lessonInfo.get(9).text();
-                    String[] textsClassroom = textClassroom.split(";");
+                    String[] textClassrooms = textClassroom.split(";");
                     int j = 0;
-                    for (String s : textsClassroom) {
-                        dupCourses.add(new LabelCourse(baseCourse).setId(lessonId++));
-                        dupCourses.get(j).setClassroom(s);
+                    for (String s : textClassrooms) {
+	                    dupCourses.add(new LabelCourse(baseCourse));
+	                    dupCourses.get(j).setClassroom(s);
 
-                        if (textsTime[j].length() == 1)
-                            dupCourses.get(j).setWeekDay('0');
+                        if (textTimes[j].length() == 1)
+                            dupCourses.get(j).setWeekDay(7);// the null value
                         else
-                            dupCourses.get(j).setWeekDay(textsTime[j].charAt(1));
+                            dupCourses.get(j).setWeekDay(Utils.parseIndexFromWeekday(textTimes[j].charAt(1)));
 
                         String pattern = "(\\d)+(?=,)|(\\d+)*(?=节)";
                         Pattern reg = Pattern.compile(pattern);
-                        Matcher m = reg.matcher(textsTime[j]);
+                        Matcher m = reg.matcher(textTimes[j]);
                         if (m.find()) {
-                            dupCourses.get(j).setStartTime(Integer.parseInt(m.group()));
+                            dupCourses.get(j).setStartTime(Utils.periodToTime(Integer.parseInt(m.group())));
                         }
                         String endTime = null;
                         while (m.find() && m.group().length() > 0) {
@@ -114,12 +100,12 @@ public class StudentInfoParser {
                         if (endTime == null) {
                             dupCourses.get(j).setEndTime(dupCourses.get(j).getStartTime());
                         } else {
-                            dupCourses.get(j).setEndTime(Integer.parseInt(endTime));
+                            dupCourses.get(j).setEndTime(Utils.periodToTime(Integer.parseInt(endTime)));
                         }
 
                         pattern = "\\d+(?=-)|\\d+(?=周)";
                         reg = Pattern.compile(pattern);
-                        m = reg.matcher(textsTime[j]);
+                        m = reg.matcher(textTimes[j]);
                         if (m.find()) {
                             dupCourses.get(j).setStartWeek(Integer.parseInt(m.group()));
                         } else {
@@ -128,12 +114,12 @@ public class StudentInfoParser {
                         if (m.find()) {
                             dupCourses.get(j).setEndWeek(Integer.parseInt(m.group()));
                         } else {
-                            dupCourses.get(j).setEndTime(dupCourses.get(j).getStartTime());
+                            dupCourses.get(j).setEndWeek(dupCourses.get(j).getStartWeek());
                         }
 
                         pattern = "(单|双)(?=周)";
                         reg = Pattern.compile(pattern);
-                        m = reg.matcher(textsTime[j]);
+                        m = reg.matcher(textTimes[j]);
                         if (m.find()) {
                             if (m.group().equals("单"))
                                 dupCourses.get(j).setWeekParity((byte) 1);
@@ -204,13 +190,11 @@ public class StudentInfoParser {
             Elements exams = tableRoot.select("tr");
             if (exams != null && !exams.isEmpty()) {
                 for (Element examNode : exams) {
-                    //Exam exam = new Exam();
                     Elements items = examNode.getAllElements();
                     String examTime = items.get(4).text();
                     if (examTime.equals("&nbsp;") || examTime.equals("考试时间"))
                         continue;
                     Pattern pattern = Pattern.compile("20\\d{2}-\\d{2}-\\d{2}(?=\\))");
-                    //Pattern pattern2 = Pattern.compile("20\\d{2}年\\d+月\\d+日");
                     Matcher m = pattern.matcher(examTime);
                     if (!m.find()) {
                         pattern = Pattern.compile("20\\d{2}年\\d+月\\d+日");
@@ -233,7 +217,7 @@ public class StudentInfoParser {
                                     if (times.length == 2) {
                                         Exam exam = new Exam();
                                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy MM dd kk:mm");
-                                        StringBuffer timeString = new StringBuffer();
+                                        StringBuilder timeString = new StringBuilder();
                                         timeString
                                                 .append(yearMonthDay[0])
                                                 .append(" ")
@@ -243,7 +227,6 @@ public class StudentInfoParser {
                                                 .append(" ");
                                         String startTimeString = timeString.toString() + times[0];
                                         String endTimeString = timeString.toString() + times[1];
-
                                         try {
                                             exam.setStartTime(dateFormat.parse(startTimeString));
                                             exam.setEndTime(dateFormat.parse(endTimeString));

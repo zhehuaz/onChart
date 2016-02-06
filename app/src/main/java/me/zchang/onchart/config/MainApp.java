@@ -20,21 +20,21 @@ import android.app.Application;
  */
 
 public class MainApp extends Application {
-    public static final String APP_ID = "wx5a0d7c554008997c";
-    private PreferenceManager preferenceManager;
+	private ConfigManager configManager;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+	@Override
+	public void onCreate() {
+		super.onCreate();
 
-        preferenceManager = new PreferenceManager(this);
-    }
+		configManager = new ConfigManager(this);
 
-    public PreferenceManager getPreferenceManager() {
-        return preferenceManager;
-    }
+	}
 
-    public void setPreferenceManager(PreferenceManager preferenceManager) {
-        this.preferenceManager = preferenceManager;
-    }
+	public ConfigManager getConfigManager() {
+		return configManager;
+	}
+
+	public void setConfigManager(ConfigManager configManager) {
+		this.configManager = configManager;
+	}
 }
