@@ -98,7 +98,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_WEEK.ordinal()] + " INTEGER NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_WEEK.ordinal()] + " INTEGER NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_WEEK_PARITY.ordinal()] + " INT," +
-						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_SEMESTER.ordinal()] + " CHAR(6)," +
+						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_SEMESTER.ordinal()] + " CHAR(6) NOT NULL," +
 						FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_LABEL_IMG_INDEX.ordinal()] + " INT" +
 						")";
 		db.execSQL(createStatement);
@@ -155,8 +155,6 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 			courseDatabase.replace(context.getString(R.string.course_table_name),
 					null,
 					putCourseValues(course));
-		else if (conflicts.size() != 1)
-			Log.e(TAG, "More than one conflicts occurred.");
 	}
 
 	private long addCourse(SQLiteDatabase courseDatabase, Course course) {
@@ -187,6 +185,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_START_TIME.ordinal()], course.getStartTime());
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_END_TIME.ordinal()], course.getEndTime());
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_WEEK_PARITY.ordinal()], course.getWeekParity());
+		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_SEMESTER.ordinal()], course.getSemester());
 		values.put(FIELD_NAMES[COURSE_TABLE_INDICES.COURSE_LABEL_IMG_INDEX.ordinal()], course.getLabelImgIndex());
 
 		return values;
@@ -203,7 +202,7 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	private List<Long> checkConflict(SQLiteDatabase courseDatabase, @NonNull Course course) {
 		Cursor cursor = courseDatabase.query(context.getString(R.string.course_table_name),
 				new String[]{"id"},
-				"semester IS ? AND (startTime <= ? OR endTime >= ?) AND (startWeek <= ? OR endWeek >= ?) AND weekDay IS ?",
+				"semester = ? AND (startTime <= ? OR endTime >= ?) AND (startWeek <= ? OR endWeek >= ?) AND weekDay IS ?",
 				new String[]{course.getSemester(),
 						course.getEndTime() + "",
 						course.getStartTime() + "",

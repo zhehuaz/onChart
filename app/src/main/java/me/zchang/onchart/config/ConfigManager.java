@@ -2,7 +2,6 @@ package me.zchang.onchart.config;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.List;
@@ -28,7 +27,7 @@ import me.zchang.onchart.student.Course;
  *    limitations under the License.
  */
 
-public class PreferenceManager {
+public class ConfigManager {
     private static String SETTING_FILE;
 
     final static String CHART_FILE_NAME = "chart.js";
@@ -36,6 +35,8 @@ public class PreferenceManager {
     Context context;
     SharedPreferences sp;
     CourseSQLiteHelper courseSQLiteHelper;
+
+	OnConfigChangeListner configChangeListner;
 
     private boolean firstLaunch = false;
 
@@ -47,16 +48,18 @@ public class PreferenceManager {
             R.mipmap.night
     };
 
-    public void registerListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
-        sp.registerOnSharedPreferenceChangeListener(listener);
+	public void registerListener(OnConfigChangeListner listener) {
+		configChangeListner = listener;
+		sp.registerOnSharedPreferenceChangeListener(listener);
     }
 
-    public void unRegisterListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
-        sp.unregisterOnSharedPreferenceChangeListener(listener);
+	public void unRegisterListener(OnConfigChangeListner listener) {
+		configChangeListner = null;
+		sp.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
-    public PreferenceManager(Context context) {
-        this.context = context;
+	public ConfigManager(Context context) {
+		this.context = context;
         SETTING_FILE = context.getString(R.string.pref_file_name);
 
         sp = context.getSharedPreferences(SETTING_FILE, Context.MODE_PRIVATE);
@@ -71,8 +74,8 @@ public class PreferenceManager {
         }
     }
 
-    public PreferenceManager saveSchedule(List<Course> courses) {
-        courseSQLiteHelper.addCourses(courses);
+	public ConfigManager saveSchedule(List<Course> courses) {
+		courseSQLiteHelper.addCourses(courses);
         return this;
     }
 
@@ -80,17 +83,20 @@ public class PreferenceManager {
         return courseSQLiteHelper.getCourses();
     }
 
-    public PreferenceManager deleteSchedule() {
-        courseSQLiteHelper.clearCourses();
+	public ConfigManager deleteSchedule() {
+		courseSQLiteHelper.clearCourses();
         return this;
     }
 
     public boolean insertCourse(Course course) {
-        return courseSQLiteHelper.insertCourse(course);
+	    boolean result = courseSQLiteHelper.insertCourse(course);
+	    if (configChangeListner != null)
+		    configChangeListner.onInsertCourse(course);
+	    return result;
     }
 
-    public PreferenceManager saveImgPathIndex(long key, int resIndex) {
-        courseSQLiteHelper.setImgPathIndex(key, resIndex);
+	public ConfigManager saveImgPathIndex(long key, int resIndex) {
+		courseSQLiteHelper.setImgPathIndex(key, resIndex);
         return this;
     }
 
@@ -98,8 +104,8 @@ public class PreferenceManager {
         return courseSQLiteHelper.getImgPathIndex(key, 0);
     }
 
-    public PreferenceManager saveName(String name) {
-        if(name != null) {
+	public ConfigManager saveName(String name) {
+		if(name != null) {
             sp.edit().putString(context.getString(R.string.key_name), name).apply();
         }
         return this;
@@ -109,8 +115,8 @@ public class PreferenceManager {
         return sp.getString(context.getString(R.string.key_name), null);
     }
 
-    public PreferenceManager saveWeek(int week) {
-        sp.edit().putInt(context.getString(R.string.key_week), week).apply();
+	public ConfigManager saveWeek(int week) {
+		sp.edit().putInt(context.getString(R.string.key_week), week).apply();
         return this;
     }
 
@@ -126,8 +132,8 @@ public class PreferenceManager {
         return sp.getLong(context.getString(R.string.key_last_fetch_week_time), 0);
     }
 
-    public PreferenceManager saveLastFetchWeekTime(long value) {
-        sp.edit().putLong(context.getString(R.string.key_last_fetch_week_time), value).apply();
+	public ConfigManager saveLastFetchWeekTime(long value) {
+		sp.edit().putLong(context.getString(R.string.key_last_fetch_week_time), value).apply();
         return this;
     }
 
@@ -135,8 +141,8 @@ public class PreferenceManager {
         return sp.getString(context.getString(R.string.key_stu_no), "");
     }
 
-    public PreferenceManager saveStuNo(String stuNo) {
-        sp.edit().putString(context.getString(R.string.key_stu_no), stuNo).apply();
+	public ConfigManager saveStuNo(String stuNo) {
+		sp.edit().putString(context.getString(R.string.key_stu_no), stuNo).apply();
         return this;
     }
 
@@ -144,8 +150,8 @@ public class PreferenceManager {
         return sp.getString(context.getString(R.string.key_psw), "");
     }
 
-    public PreferenceManager savePassword(String psw) {
-        sp.edit().putString(context.getString(R.string.key_psw), psw).apply();
+	public ConfigManager savePassword(String psw) {
+		sp.edit().putString(context.getString(R.string.key_psw), psw).apply();
         return this;
     }
 
@@ -157,8 +163,12 @@ public class PreferenceManager {
         return sp.getInt(context.getString(R.string.key_last_version_code), 0);
     }
 
-    public PreferenceManager saveLastVersionCode(int code) {
-        sp.edit().putInt(context.getString(R.string.key_last_version_code), code).apply();
+	public ConfigManager saveLastVersionCode(int code) {
+		sp.edit().putInt(context.getString(R.string.key_last_version_code), code).apply();
         return this;
     }
+
+	public interface OnConfigChangeListner extends SharedPreferences.OnSharedPreferenceChangeListener {
+		void onInsertCourse(Course course);
+	}
 }

@@ -9,7 +9,6 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="colorPrimary">#00397F</item>
         <item name="colorAccent">#0AAEEF</item>
-        <item name="colorControlNormal">#c5c5c5</item>
 
     </style>
     <style name="TranslucentActivity" parent="AppTheme">

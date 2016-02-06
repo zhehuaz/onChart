@@ -19,7 +19,7 @@ import java.util.List;
 
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.MainApp;
-import me.zchang.onchart.config.PreferenceManager;
+import me.zchang.onchart.config.ConfigManager;
 import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
 import me.zchang.onchart.student.Exam;
@@ -51,7 +51,7 @@ public class ExamsActivity extends AppCompatActivity implements Session.SessionS
     private ProgressBar loadingProgress;
     ExamListAdapter adapter;
 
-    private PreferenceManager preferenceManager;
+    private ConfigManager configManager;
     private Session session;
 
     @Override
@@ -75,11 +75,11 @@ public class ExamsActivity extends AppCompatActivity implements Session.SessionS
         stuffImage.setLayoutParams(params);
 
 
-        preferenceManager = ((MainApp) getApplication()).getPreferenceManager();
+        configManager = ((MainApp) getApplication()).getConfigManager();
         session = new BitJwcSession(this);
 
-        String stuNo = preferenceManager.getStuNo();
-        String psw = preferenceManager.getPassword();
+        String stuNo = configManager.getStuNo();
+        String psw = configManager.getPassword();
         if (stuNo.length() > 0 && psw.length() > 0) {
             loadingProgress.setVisibility(View.VISIBLE);
             session.setStuNum(stuNo);

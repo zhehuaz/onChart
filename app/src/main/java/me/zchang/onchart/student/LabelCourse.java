@@ -3,7 +3,7 @@ package me.zchang.onchart.student;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import me.zchang.onchart.config.PreferenceManager;
+import me.zchang.onchart.config.ConfigManager;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -32,7 +32,7 @@ public class LabelCourse extends Course implements Parcelable{
     }
 
     public void setToNextLabelImg() {
-        this.labelImgIndex = (this.labelImgIndex + 1) % PreferenceManager.labelImgIndices.length;
+        this.labelImgIndex = (this.labelImgIndex + 1) % ConfigManager.labelImgIndices.length;
     }
 
     @Override

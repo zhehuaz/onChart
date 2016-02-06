@@ -19,14 +19,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import me.zchang.onchart.R;
-import me.zchang.onchart.config.PreferenceManager;
+import me.zchang.onchart.config.ConfigManager;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.LabelCourse;
@@ -154,7 +153,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     (((int) course.getEndTime() - (int) course.getStartTime()) / Utils.MILLISECONDS_IN_ONE_CLASS + 1);
             ((ViewHolder) holder).frame.setLayoutParams(params);
 
-            nabImg.setImageResource(PreferenceManager.labelImgIndices[course.getLabelImgIndex()]);
+            nabImg.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
 
 
             Drawable nab = nabImg.getDrawable();

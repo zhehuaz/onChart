@@ -30,8 +30,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.okhttp.internal.Util;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,9 +38,8 @@ import java.util.TimeZone;
 
 import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
-import me.zchang.onchart.config.CourseSQLiteHelper;
 import me.zchang.onchart.config.MainApp;
-import me.zchang.onchart.config.PreferenceManager;
+import me.zchang.onchart.config.ConfigManager;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
@@ -69,7 +66,7 @@ import me.zchang.onchart.ui.adapter.DiffTransformer;
 
 public class MainActivity extends AppCompatActivity
 		implements Session.SessionStartListener, LoginFragment.LoginListener
-		, SharedPreferences.OnSharedPreferenceChangeListener {
+		, ConfigManager.OnConfigChangeListner {
 
 	public final static int REQ_POSITION = 0;
 	public final static int REQ_SETTING = 1;
@@ -95,7 +92,7 @@ public class MainActivity extends AppCompatActivity
 	private FloatingActionButton addButton;
 
 	private Session session;
-	private PreferenceManager preferenceManager;
+	private ConfigManager configManager;
 
 	private int curWeek;
 	private int numOfWeekdays;
@@ -109,7 +106,7 @@ public class MainActivity extends AppCompatActivity
 			firstLaunch = false;
 		setContentView(R.layout.activity_main);
 
-		preferenceManager = ((MainApp) getApplication()).getPreferenceManager();
+		configManager = ((MainApp) getApplication()).getConfigManager();
 		today = Calendar.getInstance();
 		today.setTimeZone(TimeZone.getDefault());
 
@@ -117,7 +114,7 @@ public class MainActivity extends AppCompatActivity
 		mainToolbar = (Toolbar) findViewById(R.id.tb_main);
 		setSupportActionBar(mainToolbar);
 
-		curWeek = preferenceManager.getWeek();
+		curWeek = configManager.getWeek();
 
 		mainListPager = (ViewPager) findViewById(R.id.vp_lessons);
 		weekdayTabs = (TabLayout) findViewById(R.id.tl_weekday);
@@ -152,7 +149,10 @@ public class MainActivity extends AppCompatActivity
 				course.setWeekDay(4);
 				course.setClassroom("hello");
 				course.setTeacher("Mr. hehe");
-				Log.d(TAG, preferenceManager.insertCourse(course) + "");
+				course.setSemester("2015-2");
+				if (!configManager.insertCourse(course)) {
+					Toast.makeText(getApplicationContext(), "Conflict occurs", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 
@@ -169,12 +169,12 @@ public class MainActivity extends AppCompatActivity
 		params.height = getStatusBarHeight(this);
 		stuffImage.setLayoutParams(params);
 
-		numOfWeekdays = preferenceManager.getNumOfWeekdays();
+		numOfWeekdays = configManager.getNumOfWeekdays();
 
 		setupDrawer();
 
 		// if haven't refreshed week for a week.
-		if (Math.abs(preferenceManager.getLastFetchWeekTime() - today.getTimeInMillis()) > 7 * MILLISECONDS_IN_A_DAY) {
+		if (Math.abs(configManager.getLastFetchWeekTime() - today.getTimeInMillis()) > 7 * MILLISECONDS_IN_A_DAY) {
 			refreshWeek();
 		}
 
@@ -202,25 +202,25 @@ public class MainActivity extends AppCompatActivity
 
 	private void setupList() {
 		List<Course> courses = null;
-		courses = preferenceManager.getSchedule();
+		courses = configManager.getSchedule();
 		for (LessonListFragment f : fragments)
 			f.clearCourse();
 		if (courses != null) {
 			for (Course course : courses) {
 				int index = course.getWeekDay();
-				//  show all the courses, only for test
-				if (index >= 0 && index < fragments.size())
-					fragments.get(index).addCourse(course);
+//				//  show all the courses, only for test
+//				if (index >= 0 && index < fragments.size())
+//					fragments.get(index).addCourse(course);
 
-//                if (index >= 0
-//                        && index < fragments.size()
-//                        && curWeek >= course.getStartWeek()
-//                        && curWeek <= course.getEndWeek()) {
-//                    if (course.getWeekParity() < 0)
-//                        fragments.get(index).addCourse(course);
-//                    else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
-//                        fragments.get(index).addCourse(course);
-//                }
+				if (index >= 0
+						&& index < fragments.size()
+						&& curWeek >= course.getStartWeek()
+						&& curWeek <= course.getEndWeek()) {
+					if (course.getWeekParity() < 0)
+						fragments.get(index).addCourse(course);
+					else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
+						fragments.get(index).addCourse(course);
+				}
 			}
 
 			for (LessonListFragment f : fragments) {
@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity
 	}
 
 	public void refreshWeek() {
-		preferenceManager.saveLastFetchWeekTime(today.get(Calendar.MILLISECOND));
+		configManager.saveLastFetchWeekTime(today.get(Calendar.MILLISECOND));
 		if (refreshProgress != null)
 			refreshProgress.setVisibility(View.VISIBLE);
 		new AsyncTask<String, String, Integer>() {
@@ -301,13 +301,13 @@ public class MainActivity extends AppCompatActivity
 					return;
 				}
 				// save the nearest past Monday
-				preferenceManager.saveLastFetchWeekTime(
+				configManager.saveLastFetchWeekTime(
 						today.getTimeInMillis()
 								- ((today.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY) % 7) * MILLISECONDS_IN_A_DAY);
 
 				if (curWeek != integer && integer > 0) {
 					curWeek = integer;
-					preferenceManager.saveWeek(curWeek);
+					configManager.saveWeek(curWeek);
 				}
 				if (refreshProgress != null)
 					refreshProgress.setVisibility(View.INVISIBLE);
@@ -328,13 +328,13 @@ public class MainActivity extends AppCompatActivity
 	@Override
 	protected void onResume() {
 		super.onResume();
-		preferenceManager.registerListener(this);
+		configManager.registerListener(this);
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		preferenceManager.unRegisterListener(this);
+		configManager.unRegisterListener(this);
 	}
 
 	@Override
@@ -387,9 +387,9 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			protected void onPostExecute(List<Course> courses) {
 				if (courses != null) {
-					preferenceManager.saveSchedule(courses);
-					preferenceManager.saveStuNo(session.getStuNum());
-					preferenceManager.savePassword(session.getPsw());
+					configManager.saveSchedule(courses);
+					configManager.saveStuNo(session.getStuNum());
+					configManager.savePassword(session.getPsw());
 					setupList();
 				} else {
 					// TODO bad logic.Account validation should be in Session.start()
@@ -403,7 +403,7 @@ public class MainActivity extends AppCompatActivity
 					e.printStackTrace();
 				}
 				if (stuName != null) {
-					preferenceManager.saveName(stuName);
+					configManager.saveName(stuName);
 					updateDrawer();
 				} else {
 					Toast.makeText(MainActivity.this, "Invalid account", Toast.LENGTH_SHORT).show();
@@ -448,7 +448,7 @@ public class MainActivity extends AppCompatActivity
 	}
 
 	private void updateDrawer() {
-		String stuName = preferenceManager.getName();
+		String stuName = configManager.getName();
 		if (stuName != null && !stuName.equals(getString(R.string.null_stu_name))) {
 			nameText.setText(stuName);
 			nameText.setClickable(false);
@@ -545,8 +545,8 @@ public class MainActivity extends AppCompatActivity
 		}
 	}
 
-	PreferenceManager getPreferenceManager() {
-		return preferenceManager;
+	ConfigManager getConfigManager() {
+		return configManager;
 	}
 
 	LessonListFragment getListFragment() {
@@ -561,4 +561,11 @@ public class MainActivity extends AppCompatActivity
 		}
 	}
 
+	@Override
+	public void onInsertCourse(Course course) {
+		if (course.getWeekDay() < fragments.size()) {
+			fragments.get(course.getWeekDay()).addCourse(course);
+			fragments.get(course.getWeekDay()).updateList();
+		}
+	}
 }

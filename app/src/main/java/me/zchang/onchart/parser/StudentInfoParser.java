@@ -53,7 +53,6 @@ public class StudentInfoParser {
      */
     public static List<Course> parseCourses(@NonNull String htmlText)
     {
-	    // TODO: 2/4/16 parse and add semester information
 	    Document doc = Jsoup.parse(htmlText);
         Element chartTable = doc.select("table#dgrdKb").first();
         if(chartTable != null) {
@@ -67,7 +66,9 @@ public class StudentInfoParser {
                     Course baseCourse = new LabelCourse();
                     Elements lessonInfo = e.getAllElements();
 
-                    baseCourse.setName(lessonInfo.get(1).text());
+	                // TODO: 2/4/16 parse and add semester information
+	                baseCourse.setSemester("2015-2");
+	                baseCourse.setName(lessonInfo.get(1).text());
                     baseCourse.setCredit(Float.parseFloat(lessonInfo.get(2).text()));
                     baseCourse.setDepartment(lessonInfo.get(5).text());
                     baseCourse.setTeacher(lessonInfo.get(7).text());

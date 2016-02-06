@@ -13,7 +13,6 @@ import android.widget.Toast;
 import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.MainApp;
-import me.zchang.onchart.config.PreferenceManager;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -88,7 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ((MainApp)getActivity().getApplication())
-                                        .getPreferenceManager()
+                                        .getConfigManager()
                                         .deleteSchedule()
                                         .saveName("-")
                                         .saveStuNo("")

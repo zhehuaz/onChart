@@ -20,21 +20,21 @@ import android.app.Application;
  */
 
 public class MainApp extends Application {
-	private PreferenceManager preferenceManager;
+	private ConfigManager configManager;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 
-		preferenceManager = new PreferenceManager(this);
+		configManager = new ConfigManager(this);
 
 	}
 
-	public PreferenceManager getPreferenceManager() {
-		return preferenceManager;
+	public ConfigManager getConfigManager() {
+		return configManager;
 	}
 
-	public void setPreferenceManager(PreferenceManager preferenceManager) {
-		this.preferenceManager = preferenceManager;
+	public void setConfigManager(ConfigManager configManager) {
+		this.configManager = configManager;
 	}
 }

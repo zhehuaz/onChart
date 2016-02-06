@@ -2,14 +2,9 @@
 <resources>
 
 <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:navigationBarColor">@color/white</item>
-        <item name="android:colorControlNormal">#c5c5c5</item>
-        <item name="android:colorControlActivated">#c5c5c5</item>
-        <item name="android:colorControlHighlight">#c5c5c5</item>
     <item name="android:colorPrimary">#00397F</item>
     <item name="android:colorAccent">#0AAEEF</item>
 
