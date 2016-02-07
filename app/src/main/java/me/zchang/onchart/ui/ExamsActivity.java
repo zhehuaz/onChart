@@ -14,6 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -22,6 +26,9 @@ import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.ConfigManager;
 import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
+import me.zchang.onchart.session.events.ExamsFetchOverEvent;
+import me.zchang.onchart.session.events.SessionErrorEvent;
+import me.zchang.onchart.session.events.SessionStartOverEvent;
 import me.zchang.onchart.student.Exam;
 import me.zchang.onchart.ui.adapter.ExamListAdapter;
 
@@ -41,7 +48,7 @@ import me.zchang.onchart.ui.adapter.ExamListAdapter;
  *    limitations under the License.
  */
 
-public class ExamsActivity extends AppCompatActivity implements Session.SessionStartListener{
+public class ExamsActivity extends AppCompatActivity {
 
     public static final String TAG = "ExamsActivity";
 
@@ -76,7 +83,7 @@ public class ExamsActivity extends AppCompatActivity implements Session.SessionS
 
 
         configManager = ((MainApp) getApplication()).getConfigManager();
-        session = new BitJwcSession(this);
+	    session = new BitJwcSession();
 
         String stuNo = configManager.getStuNo();
         String psw = configManager.getPassword();
@@ -88,8 +95,20 @@ public class ExamsActivity extends AppCompatActivity implements Session.SessionS
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+	@Override
+	protected void onStart() {
+		super.onStart();
+		EventBus.getDefault().register(this);
+	}
+
+	@Override
+	protected void onStop() {
+		EventBus.getDefault().unregister(this);
+		super.onStop();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_exams, menu);
         return true;
@@ -97,52 +116,45 @@ public class ExamsActivity extends AppCompatActivity implements Session.SessionS
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+	    // Handle action bar item clicks here. The action bar will
+	    // automatically handle clicks on the Home/Up button, so long
+	    // as you specify a parent activity in AndroidManifest.xml.
+	    int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
-            this.finish();
-            return true;
-        }
+	    //noinspection SimplifiableIfStatement
+	    if (id == R.id.action_settings) {
+		    return true;
+	    } else if (id == android.R.id.home) {
+		    this.finish();
+		    return true;
+	    }
 
-        return super.onOptionsItemSelected(item);
+	    return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onSessionStartOver() {
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onExamsFetchOverEvent(ExamsFetchOverEvent event) {
+		List<Exam> recExams = event.getExams();
+		if (recExams != null) {
+			Log.d(TAG, "exams fetch over");
+			adapter.setExams(recExams);
+			adapter.notifyDataSetChanged();
 
-        new AsyncTask<String, String, List<Exam>>() {
-            @Override
-            protected List<Exam> doInBackground(String... params) {
-                try {
-                    return session.fetchExams();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
+			loadingProgress.setVisibility(View.GONE);
+		}
+	}
 
-            @Override
-            protected void onPostExecute(List<Exam> recExams) {
-                if (recExams != null) {
-                    Log.d(TAG, "exams fetch over");
-                    adapter.setExams(recExams);
-                    adapter.notifyDataSetChanged();
+	@Subscribe(threadMode = ThreadMode.ASYNC)
+	public void onSessionStartOverEvent(SessionStartOverEvent event) {
+		try {
+			EventBus.getDefault().post(new ExamsFetchOverEvent(session.fetchExams()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-                    loadingProgress.setVisibility(View.GONE);
-                }
-            }
-        }.execute();
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onSessionErrorEvent(SessionErrorEvent event) {
 
-    }
-
-    @Override
-    public void onSessionStartError(Session.ErrorCode ec) {
-
-    }
+	}
 }

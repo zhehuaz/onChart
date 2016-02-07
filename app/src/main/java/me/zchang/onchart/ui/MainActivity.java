@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -30,7 +29,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -38,11 +40,15 @@ import java.util.TimeZone;
 
 import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
-import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.ConfigManager;
+import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
+import me.zchang.onchart.session.events.ScheduleFetchOverEvent;
+import me.zchang.onchart.session.events.SessionErrorEvent;
+import me.zchang.onchart.session.events.SessionStartOverEvent;
+import me.zchang.onchart.session.events.WeekFetchOverEvent;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.LabelCourse;
 import me.zchang.onchart.ui.adapter.CoursePagerAdapter;
@@ -65,8 +71,8 @@ import me.zchang.onchart.ui.adapter.DiffTransformer;
  */
 
 public class MainActivity extends AppCompatActivity
-		implements Session.SessionStartListener, LoginFragment.LoginListener
-		, ConfigManager.OnConfigChangeListner {
+		implements LoginFragment.LoginListener,
+		ConfigManager.OnConfigChangeListener {
 
 	public final static int REQ_POSITION = 0;
 	public final static int REQ_SETTING = 1;
@@ -110,7 +116,7 @@ public class MainActivity extends AppCompatActivity
 		today = Calendar.getInstance();
 		today.setTimeZone(TimeZone.getDefault());
 
-		session = new BitJwcSession(this);
+		session = new BitJwcSession();
 		mainToolbar = (Toolbar) findViewById(R.id.tb_main);
 		setSupportActionBar(mainToolbar);
 
@@ -184,6 +190,18 @@ public class MainActivity extends AppCompatActivity
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+		EventBus.getDefault().register(this);
+	}
+
+	@Override
+	protected void onStop() {
+		EventBus.getDefault().unregister(this);
+		super.onStop();
+	}
+
 	private void setupFragments() {
 		fragments = new ArrayList<>();
 		for (int i = 0; i < Math.abs(numOfWeekdays); i++) {
@@ -208,19 +226,19 @@ public class MainActivity extends AppCompatActivity
 		if (courses != null) {
 			for (Course course : courses) {
 				int index = course.getWeekDay();
-//				//  show all the courses, only for test
-//				if (index >= 0 && index < fragments.size())
-//					fragments.get(index).addCourse(course);
+				//  show all the courses, only for test
+				if (index >= 0 && index < fragments.size())
+					fragments.get(index).addCourse(course);
 
-				if (index >= 0
-						&& index < fragments.size()
-						&& curWeek >= course.getStartWeek()
-						&& curWeek <= course.getEndWeek()) {
-					if (course.getWeekParity() < 0)
-						fragments.get(index).addCourse(course);
-					else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
-						fragments.get(index).addCourse(course);
-				}
+//				if (index >= 0
+//						&& index < fragments.size()
+//						&& curWeek >= course.getStartWeek()
+//						&& curWeek <= course.getEndWeek()) {
+//					if (course.getWeekParity() < 0)
+//						fragments.get(index).addCourse(course);
+//					else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
+//						fragments.get(index).addCourse(course);
+//				}
 			}
 
 			for (LessonListFragment f : fragments) {
@@ -268,7 +286,6 @@ public class MainActivity extends AppCompatActivity
 			}
 		});
 
-
 		drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
 			@Override
 			public void onDrawerOpened(View drawerView) {
@@ -292,37 +309,7 @@ public class MainActivity extends AppCompatActivity
 		configManager.saveLastFetchWeekTime(today.get(Calendar.MILLISECOND));
 		if (refreshProgress != null)
 			refreshProgress.setVisibility(View.VISIBLE);
-		new AsyncTask<String, String, Integer>() {
-
-			@Override
-			protected void onPostExecute(Integer integer) {
-				if (integer == 0) {
-					Toast.makeText(MainActivity.this, "Unable to fetch week", Toast.LENGTH_SHORT).show();
-					return;
-				}
-				// save the nearest past Monday
-				configManager.saveLastFetchWeekTime(
-						today.getTimeInMillis()
-								- ((today.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY) % 7) * MILLISECONDS_IN_A_DAY);
-
-				if (curWeek != integer && integer > 0) {
-					curWeek = integer;
-					configManager.saveWeek(curWeek);
-				}
-				if (refreshProgress != null)
-					refreshProgress.setVisibility(View.INVISIBLE);
-			}
-
-			@Override
-			protected Integer doInBackground(String... params) {
-				try {
-					return session.fetchWeek();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return 0;
-			}
-		}.execute();
+		session.fetchWeek();
 	}
 
 	@Override
@@ -372,66 +359,12 @@ public class MainActivity extends AppCompatActivity
 	}
 
 	@Override
-	public void onSessionStartOver() {
-		new AsyncTask<String, String, List<Course>>() {
-			@Override
-			protected List<Course> doInBackground(String... strings) {
-				try {
-					return session.fetchSchedule();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return null;
-			}
-
-			@Override
-			protected void onPostExecute(List<Course> courses) {
-				if (courses != null) {
-					configManager.saveSchedule(courses);
-					configManager.saveStuNo(session.getStuNum());
-					configManager.savePassword(session.getPsw());
-					setupList();
-				} else {
-					// TODO bad logic.Account validation should be in Session.start()
-					Toast.makeText(MainActivity.this, getString(R.string.alert_invalid_account), Toast.LENGTH_SHORT).show();
-				}
-
-				String stuName = null;
-				try {
-					stuName = session.fetchName();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				if (stuName != null) {
-					configManager.saveName(stuName);
-					updateDrawer();
-				} else {
-					Toast.makeText(MainActivity.this, "Invalid account", Toast.LENGTH_SHORT).show();
-				}
-				if (refreshProgress != null)
-					refreshProgress.setVisibility(View.INVISIBLE);
-			}
-		}.execute();
-
-	}
-
-	@Override
-	public void onSessionStartError(Session.ErrorCode ec) {
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				Toast.makeText(MainActivity.this, getString(R.string.alert_network_error), Toast.LENGTH_SHORT).show();
-			}
-		});
-	}
-
-	@Override
 	public void onLoginInputFinish(String usrNum, String psw) {
 		if (refreshProgress != null)
 			refreshProgress.setVisibility(View.VISIBLE);
 
 		if (session.isStarted())
-			session = new BitJwcSession(this);
+			session = new BitJwcSession();
 
 		session.setStuNum(usrNum);
 		session.setPsw(psw);
@@ -567,5 +500,74 @@ public class MainActivity extends AppCompatActivity
 			fragments.get(course.getWeekDay()).addCourse(course);
 			fragments.get(course.getWeekDay()).updateList();
 		}
+	}
+
+	@Override
+	public void onDeleteCourse(long id) {
+
+	}
+
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onSessionStartOverEvent(SessionStartOverEvent event) {
+		session.fetchSchedule();
+	}
+
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onSessionStartErrorEvent(SessionErrorEvent event) {
+		switch (event.getEc()) {
+			case SESSION_EC_FAIL_TO_CONNECT:
+				Toast.makeText(MainActivity.this, getString(R.string.alert_network_error), Toast.LENGTH_SHORT).show();
+				break;
+			case SESSION_EC_INVALID_ACCOUNT:
+				Toast.makeText(MainActivity.this, getString(R.string.alert_invalid_account), Toast.LENGTH_SHORT).show();
+				break;
+		}
+	}
+
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onScheduleFetchOverEvent(ScheduleFetchOverEvent event) {
+		List<Course> courses = event.getCourses();
+		if (courses != null) {
+			configManager.saveSchedule(courses);
+			configManager.saveStuNo(session.getStuNum());
+			configManager.savePassword(session.getPsw());
+			setupList();
+		} else {
+			// TODO bad logic.Account validation should be in Session.start()
+			Toast.makeText(MainActivity.this, getString(R.string.alert_invalid_account), Toast.LENGTH_SHORT).show();
+		}
+
+		String stuName = null;
+		stuName = session.fetchName();
+		Log.i(TAG, "try getting name");
+		if (stuName != null) {
+			configManager.saveName(stuName);
+			Log.i(TAG, "get name " + stuName);
+			updateDrawer();
+		} else {
+			Toast.makeText(MainActivity.this, getString(R.string.alert_invalid_account), Toast.LENGTH_SHORT).show();
+		}
+		if (refreshProgress != null)
+			refreshProgress.setVisibility(View.INVISIBLE);
+	}
+
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onWeekFetchOverEvent(WeekFetchOverEvent event) {
+		int integer = event.getWeek();
+		if (integer == 0) {
+			Toast.makeText(MainActivity.this, "Unable to fetch week", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		// save the nearest past Monday
+		configManager.saveLastFetchWeekTime(
+				today.getTimeInMillis()
+						- ((today.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY) % 7) * MILLISECONDS_IN_A_DAY);
+
+		if (curWeek != integer && integer > 0) {
+			curWeek = integer;
+			configManager.saveWeek(curWeek);
+		}
+		if (refreshProgress != null)
+			refreshProgress.setVisibility(View.INVISIBLE);
 	}
 }

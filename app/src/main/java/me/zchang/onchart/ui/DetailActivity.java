@@ -11,6 +11,7 @@ import android.transition.TransitionSet;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -80,7 +81,9 @@ public class DetailActivity extends AppCompatActivity {
             TextView classroomText = (TextView) findViewById(R.id.tv_classroom);
             TextView weekText = (TextView) findViewById(R.id.tv_week_cycle);
             TextView creditText = (TextView) findViewById(R.id.tv_credit);
-            final ImageView labelImage = (ImageView) findViewById(R.id.iv_label);
+	        ImageButton deleteButton = (ImageButton) findViewById(R.id.iv_delete);
+	        ImageButton editButton = (ImageButton) findViewById(R.id.iv_edit);
+	        final ImageView labelImage = (ImageView) findViewById(R.id.iv_label);
 
             lessonNameText.setText(course.getName());
             teacherText.setText(course.getTeacher());
@@ -90,16 +93,23 @@ public class DetailActivity extends AppCompatActivity {
             labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
 
             labelImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    course.setToNextLabelImg();
-                    // update local storage only.
-                    ((MainApp) getApplication()).getConfigManager().saveImgPathIndex(course.getId(), course.getLabelImgIndex());
-                    labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
-                    retIntent.putExtra(getString(R.string.intent_label_image_index), course.getLabelImgIndex());
-                    setResult(RESULT_OK, retIntent);
-                }
+	            @Override
+	            public void onClick(View view) {
+		            course.setToNextLabelImg();
+		            // update local storage only.
+		            ((MainApp) getApplication()).getConfigManager().saveImgPathIndex(course.getId(), course.getLabelImgIndex());
+		            labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
+		            retIntent.putExtra(getString(R.string.intent_label_image_index), course.getLabelImgIndex());
+		            setResult(RESULT_OK, retIntent);
+	            }
             });
+
+	        deleteButton.setOnClickListener(new View.OnClickListener() {
+		        @Override
+		        public void onClick(View view) {
+
+		        }
+	        });
         }
     }
 

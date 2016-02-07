@@ -10,7 +10,6 @@ import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
 import me.zchang.onchart.student.Course;
 
-
 /*
  *    Copyright 2015 Zhehua Chang
  *
@@ -36,7 +35,7 @@ public class ConfigManager {
     SharedPreferences sp;
     CourseSQLiteHelper courseSQLiteHelper;
 
-	OnConfigChangeListner configChangeListner;
+	OnConfigChangeListener configChangeListner;
 
     private boolean firstLaunch = false;
 
@@ -48,12 +47,12 @@ public class ConfigManager {
             R.mipmap.night
     };
 
-	public void registerListener(OnConfigChangeListner listener) {
+	public void registerListener(OnConfigChangeListener listener) {
 		configChangeListner = listener;
 		sp.registerOnSharedPreferenceChangeListener(listener);
     }
 
-	public void unRegisterListener(OnConfigChangeListner listener) {
+	public void unRegisterListener(OnConfigChangeListener listener) {
 		configChangeListner = null;
 		sp.unregisterOnSharedPreferenceChangeListener(listener);
     }
@@ -94,6 +93,11 @@ public class ConfigManager {
             configChangeListner.onInsertCourse(course);
 	    return result;
     }
+
+	public void deleteCourse(long id) {
+		courseSQLiteHelper.deleteCourse(id);
+		configChangeListner.onDeleteCourse(id);
+	}
 
 	public ConfigManager saveImgPathIndex(long key, int resIndex) {
 		courseSQLiteHelper.setImgPathIndex(key, resIndex);
@@ -168,7 +172,9 @@ public class ConfigManager {
         return this;
     }
 
-	public interface OnConfigChangeListner extends SharedPreferences.OnSharedPreferenceChangeListener {
+	public interface OnConfigChangeListener extends SharedPreferences.OnSharedPreferenceChangeListener {
 		void onInsertCourse(Course course);
+
+		void onDeleteCourse(long id);
 	}
 }
