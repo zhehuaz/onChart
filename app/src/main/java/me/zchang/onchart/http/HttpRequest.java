@@ -36,7 +36,6 @@ import java.util.Map;
  */
  @Deprecated
 public class HttpRequest {
-    // TODO Builder pattern
     private int sequence;
     private HttpResponse.ResponseListener responseListener;
     private HttpResponse.ErrorListener errorListener;

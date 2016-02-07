@@ -68,6 +68,7 @@ public class BitJwcSession extends Session{
     private String loginUrl;
     private final OkHttpClient httpClient = new OkHttpClient();
     private String startResponse = null;
+	private String stuName;
 
     @Override
     public void start() {
@@ -98,13 +99,17 @@ public class BitJwcSession extends Session{
 						    .post(formBody)
 						    .build();
 				    Response loginResult = httpClient.newCall(loginRequest).execute();
-				    //sessionId = loginUrl.substring(11, 42);
 				    Request homeRequest = loginResult.request();
 				    homeRequest = homeRequest.newBuilder().addHeader("Referer", loginUrl).build();
 				    Response homePage = httpClient.newCall(homeRequest).execute();
 				    startResponse = homePage.body().string();
-				    isStarted = true;
-				    EventBus.getDefault().post(new SessionStartOverEvent());
+				    stuName = fetchName();
+				    if (stuName != null) {// name detected, as good as account validation.
+					    isStarted = true;
+					    EventBus.getDefault().post(new SessionStartOverEvent());
+				    } else {
+					    EventBus.getDefault().post(new SessionErrorEvent(ErrorCode.SESSION_EC_INVALID_ACCOUNT));
+				    }
 			    } catch (IOException e) {
 				    SessionErrorEvent ee = new SessionErrorEvent(ErrorCode.SESSION_EC_FAIL_TO_CONNECT);
 				    EventBus.getDefault().post(ee);
@@ -150,8 +155,6 @@ public class BitJwcSession extends Session{
 
     /**
      * Fetch current week number from <a href="http://jwc.bit.edu.cn"/> homepage.
-     * @return current week number.
-     * @throws IOException Unable to access to the page.
      */
     @Override
     public void fetchWeek() {
@@ -186,7 +189,9 @@ public class BitJwcSession extends Session{
     @Override
     public String fetchName() {
         if(startResponse != null) {
-            return StudentInfoParser.parseName(startResponse);
+	        String name = StudentInfoParser.parseName(startResponse);
+	        if (name != null)
+		        return name;
         }
         return null;
     }
@@ -201,7 +206,6 @@ public class BitJwcSession extends Session{
         Response examResponse = httpClient.newCall(request).execute();
         if (examResponse.isSuccessful()) {
             String htmlRes = examResponse.body().string();
-            // TODO I guess account validation should be in StudentInfoParser.parseExams()
             return StudentInfoParser.parseExams(htmlRes);
         }
         return new ArrayList<>();

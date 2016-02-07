@@ -181,7 +181,13 @@ public class StudentInfoParser {
         return null;
     }
 
-    public static List<Exam> parseExams(@NonNull String htmlText) {
+	/**
+	 * Parse exams in html.
+	 *
+	 * @param htmlText The source html content.
+	 * @return If null, the account is invalid.
+	 */
+	public static List<Exam> parseExams(@NonNull String htmlText) {
         Document document = Jsoup.parse(htmlText);
         Elements elements = document.select("table#DataGrid1");
         if (elements != null && !elements.isEmpty()) {

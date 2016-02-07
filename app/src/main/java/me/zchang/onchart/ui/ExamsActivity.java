@@ -1,6 +1,5 @@
 package me.zchang.onchart.ui;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.util.List;
 
 import me.zchang.onchart.R;
-import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.ConfigManager;
+import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
 import me.zchang.onchart.session.events.ExamsFetchOverEvent;
@@ -141,6 +141,8 @@ public class ExamsActivity extends AppCompatActivity {
 			adapter.notifyDataSetChanged();
 
 			loadingProgress.setVisibility(View.GONE);
+		} else {// invalid account.
+			Toast.makeText(ExamsActivity.this, getString(R.string.alert_invalid_account), Toast.LENGTH_SHORT).show();
 		}
 	}
 

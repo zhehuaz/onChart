@@ -532,9 +532,6 @@ public class MainActivity extends AppCompatActivity
 			configManager.saveStuNo(session.getStuNum());
 			configManager.savePassword(session.getPsw());
 			setupList();
-		} else {
-			// TODO bad logic.Account validation should be in Session.start()
-			Toast.makeText(MainActivity.this, getString(R.string.alert_invalid_account), Toast.LENGTH_SHORT).show();
 		}
 
 		String stuName = null;
