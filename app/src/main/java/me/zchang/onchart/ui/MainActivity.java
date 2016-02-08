@@ -472,7 +472,6 @@ public class MainActivity extends AppCompatActivity
 						Log.e(TAG, "curFragment is null");
 					if (curFragment.adapter == null)
 						Log.e(TAG, "adapater is null");
-
 				}
 				break;
 		}

@@ -89,8 +89,8 @@ public class DetailActivity extends AppCompatActivity {
             teacherText.setText(course.getTeacher());
             classroomText.setText(course.getClassroom());
             weekText.setText(String.format(getString(R.string.detail_week_pattern), course.getStartWeek(), course.getEndWeek()));
-            creditText.setText(course.getCredit() + getString(R.string.detail_credit_unit));
-            labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
+	        creditText.setText(String.format(getString(R.string.detail_credit), course.getCredit()));
+	        labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
 
             labelImage.setOnClickListener(new View.OnClickListener() {
 	            @Override

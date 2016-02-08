@@ -28,4 +28,8 @@
         android:title="RxAndroid"
         android:summary="Apache License v2.0"
         />
+    <Preference
+        android:title="EventBus"
+        android:summary="Apache License v2.0"
+        />
 </PreferenceScreen>
