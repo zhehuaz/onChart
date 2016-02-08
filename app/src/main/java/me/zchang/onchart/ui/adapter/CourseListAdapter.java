@@ -70,14 +70,12 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private int fragId;
 
     public CourseListAdapter(Context context, List<Course> courses, int fragId) {
-
         bitmap = new byte[20];
         this.courses = courses;
         this.context = context;
         this.fragId = fragId;
 
         processLessons();
-
     }
 
     public void setCourses(List<Course> courses) {
@@ -154,7 +152,6 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((ViewHolder) holder).frame.setLayoutParams(params);
 
             nabImg.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
-
 
             Drawable nab = nabImg.getDrawable();
             if(nab != null) {

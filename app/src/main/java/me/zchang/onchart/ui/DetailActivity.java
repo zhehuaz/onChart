@@ -1,5 +1,6 @@
 package me.zchang.onchart.ui;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,13 +9,16 @@ import android.transition.ArcMotion;
 import android.transition.ChangeBounds;
 import android.transition.ChangeImageTransform;
 import android.transition.TransitionSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.ConfigManager;
@@ -84,6 +88,7 @@ public class DetailActivity extends AppCompatActivity {
 	        ImageButton deleteButton = (ImageButton) findViewById(R.id.iv_delete);
 	        ImageButton editButton = (ImageButton) findViewById(R.id.iv_edit);
 	        final ImageView labelImage = (ImageView) findViewById(R.id.iv_label);
+	        final ImageView backgroudImage = (ImageView) findViewById(R.id.iv_background);
 
             lessonNameText.setText(course.getName());
             teacherText.setText(course.getTeacher());
@@ -91,20 +96,44 @@ public class DetailActivity extends AppCompatActivity {
             weekText.setText(String.format(getString(R.string.detail_week_pattern), course.getStartWeek(), course.getEndWeek()));
 	        creditText.setText(String.format(getString(R.string.detail_credit), course.getCredit()));
 	        labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
+	        labelImage.setOnTouchListener(new View.OnTouchListener() {
+		        @Override
+		        public boolean onTouch(View view, MotionEvent motionEvent) {
+			        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+				        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) // performance consideration
+					        backgroudImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
+				        course.setToNextLabelImg();
+				        labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
+				        // update local storage only.
+				        ((MainApp) getApplication()).getConfigManager().saveImgPathIndex(course.getId(), course.getLabelImgIndex());
 
-            labelImage.setOnClickListener(new View.OnClickListener() {
-	            @Override
-	            public void onClick(View view) {
-		            course.setToNextLabelImg();
-		            // update local storage only.
-		            ((MainApp) getApplication()).getConfigManager().saveImgPathIndex(course.getId(), course.getLabelImgIndex());
-		            labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
-		            retIntent.putExtra(getString(R.string.intent_label_image_index), course.getLabelImgIndex());
-		            setResult(RESULT_OK, retIntent);
-	            }
-            });
+				        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+					        Animator reveal = ViewAnimationUtils.createCircularReveal(
+							        view,
+							        (int) motionEvent.getX(),
+							        (int) motionEvent.getY(),
+							        0,
+							        view.getLayoutParams().width + 300
+					        );
+					        reveal.start();
+				        }
+
+				        retIntent.putExtra(getString(R.string.intent_label_image_index), course.getLabelImgIndex());
+				        setResult(RESULT_OK, retIntent);
+				        return true;
+			        }
+			        return false;
+		        }
+	        });
 
 	        deleteButton.setOnClickListener(new View.OnClickListener() {
+		        @Override
+		        public void onClick(View view) {
+
+		        }
+	        });
+
+	        editButton.setOnClickListener(new View.OnClickListener() {
 		        @Override
 		        public void onClick(View view) {
 

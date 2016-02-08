@@ -20,13 +20,22 @@
             android:layout_height="130dp">
 
             <ImageView
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:id="@+id/iv_background"
+                android:scaleType="centerCrop"
+                android:clickable="false"
+                />
+            <ImageView
                 android:id="@+id/iv_label"
                 android:src="@mipmap/little_label1"
                 android:scaleType="centerCrop"
                 android:layout_width="300dp"
                 android:layout_height="match_parent"
                 android:transitionName="@string/trans_detail_img"
-                android:clickable="true"/>
+                android:clickable="true"
+                android:background="#0000"/>
+
 
             <ImageButton
                 android:background="#0000"

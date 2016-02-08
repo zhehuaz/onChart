@@ -31,7 +31,8 @@
             android:layout_margin="@dimen/activity_horizontal_margin"
             app:pressedTranslationZ="10dp"
             android:clickable="true"
-            android:src="@drawable/ic_add_white_24dp"/>
+            android:src="@drawable/ic_add_white_24dp"
+            android:elevation="12dp"/>
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:background="@mipmap/main_tb_bg"
