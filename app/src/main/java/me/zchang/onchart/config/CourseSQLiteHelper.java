@@ -195,6 +195,21 @@ public class CourseSQLiteHelper extends SQLiteOpenHelper {
 	 * Check if the course has conflicts in the database.
 	 * If any, conflict courses' IDs are returned.
 	 *
+	 * @param course The course to check.
+	 * @return The conflict courses' IDs.If no, returns null.
+	 */
+	public List<Long> checkConflict(@NonNull Course course) {
+		SQLiteDatabase courseDatabase = getReadableDatabase();
+		List<Long> retList = checkConflict(courseDatabase, course);
+		courseDatabase.close();
+		return retList;
+	}
+
+
+	/**
+	 * Check if the course has conflicts in the database.
+	 * If any, conflict courses' IDs are returned.
+	 *
 	 * @param courseDatabase The database to check.
 	 * @param course         The course to check.
 	 * @return The conflict courses' IDs.If no, returns null.

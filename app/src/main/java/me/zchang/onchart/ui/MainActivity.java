@@ -146,19 +146,10 @@ public class MainActivity extends AppCompatActivity
 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Course course = new LabelCourse();
-				course.setName("new course");
-				course.setStartWeek(1);
-				course.setEndWeek(20);
-				course.setStartTime(Utils.periodToTime(1));
-				course.setEndTime(Utils.periodToTime(4));
-				course.setWeekDay(4);
-				course.setClassroom("hello");
-				course.setTeacher("Mr. hehe");
-				course.setSemester("2015-2");
-				if (!configManager.insertCourse(course)) {
-					Toast.makeText(getApplicationContext(), "Conflict occurs", Toast.LENGTH_SHORT).show();
-				}
+				getSupportFragmentManager().beginTransaction()
+						.replace(android.R.id.content, new AddCourseFragment())
+						.addToBackStack(null)
+						.commit();
 			}
 		});
 

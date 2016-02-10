@@ -88,7 +88,7 @@ public class DetailActivity extends AppCompatActivity {
 	        ImageButton deleteButton = (ImageButton) findViewById(R.id.iv_delete);
 	        ImageButton editButton = (ImageButton) findViewById(R.id.iv_edit);
 	        final ImageView labelImage = (ImageView) findViewById(R.id.iv_label);
-	        final ImageView backgroudImage = (ImageView) findViewById(R.id.iv_background);
+            final ImageView backgroundImage = (ImageView) findViewById(R.id.iv_background);
 
             lessonNameText.setText(course.getName());
             teacherText.setText(course.getTeacher());
@@ -101,8 +101,8 @@ public class DetailActivity extends AppCompatActivity {
 		        public boolean onTouch(View view, MotionEvent motionEvent) {
 			        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 				        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) // performance consideration
-					        backgroudImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
-				        course.setToNextLabelImg();
+                            backgroundImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
+                        course.setToNextLabelImg();
 				        labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
 				        // update local storage only.
 				        ((MainApp) getApplication()).getConfigManager().saveImgPathIndex(course.getId(), course.getLabelImgIndex());
