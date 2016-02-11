@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="android:colorForeground">@android:color/white</item>
+        <item name="android:colorPrimaryDark">#00796B</item>
+        <item name="android:colorPrimary">#009688</item>
+        <item name="android:colorAccent">#FF5722</item>
+        <item name="android:textColorPrimary">#212121</item>
+        <item name="android:textColorSecondary">#727272</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:colorControlNormal">#c5c5c5</item>
+    </style>
+
+    <style name="MainTheme" parent="AppTheme">
+        <!--<item name="android:windowContentTransitions">true</item>-->
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:navigationBarColor">@color/white</item>
-    <item name="android:colorPrimary">#00397F</item>
-    <item name="android:colorAccent">#0AAEEF</item>
-
-    <!--<item name="android:windowContentTransitions">true</item>-->
-    <item name="android:windowAllowEnterTransitionOverlap">true</item>
-    <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowActionBar">false</item>
     </style>
-
-
 
     <style name="TranslucentActivity" parent="AppTheme">
         <item name="android:windowBackground">@color/scrim</item>
@@ -21,12 +28,10 @@
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 
-    <style name="ActionBarTheme" parent="@style/Theme.AppCompat.Light">
+    <style name="ActionBarTheme" parent="AppTheme">
         <item name="windowActionBar">true</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:windowIsTranslucent">false</item>
-        <item name="android:colorPrimary">#00397F</item>
-        <item name="android:colorAccent">#0AAEEF</item>
     </style>
 </resources>
 

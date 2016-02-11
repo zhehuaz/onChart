@@ -1,15 +1,23 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
         <item name="android:colorForeground">@android:color/white</item>
         <item name="android:textColorPrimary">@android:color/black</item>
-        <item name="colorPrimary">#00397F</item>
-        <item name="colorAccent">#0AAEEF</item>
+        <item name="colorPrimaryDark">#00796B</item>
+        <item name="colorPrimary">#009688</item>
+        <item name="colorAccent">#FF5722</item>
+        <item name="textColorPrimary">#212121</item>
+        <item name="textColorSecondary">#727272</item>
+        <item name="textColor">#FFFFFF</item>
         <item name="colorControlNormal">#c5c5c5</item>
     </style>
 
-    <style name="ActionBarTheme" parent="@style/Theme.AppCompat.Light">
+    <style name="MainTheme" parent="AppTheme">
+        <item name="android:windowActionBar">false</item>
+    </style>
+
+    <style name="ActionBarTheme" parent="AppTheme">
         <item name="windowActionBar">true</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:windowIsTranslucent">false</item>
