@@ -8,7 +8,6 @@
         <item name="android:colorAccent">#FF5722</item>
         <item name="android:textColorPrimary">#212121</item>
         <item name="android:textColorSecondary">#727272</item>
-        <item name="android:textColor">#FFFFFF</item>
         <item name="android:colorControlNormal">#c5c5c5</item>
     </style>
 
@@ -20,6 +19,8 @@
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:navigationBarColor">@color/white</item>
         <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="TranslucentActivity" parent="AppTheme">

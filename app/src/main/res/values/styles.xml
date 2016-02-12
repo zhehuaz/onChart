@@ -7,14 +7,14 @@
         <item name="colorPrimaryDark">#00796B</item>
         <item name="colorPrimary">#009688</item>
         <item name="colorAccent">#FF5722</item>
-        <item name="textColorPrimary">#212121</item>
-        <item name="textColorSecondary">#727272</item>
-        <item name="textColor">#FFFFFF</item>
+        <item name="android:textColorSecondary">#727272</item>
         <item name="colorControlNormal">#c5c5c5</item>
     </style>
 
     <style name="MainTheme" parent="AppTheme">
         <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="ActionBarTheme" parent="AppTheme">
@@ -25,7 +25,6 @@
     </style>
 
     <style name="DetailTexts">
-
         <item name="android:textSize">15sp</item>
         <item name="android:padding">8dp</item>
     </style>
