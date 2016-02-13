@@ -2,19 +2,19 @@
 <resources>
 
     <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
-
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:colorForeground">@android:color/white</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="colorPrimary">#00397F</item>
         <item name="colorAccent">#0AAEEF</item>
-
     </style>
     <style name="TranslucentActivity" parent="AppTheme">
         <item name="android:windowBackground">@color/scrim</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@null</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
     <style name="ActionBarTheme" parent="@style/Theme.AppCompat.Light">
         <item name="windowActionBar">true</item>

@@ -105,6 +105,9 @@ public class MainActivity extends AppCompatActivity
 	private Calendar today;
 	private boolean firstLaunch = true;
 
+	// debug
+	private boolean showAllFlag = false; // if show all the courses, for debug.
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -217,19 +220,21 @@ public class MainActivity extends AppCompatActivity
 		if (courses != null) {
 			for (Course course : courses) {
 				int index = course.getWeekDay();
-				//  show all the courses, only for test
-				if (index >= 0 && index < fragments.size())
-					fragments.get(index).addCourse(course);
-
-//				if (index >= 0
-//						&& index < fragments.size()
-//						&& curWeek >= course.getStartWeek()
-//						&& curWeek <= course.getEndWeek()) {
-//					if (course.getWeekParity() < 0)
-//						fragments.get(index).addCourse(course);
-//					else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
-//						fragments.get(index).addCourse(course);
-//				}
+				if (showAllFlag) {
+					//  show all the courses, only for test
+					if (index >= 0 && index < fragments.size())
+						fragments.get(index).addCourse(course);
+				} else {
+					if (index >= 0
+							&& index < fragments.size()
+							&& curWeek >= course.getStartWeek()
+							&& curWeek <= course.getEndWeek()) {
+						if (course.getWeekParity() < 0)
+							fragments.get(index).addCourse(course);
+						else if (curWeek % 2 == course.getWeekParity()) // odd or even week num
+							fragments.get(index).addCourse(course);
+					}
+				}
 			}
 
 			for (LessonListFragment f : fragments) {
