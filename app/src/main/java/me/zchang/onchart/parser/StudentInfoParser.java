@@ -3,14 +3,11 @@ package me.zchang.onchart.parser;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.squareup.okhttp.internal.Util;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -160,6 +157,17 @@ public class StudentInfoParser {
         return -1;
     }
 
+	/**
+	 * Parse cur date from the homepage of jwc.
+	 *
+	 * @param htmlText The source html text.
+	 * @return The date.
+	 */
+	public static void parseDate(@NonNull String htmlText, Integer year, Integer month, Integer day) {
+
+	}
+
+
     /**
      * Parse student name.
      * @param htmlText the source html text.
@@ -176,7 +184,6 @@ public class StudentInfoParser {
             if (m.find()) {
                 return m.group().trim();
             }
-
         }
         return null;
     }

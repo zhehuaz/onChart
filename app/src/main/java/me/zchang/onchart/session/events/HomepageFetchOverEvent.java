@@ -3,10 +3,10 @@ package me.zchang.onchart.session.events;
 /**
  * Created by langley on 2/7/16.
  */
-public class WeekFetchOverEvent {
+public class HomepageFetchOverEvent {
 	int week;
 
-	public WeekFetchOverEvent(int week) {
+	public HomepageFetchOverEvent(int week) {
 		this.week = week;
 	}
 

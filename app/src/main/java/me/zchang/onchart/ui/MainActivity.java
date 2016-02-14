@@ -42,15 +42,13 @@ import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.ConfigManager;
 import me.zchang.onchart.config.MainApp;
-import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
 import me.zchang.onchart.session.events.ScheduleFetchOverEvent;
 import me.zchang.onchart.session.events.SessionErrorEvent;
 import me.zchang.onchart.session.events.SessionStartOverEvent;
-import me.zchang.onchart.session.events.WeekFetchOverEvent;
+import me.zchang.onchart.session.events.HomepageFetchOverEvent;
 import me.zchang.onchart.student.Course;
-import me.zchang.onchart.student.LabelCourse;
 import me.zchang.onchart.ui.adapter.CoursePagerAdapter;
 import me.zchang.onchart.ui.adapter.DiffTransformer;
 
@@ -302,10 +300,9 @@ public class MainActivity extends AppCompatActivity
 	}
 
 	public void refreshWeek() {
-		configManager.saveLastFetchWeekTime(today.get(Calendar.MILLISECOND));
 		if (refreshProgress != null)
 			refreshProgress.setVisibility(View.VISIBLE);
-		session.fetchWeek();
+		session.fetchHomePage();
 	}
 
 	@Override
@@ -544,7 +541,7 @@ public class MainActivity extends AppCompatActivity
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
-	public void onWeekFetchOverEvent(WeekFetchOverEvent event) {
+	public void onWeekFetchOverEvent(HomepageFetchOverEvent event) {
 		int integer = event.getWeek();
 		if (integer == 0) {
 			Toast.makeText(MainActivity.this, "Unable to fetch week", Toast.LENGTH_SHORT).show();

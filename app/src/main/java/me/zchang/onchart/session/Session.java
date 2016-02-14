@@ -30,7 +30,6 @@ public abstract class Session{
     protected String stuNum;
     protected String psw;
 
-
     protected boolean isStarted = false;
 
     public boolean isStarted() {
@@ -46,7 +45,7 @@ public abstract class Session{
 
 	public abstract void fetchSchedule(); //async
 
-	public abstract void fetchWeek(); //async
+	public abstract void fetchHomePage(); //async
 
 	public abstract String fetchName(); // sync
 
