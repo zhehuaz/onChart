@@ -24,7 +24,6 @@ import me.zchang.onchart.session.events.HomepageFetchOverEvent;
 import me.zchang.onchart.student.Exam;
 import me.zchang.onchart.ui.MainActivity;
 
-
 /*
  *    Copyright 2015 Zhehua Chang
  *

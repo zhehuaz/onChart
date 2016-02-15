@@ -80,6 +80,8 @@
     <string name="text_about_copyright">\u00a9 2016 Z.Chang, Apache License v2</string>
     <string name="version_name" translatable="false">1.0</string>
 
+    <string name="title_course_name">Course name</string>
+
     <string name="url_my_github" translatable="false">https://github.com/LangleyChang/onChart</string>
     <string name="url_download" translatable="false">http://www.wandoujia.com/apps/me.zchang.onchart</string>
     <string name="url_my_email" tranlatable="false" translatable="false">zhehuaxiao@gmail.com</string>
