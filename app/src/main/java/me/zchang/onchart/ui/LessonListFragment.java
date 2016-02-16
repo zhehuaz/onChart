@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -46,6 +47,7 @@ public class LessonListFragment extends Fragment {
 
     RecyclerView courseList;
     CourseListAdapter adapter;
+	int screenHeight;
 
     /**
      * This course list is handled by Fragment and shared with adapter
@@ -67,6 +69,9 @@ public class LessonListFragment extends Fragment {
         super.onAttach(context);
 
         adapter = new CourseListAdapter(context, courses, getId());
+	    DisplayMetrics metrics = new DisplayMetrics();
+	    getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+	    screenHeight = metrics.heightPixels;
     }
 
     @Override
@@ -88,7 +93,6 @@ public class LessonListFragment extends Fragment {
             float deltaY = 0;
             boolean isMoving = false;
             int courseCount = 0;
-
 
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -116,8 +120,11 @@ public class LessonListFragment extends Fragment {
                                         position = i;
                                     else
                                         position = courseCount - i;
-                                    int offset = (int) (deltaY * (1 + position * 0.8) / 25);
-                                    if (childView != null)
+	                                float deltaYi = (float) ((1.07 + (position / 5.f)) * Math.atan(deltaY / screenHeight * 2.5) * screenHeight / 1.5f);
+	                                Log.i(TAG, String.format("deltaY %d is %f", i, deltaYi));
+	                                int offset = (int) (deltaYi / 25);
+	                                Log.i(TAG, String.format("offset %d is %d", i, offset));
+	                                if (childView != null)
                                         childView.setTranslationY(offset);
                                 }
                             }

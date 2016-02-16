@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity
 	private boolean firstLaunch = true;
 
 	// debug
-	private boolean showAllFlag = false; // if show all the courses, for debug.
+	private boolean showAllFlag = true; // if show all the courses, for debug.
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
