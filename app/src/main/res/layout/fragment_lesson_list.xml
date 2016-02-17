@@ -1,12 +1,10 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-tools:context="me.zchang.onchart.ui.LessonListFragment"
     android:clipChildren="false"
     android:clipToPadding="false">
 
-<android.support.v7.widget.RecyclerView
+    <zchang.me.uilibrary.BounceList
     android:id="@+id/rv_lessons"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"

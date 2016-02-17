@@ -4,15 +4,10 @@ package me.zchang.onchart.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
@@ -47,7 +42,6 @@ public class LessonListFragment extends Fragment {
 
     RecyclerView courseList;
     CourseListAdapter adapter;
-	int screenHeight;
 
     /**
      * This course list is handled by Fragment and shared with adapter
@@ -69,9 +63,6 @@ public class LessonListFragment extends Fragment {
         super.onAttach(context);
 
         adapter = new CourseListAdapter(context, courses, getId());
-	    DisplayMetrics metrics = new DisplayMetrics();
-	    getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-	    screenHeight = metrics.heightPixels;
     }
 
     @Override
@@ -85,75 +76,7 @@ public class LessonListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_lesson_list, container, false);
         courseList = (RecyclerView) rootView.findViewById(R.id.rv_lessons);
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        courseList.setLayoutManager(linearLayoutManager);
-        courseList.setOnTouchListener(new View.OnTouchListener() {
-            float firstY = 0;
-            float curY = 0;
-            float deltaY = 0;
-            boolean isMoving = false;
-            int courseCount = 0;
-
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        isMoving = false;
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.getItemCount() - 1
-                                || linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
-                            if (!isMoving) {
-                                // start to move
-                                isMoving = true;
-                                courseCount = courseList.getChildCount();
-                                curY = motionEvent.getY();
-                                firstY = curY;
-                            } else {
-                                // is moving
-                                curY = motionEvent.getY();
-                                deltaY = curY - firstY;
-                                for (int i = 1; i < courseCount; i++) {
-                                    View childView = courseList.getChildAt(i);
-                                    int position;
-                                    if (deltaY > 0)
-                                        position = i;
-                                    else
-                                        position = courseCount - i;
-	                                float deltaYi = (float) ((1.07 + (position / 5.f)) * Math.atan(deltaY / screenHeight * 2.5) * screenHeight / 1.5f);
-	                                Log.i(TAG, String.format("deltaY %d is %f", i, deltaYi));
-	                                int offset = (int) (deltaYi / 25);
-	                                Log.i(TAG, String.format("offset %d is %d", i, offset));
-	                                if (childView != null)
-                                        childView.setTranslationY(offset);
-                                }
-                            }
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        if (isMoving) {
-                            deltaY = 0;
-                            for (int i = 1; i < courseCount; i++) {
-                                final View childView = courseList.getChildAt(i);
-                                if (childView != null) {
-                                    childView.animate()
-                                            .setInterpolator(new AccelerateDecelerateInterpolator())
-                                            .translationY(0)
-                                            .setDuration(260)
-                                            .setStartDelay(20);
-                                }
-                            }
-                        }
-                        isMoving = false;
-                        break;
-                }
-                return false;
-            }
-        });
-
-
         adapter.setCourses(courses);
-
         courseList.setAdapter(adapter);
         if (slideAnimFlag) {
             courseList.setLayoutAnimation(
