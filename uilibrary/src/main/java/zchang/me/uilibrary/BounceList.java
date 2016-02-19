@@ -27,21 +27,14 @@ import android.view.animation.AccelerateDecelerateInterpolator;
  *
  */
 public class BounceList extends RecyclerView {
-	public BounceList(Context context) {
-		super(context);
-		setLayoutManager(new LinearLayoutManager(context));
-	}
+	public final static String TAG = "BounceList";
 
 	public BounceList(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		setLayoutManager(new LinearLayoutManager(context));
 	}
 
-	public BounceList(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		setLayoutManager(new LinearLayoutManager(context));
-	}
-
+	float deltaY = 0;
 	float amountY = 0;
 	boolean isMoving = false;
 	int courseCount = 0;
@@ -50,49 +43,59 @@ public class BounceList extends RecyclerView {
 	public boolean onTouchEvent(MotionEvent motionEvent) {
 		switch (motionEvent.getActionMasked()) {
 			case MotionEvent.ACTION_DOWN:
+				//Log.i(TAG, "ACTION DOWN");
 				isMoving = false;
 				break;
 			case MotionEvent.ACTION_MOVE:
+				//Log.i(TAG, "ACTION MOVE");
 				if (((LinearLayoutManager) getLayoutManager()).findLastCompletelyVisibleItemPosition() == getAdapter().getItemCount() - 1
 						|| ((LinearLayoutManager) getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0) {
 					if (!isMoving) {
 						// start to move
 						isMoving = true;
-						courseCount = BounceList.this.getChildCount();
+						courseCount = getChildCount();
 					} else if (motionEvent.getHistorySize() > 0) {
 						// is moving
 						// add deltaY to amountY
-						amountY += motionEvent.getY(motionEvent.getActionIndex())
+						deltaY = motionEvent.getY(motionEvent.getActionIndex())
 								- motionEvent.getHistoricalY(motionEvent.getActionIndex(), motionEvent.getHistorySize() - 1);
 						for (int i = 1; i < courseCount; i++) {
 							View childView = getChildAt(i);
-							int position = amountY > 0 ? i : courseCount - i;
-							float deltaYi =
-									(float) ((position / 6.f) * Math.atan(amountY / getHeight() * 10f) * getHeight() / 1.6f);
-							if (childView != null)
-								childView.setTranslationY((int) (deltaYi / 6));
+							amountY = childView.getTranslationY();
+							int position = childView.getTranslationY() > 0 ? i : courseCount - i;
+							//float deltaYi =
+							//		 ((position / 6.f) * (float)Math.atan(amountY / getHeight() * 10f) * getHeight() / 1.6f);
+							childView.setTranslationY(amountY < getHeight() / 2 ? amountY + deltaY / 6f * (1 + position * .5f) : amountY);
 						}
 					}
 				}
 				break;
 			case MotionEvent.ACTION_CANCEL:
 			case MotionEvent.ACTION_UP:
+				//Log.i(TAG, "ACTION UP");
 				if (isMoving) {
-					amountY = 0;
 					for (int i = 1; i < courseCount; i++) {
-						final View childView = BounceList.this.getChildAt(i);
-						if (childView != null) {
-							childView.animate()
-									.setInterpolator(new AccelerateDecelerateInterpolator())
-									.translationY(0)
-									.setDuration(180)
-									.setStartDelay(20);
-						}
+						getChildAt(i)
+								.animate()
+								.translationY(0)
+								.setInterpolator(new AccelerateDecelerateInterpolator())
+								.setDuration(180)
+								.setStartDelay(50);
 					}
 				}
 				isMoving = false;
 				break;
 		}
 		return super.onTouchEvent(motionEvent);
+	}
+
+	@Override
+	public void onViewAdded(View child) {
+		super.onViewAdded(child);
+	}
+
+	@Override
+	public void onViewRemoved(View child) {
+		super.onViewRemoved(child);
 	}
 }

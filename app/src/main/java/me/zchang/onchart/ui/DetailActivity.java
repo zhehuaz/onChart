@@ -23,6 +23,7 @@ import me.zchang.onchart.R;
 import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.ConfigManager;
 import me.zchang.onchart.student.Course;
+import me.zchang.onchart.ui.utils.CardToDialog;
 import me.zchang.onchart.ui.utils.DialogToCard;
 
 /*
@@ -59,7 +60,8 @@ public class DetailActivity extends AppCompatActivity {
             Interpolator easeInOut = new AccelerateDecelerateInterpolator();
             TransitionSet sharedEnterSet = new TransitionSet();
             ChangeBounds sharedEnter = new ChangeBounds();
-            sharedEnter.setPathMotion(arcMotion);
+	        //CardToDialog sharedEnter = new CardToDialog(startColor);
+	        sharedEnter.setPathMotion(arcMotion);
             sharedEnter.setInterpolator(easeInOut);
             sharedEnterSet.addTransition(sharedEnter);
             ChangeImageTransform imgTrans = new ChangeImageTransform();

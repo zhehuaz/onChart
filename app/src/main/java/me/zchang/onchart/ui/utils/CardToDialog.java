@@ -21,8 +21,8 @@ import me.zchang.onchart.R;
 @TargetApi(Build.VERSION_CODES.KITKAT)
 public class CardToDialog extends ChangeBounds {
 
-    private static final String PROPERTY_COLOR = "property_color";
-    private static final String[] TRANSITION_PROPERTIES = {
+	private static final String PROPERTY_COLOR = "plaid:rectMorph:color";
+	private static final String[] TRANSITION_PROPERTIES = {
             PROPERTY_COLOR
     };
     private @ColorInt
@@ -88,8 +88,10 @@ public class CardToDialog extends ChangeBounds {
         AnimatorSet transition = new AnimatorSet();
         transition.playTogether(changeBounds, color);
         transition.setDuration(180);
-        transition.setInterpolator(AnimationUtils.loadInterpolator(sceneRoot.getContext(),
-                android.R.interpolator.fast_out_slow_in));
-        return transition;
+	    //transition.setInterpolator(AnimationUtils.loadInterpolator(sceneRoot.getContext(),
+	    //        android.R.interpolator.fast_out_slow_in));
+	    //
+	    // return transition;
+	    return super.createAnimator(sceneRoot, startValues, endValues);
     }
 }

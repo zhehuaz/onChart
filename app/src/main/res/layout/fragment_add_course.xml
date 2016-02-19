@@ -25,7 +25,7 @@
     <TimePicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layoutMode="clipBounds"/>
+        />
 
     <DatePicker
         android:layout_width="wrap_content"
