@@ -88,7 +88,7 @@ public class DialogToCard extends ChangeBounds {
             return null;
         }
 
-       MorphDrawable background = new MorphDrawable(startColor, 0);
+        MorphDrawable background = new MorphDrawable(startColor, 0);
         endValues.view.setBackground(background);
 
         Animator color = ObjectAnimator.ofArgb(background, background.COLOR, endColor);

@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
@@ -163,26 +164,17 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 Palette.Swatch vibrant = palette.getVibrantSwatch();
                                 if (cardView != null) {
                                     if (lightVibrant != null) {
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                                            cardView.setBackground(new ColorDrawable(lightVibrant.getRgb()));
-                                        else
-                                            cardView.setCardBackgroundColor(lightVibrant.getRgb());
-                                        nameText.setTextColor(lightVibrant.getTitleTextColor());
+	                                    cardView.setBackground(new ColorDrawable(lightVibrant.getRgb()));
+	                                    nameText.setTextColor(lightVibrant.getTitleTextColor());
                                         roomText.setTextColor(lightVibrant.getBodyTextColor());
                                     } else if (vibrant != null) {
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                                            cardView.setBackground(new ColorDrawable(vibrant.getRgb()));
-                                        else
-                                            cardView.setBackgroundColor(lightVibrant.getRgb());
-                                        nameText.setTextColor(vibrant.getTitleTextColor());
+	                                    cardView.setBackground(new ColorDrawable(vibrant.getRgb()));
+	                                    nameText.setTextColor(vibrant.getTitleTextColor());
                                         roomText.setTextColor(vibrant.getBodyTextColor());
                                     } else {
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                                            cardView.setBackground(new ColorDrawable(context.getResources().getColor(R.color.cardview_light_background)));
-                                        else
-                                            cardView.setCardBackgroundColor(context.getResources().getColor(R.color.cardview_light_background));
-                                        nameText.setTextColor(context.getResources().getColor(R.color.default_title));
-                                        roomText.setTextColor(context.getResources().getColor(R.color.default_title));
+	                                    cardView.setBackground(new ColorDrawable(ContextCompat.getColor(context, R.color.cardview_light_background)));
+	                                    nameText.setTextColor(ContextCompat.getColor(context, R.color.default_title));
+	                                    roomText.setTextColor(ContextCompat.getColor(context, R.color.default_title));
                                     }
                                     if (vibrant != null)
                                         timeText.setTextColor(vibrant.getRgb());

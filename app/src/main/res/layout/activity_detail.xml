@@ -62,15 +62,14 @@
                 android:visibility="gone"/>
 
             <TextView
-                android:background="#0000"
                 android:id="@+id/tv_lesson_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
                 android:text="Lesson Name"
                 android:layout_gravity="bottom|left"
                 android:padding="@dimen/activity_horizontal_margin"
                 android:textStyle="bold"
+                android:textColor="@color/white"
                 android:textSize="20sp"/>
         </FrameLayout>
 

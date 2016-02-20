@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.ArcMotion;
+import android.transition.AutoTransition;
 import android.transition.ChangeBounds;
 import android.transition.ChangeImageTransform;
 import android.transition.TransitionSet;
@@ -24,6 +25,7 @@ import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.config.ConfigManager;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.ui.utils.CardToDialog;
+import me.zchang.onchart.ui.utils.ChangeColor;
 import me.zchang.onchart.ui.utils.DialogToCard;
 
 /*
@@ -43,7 +45,6 @@ import me.zchang.onchart.ui.utils.DialogToCard;
  */
 
 public class DetailActivity extends AppCompatActivity {
-
     Intent retIntent;
     Intent intent;
     @Override
@@ -57,23 +58,28 @@ public class DetailActivity extends AppCompatActivity {
             ArcMotion arcMotion = new ArcMotion();
             arcMotion.setMinimumHorizontalAngle(50f);
             arcMotion.setMinimumVerticalAngle(50f);
-            Interpolator easeInOut = new AccelerateDecelerateInterpolator();
-            TransitionSet sharedEnterSet = new TransitionSet();
-            ChangeBounds sharedEnter = new ChangeBounds();
-	        //CardToDialog sharedEnter = new CardToDialog(startColor);
-	        sharedEnter.setPathMotion(arcMotion);
-            sharedEnter.setInterpolator(easeInOut);
-            sharedEnterSet.addTransition(sharedEnter);
-            ChangeImageTransform imgTrans = new ChangeImageTransform();
-            imgTrans.addTarget(R.id.iv_label);
+	        ChangeImageTransform imgTrans = new ChangeImageTransform();
+	        //imgTrans.addTarget(R.id.iv_label);
+
+	        TransitionSet sharedEnterSet = new TransitionSet();
+	        ChangeBounds changeBounds = new ChangeBounds();
+//	        CardToDialog sharedEnter = new CardToDialog(startColor);
+	        ChangeColor color = new ChangeColor(startColor, 0);
+//	        sharedEnter.setPathMotion(arcMotion);
+	        changeBounds.setPathMotion(arcMotion);
+	        sharedEnterSet.addTransition(changeBounds);
+	        sharedEnterSet.addTransition(color);
 
             TransitionSet sharedExitSet = new TransitionSet();
-            DialogToCard sharedExit = new DialogToCard(startColor);
-            sharedExit.setPathMotion(arcMotion);
-            sharedExitSet.addTransition(sharedExit);
-            sharedExitSet.addTransition(imgTrans);
+//            DialogToCard sharedExit = new DialogToCard(startColor);
+//            sharedExit.setPathMotion(arcMotion);
+	        //sharedExitSet.addTransition(sharedExit);
+	        sharedExitSet.addTransition(changeBounds);
+	        sharedExitSet.addTransition(new ChangeColor(0, startColor));
+	        sharedExitSet.addTransition(imgTrans);
+
             getWindow().setSharedElementEnterTransition(sharedEnterSet);
-            getWindow().setSharedElementReturnTransition(sharedExit);
+	        getWindow().setSharedElementReturnTransition(sharedExitSet);
         }
 
         retIntent = new Intent();
