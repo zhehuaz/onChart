@@ -1,33 +1,3 @@
-package me.zchang.onchart.ui;
-
-import android.animation.Animator;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.transition.ArcMotion;
-import android.transition.AutoTransition;
-import android.transition.ChangeBounds;
-import android.transition.ChangeImageTransform;
-import android.transition.TransitionSet;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Interpolator;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import me.zchang.onchart.BuildConfig;
-import me.zchang.onchart.R;
-import me.zchang.onchart.config.MainApp;
-import me.zchang.onchart.config.ConfigManager;
-import me.zchang.onchart.student.Course;
-import me.zchang.onchart.ui.utils.CardToDialog;
-import me.zchang.onchart.ui.utils.ChangeColor;
-import me.zchang.onchart.ui.utils.DialogToCard;
-
 /*
  *    Copyright 2015 Zhehua Chang
  *
@@ -44,6 +14,30 @@ import me.zchang.onchart.ui.utils.DialogToCard;
  *    limitations under the License.
  */
 
+package me.zchang.onchart.ui;
+
+import android.animation.Animator;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.transition.ArcMotion;
+import android.transition.ChangeBounds;
+import android.transition.ChangeImageTransform;
+import android.transition.TransitionSet;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import me.zchang.onchart.R;
+import me.zchang.onchart.config.ConfigManager;
+import me.zchang.onchart.config.MainApp;
+import me.zchang.onchart.student.Course;
+import me.zchang.onchart.ui.utils.ChangeColor;
+
 public class DetailActivity extends AppCompatActivity {
     Intent retIntent;
     Intent intent;
@@ -59,27 +53,21 @@ public class DetailActivity extends AppCompatActivity {
             arcMotion.setMinimumHorizontalAngle(50f);
             arcMotion.setMinimumVerticalAngle(50f);
 	        ChangeImageTransform imgTrans = new ChangeImageTransform();
-	        //imgTrans.addTarget(R.id.iv_label);
 
 	        TransitionSet sharedEnterSet = new TransitionSet();
 	        ChangeBounds changeBounds = new ChangeBounds();
-//	        CardToDialog sharedEnter = new CardToDialog(startColor);
 	        ChangeColor color = new ChangeColor(startColor, 0);
-//	        sharedEnter.setPathMotion(arcMotion);
 	        changeBounds.setPathMotion(arcMotion);
 	        sharedEnterSet.addTransition(changeBounds);
 	        sharedEnterSet.addTransition(color);
 
-            TransitionSet sharedExitSet = new TransitionSet();
-//            DialogToCard sharedExit = new DialogToCard(startColor);
-//            sharedExit.setPathMotion(arcMotion);
-	        //sharedExitSet.addTransition(sharedExit);
-	        sharedExitSet.addTransition(changeBounds);
-	        sharedExitSet.addTransition(new ChangeColor(0, startColor));
-	        sharedExitSet.addTransition(imgTrans);
+            TransitionSet sharedReturnSet = new TransitionSet();
+	        sharedReturnSet.addTransition(changeBounds);
+	        sharedReturnSet.addTransition(new ChangeColor(0, startColor));
+	        sharedReturnSet.addTransition(imgTrans);
 
             getWindow().setSharedElementEnterTransition(sharedEnterSet);
-	        getWindow().setSharedElementReturnTransition(sharedExitSet);
+	        getWindow().setSharedElementReturnTransition(sharedReturnSet);
         }
 
         retIntent = new Intent();
@@ -105,41 +93,41 @@ public class DetailActivity extends AppCompatActivity {
 	        creditText.setText(String.format(getString(R.string.detail_credit), course.getCredit()));
 	        labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
 	        labelImage.setOnTouchListener(new View.OnTouchListener() {
-		        @Override
-		        public boolean onTouch(View view, MotionEvent motionEvent) {
-			        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-				        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) // performance consideration
-                            backgroundImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
-                        course.setToNextLabelImg();
-				        labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
-				        // update local storage only.
-				        ((MainApp) getApplication()).getConfigManager().saveImgPathIndex(course.getId(), course.getLabelImgIndex());
+				@Override
+				public boolean onTouch(View view, MotionEvent motionEvent) {
+					if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) // performance consideration
+							backgroundImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
+						course.setToNextLabelImg();
+						labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
+						// update local storage only.
+						((MainApp) getApplication()).getConfigManager().saveImgPathIndex(course.getId(), course.getLabelImgIndex());
 
-				        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-					        Animator reveal = ViewAnimationUtils.createCircularReveal(
-							        view,
-							        (int) motionEvent.getX(),
-							        (int) motionEvent.getY(),
-							        0,
-							        view.getLayoutParams().width + 300
-					        );
-					        reveal.start();
-				        }
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+							Animator reveal = ViewAnimationUtils.createCircularReveal(
+									view,
+									(int) motionEvent.getX(),
+									(int) motionEvent.getY(),
+									0,
+									view.getLayoutParams().width + 300
+							);
+							reveal.start();
+						}
 
-				        retIntent.putExtra(getString(R.string.intent_label_image_index), course.getLabelImgIndex());
-				        setResult(RESULT_OK, retIntent);
-				        return true;
-			        }
-			        return false;
-		        }
-	        });
+						retIntent.putExtra(getString(R.string.intent_label_image_index), course.getLabelImgIndex());
+						setResult(RESULT_OK, retIntent);
+						return true;
+					}
+					return false;
+				}
+			});
 
 	        deleteButton.setOnClickListener(new View.OnClickListener() {
-		        @Override
-		        public void onClick(View view) {
+				@Override
+				public void onClick(View view) {
 
-		        }
-	        });
+				}
+			});
 
 	        editButton.setOnClickListener(new View.OnClickListener() {
 		        @Override

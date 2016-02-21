@@ -14,7 +14,8 @@
         android:transitionName="@string/trans_detail_item"
         android:id="@+id/ll_container"
         android:background="@color/white"
-        android:elevation="20dp">
+        android:elevation="5dp"
+        android:translationZ="5dp">
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="130dp">

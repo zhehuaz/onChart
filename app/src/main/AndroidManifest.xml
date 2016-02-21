@@ -33,7 +33,8 @@
         </activity>
         <activity
             android:name=".ui.ExamsActivity"
-            android:label="@string/title_activity_exams">
+            android:label="@string/title_activity_exams"
+            android:theme="@style/MainTheme">
         </activity>
     </application>
 
