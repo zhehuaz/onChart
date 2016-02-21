@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
@@ -19,14 +20,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import me.zchang.onchart.R;
-import me.zchang.onchart.config.PreferenceManager;
+import me.zchang.onchart.config.ConfigManager;
 import me.zchang.onchart.parser.Utils;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.LabelCourse;
@@ -71,14 +71,12 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private int fragId;
 
     public CourseListAdapter(Context context, List<Course> courses, int fragId) {
-
         bitmap = new byte[20];
         this.courses = courses;
         this.context = context;
         this.fragId = fragId;
 
         processLessons();
-
     }
 
     public void setCourses(List<Course> courses) {
@@ -91,10 +89,10 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         afternoonCount = 0;
         eveningCount = 0;
         for (Course l : courses) {
-            Time startTime = l.getStartTime();
-            if (startTime.before(Utils.NOON_TIME))
+            long startTime = l.getStartTime();
+            if (startTime < Utils.NOON_TIME)
                 morningCount++;
-            else if (startTime.before(Utils.EVENING_TIME))
+            else if (startTime < Utils.EVENING_TIME)
                 afternoonCount++;
             else
                 eveningCount++;
@@ -106,7 +104,8 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         for(int position = 1; position < length; position ++) {
             if (position == 1 && morningCount > 0) {
                 bitmap[position] = MORNING_FLAG;
-            } else if (position == ((morningCount + 1) * (morningCount > 0 ? 1 : 0) + 1) && afternoonCount > 0) {
+            } else if (position == ((morningCount + 1) * (morningCount > 0 ? 1 : 0) + 1)
+                    && afternoonCount > 0) {
                 bitmap[position] = AFTERNOON_FLAG;
             } else if (position == ((morningCount + 1) * (morningCount > 0 ? 1 : 0)
                     + (afternoonCount + 1) * (afternoonCount > 0 ? 1 : 0) + 1)
@@ -150,11 +149,10 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             ViewGroup.LayoutParams params = ((ViewHolder) holder).frame.getLayoutParams();
             params.height =(((ViewHolder) holder).cardHeight >> 1 ) *
-                    (((int)course.getEndTime().getTime() - (int)course.getStartTime().getTime()) / Utils.MILLISECONDS_IN_ONE_CLASS + 1);
+                    (((int) course.getEndTime() - (int) course.getStartTime()) / Utils.MILLISECONDS_IN_ONE_CLASS + 1);
             ((ViewHolder) holder).frame.setLayoutParams(params);
 
-            nabImg.setImageResource(PreferenceManager.labelImgIndices[course.getLabelImgIndex()]);
-
+            nabImg.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
 
             Drawable nab = nabImg.getDrawable();
             if(nab != null) {
@@ -166,26 +164,17 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 Palette.Swatch vibrant = palette.getVibrantSwatch();
                                 if (cardView != null) {
                                     if (lightVibrant != null) {
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                                            cardView.setBackground(new ColorDrawable(lightVibrant.getRgb()));
-                                        else
-                                            cardView.setCardBackgroundColor(lightVibrant.getRgb());
-                                        nameText.setTextColor(lightVibrant.getTitleTextColor());
+	                                    cardView.setBackground(new ColorDrawable(lightVibrant.getRgb()));
+	                                    nameText.setTextColor(lightVibrant.getTitleTextColor());
                                         roomText.setTextColor(lightVibrant.getBodyTextColor());
                                     } else if (vibrant != null) {
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                                            cardView.setBackground(new ColorDrawable(vibrant.getRgb()));
-                                        else
-                                            cardView.setBackgroundColor(lightVibrant.getRgb());
-                                        nameText.setTextColor(vibrant.getTitleTextColor());
+	                                    cardView.setBackground(new ColorDrawable(vibrant.getRgb()));
+	                                    nameText.setTextColor(vibrant.getTitleTextColor());
                                         roomText.setTextColor(vibrant.getBodyTextColor());
                                     } else {
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                                            cardView.setBackground(new ColorDrawable(context.getResources().getColor(R.color.cardview_light_background)));
-                                        else
-                                            cardView.setCardBackgroundColor(context.getResources().getColor(R.color.cardview_light_background));
-                                        nameText.setTextColor(context.getResources().getColor(R.color.default_title));
-                                        roomText.setTextColor(context.getResources().getColor(R.color.default_title));
+	                                    cardView.setBackground(new ColorDrawable(ContextCompat.getColor(context, R.color.cardview_light_background)));
+	                                    nameText.setTextColor(ContextCompat.getColor(context, R.color.default_title));
+	                                    roomText.setTextColor(ContextCompat.getColor(context, R.color.default_title));
                                     }
                                     if (vibrant != null)
                                         timeText.setTextColor(vibrant.getRgb());
@@ -280,21 +269,5 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return VIEW_TYPE_SUBTITLE;
         else
             return VIEW_TYPE_LIST;
-    }
-
-    /**
-     * Find the position of lesson in the list by id.
-     * @param id ID of the lesson
-     * @return the position of lesson in the list
-     */
-    public int findLessonById(int id) {
-        if(!courses.isEmpty()) {
-            for (int i = 0; i < bitmap.length; i++) {
-                if (bitmap[i] >= 0 && (courses.get(bitmap[i]).getId() == id)) {
-                    return i;
-                }
-            }
-        }
-        return -1;
     }
 }

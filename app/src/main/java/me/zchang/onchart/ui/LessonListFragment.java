@@ -1,10 +1,8 @@
 package me.zchang.onchart.ui;
 
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +39,6 @@ import me.zchang.onchart.ui.adapter.CourseListAdapter;
 public class LessonListFragment extends Fragment {
     private final static String TAG = "LessonListFragment";
 
-    private int Id;
     RecyclerView courseList;
     CourseListAdapter adapter;
 
@@ -76,14 +73,9 @@ public class LessonListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //Log.d(TAG, "Fragment show");
         View rootView = inflater.inflate(R.layout.fragment_lesson_list, container, false);
         courseList = (RecyclerView) rootView.findViewById(R.id.rv_lessons);
-        courseList.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-
         adapter.setCourses(courses);
-
         courseList.setAdapter(adapter);
         if (slideAnimFlag) {
             courseList.setLayoutAnimation(
@@ -128,7 +120,7 @@ public class LessonListFragment extends Fragment {
         }
     }
 
-    public void updateLessonImg(int id) {
+    public void updateLessonImg(long id) {
         for (Course course : courses) {
             if (course.getId() == id) {
                 course.setToNextLabelImg();
@@ -137,7 +129,7 @@ public class LessonListFragment extends Fragment {
         }
     }
 
-    public Course findCourseById(int id) {
+    public Course findCourseById(long id) {
         for (Course course : courses) {
             if (course.getId() == id) {
                 return course;

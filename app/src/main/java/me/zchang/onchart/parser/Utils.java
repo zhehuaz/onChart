@@ -61,44 +61,44 @@ public class Utils {
     public final static int MILLISECONDS_IN_ONE_HOUR = MILLISECONDS_IN_ONE_MINUTE * 60;
     public final static int MILLISECONDS_IN_ONE_CLASS = MILLISECONDS_IN_ONE_MINUTE * 50;
 
-    public final static Time NOON_TIME = new Time(12 * MILLISECONDS_IN_ONE_HOUR);
-    public final static Time EVENING_TIME = new Time(18 * MILLISECONDS_IN_ONE_HOUR);
+    public final static long NOON_TIME = 12 * MILLISECONDS_IN_ONE_HOUR;
+    public final static long EVENING_TIME = 18 * MILLISECONDS_IN_ONE_HOUR;
 
     /**
      *
      * @param i
      * @return
      */
-    public static Time periodToTime(int i) {
+    public static long periodToTime(int i) {
         switch (i) {
             case 1:
-                return new Time(8 * MILLISECONDS_IN_ONE_HOUR);
+                return 8 * MILLISECONDS_IN_ONE_HOUR;
             case 2:
-                return new Time(8 * MILLISECONDS_IN_ONE_HOUR + 50 * MILLISECONDS_IN_ONE_MINUTE);
+                return 8 * MILLISECONDS_IN_ONE_HOUR + 50 * MILLISECONDS_IN_ONE_MINUTE;
             case 3:
-                return new Time(9 * MILLISECONDS_IN_ONE_HOUR + 50 * MILLISECONDS_IN_ONE_MINUTE);
+                return 9 * MILLISECONDS_IN_ONE_HOUR + 50 * MILLISECONDS_IN_ONE_MINUTE;
             case 4:
-                return new Time(10 * MILLISECONDS_IN_ONE_HOUR + 40 * MILLISECONDS_IN_ONE_MINUTE);
+                return 10 * MILLISECONDS_IN_ONE_HOUR + 40 * MILLISECONDS_IN_ONE_MINUTE;
             case 5:
-                return new Time(11 * MILLISECONDS_IN_ONE_HOUR + 30 * MILLISECONDS_IN_ONE_MINUTE);
+                return 11 * MILLISECONDS_IN_ONE_HOUR + 30 * MILLISECONDS_IN_ONE_MINUTE;
             case 6:
-                return new Time(13 * MILLISECONDS_IN_ONE_HOUR + 20 * MILLISECONDS_IN_ONE_MINUTE);
+                return 13 * MILLISECONDS_IN_ONE_HOUR + 20 * MILLISECONDS_IN_ONE_MINUTE;
             case 7:
-                return new Time(14 * MILLISECONDS_IN_ONE_HOUR + 10 * MILLISECONDS_IN_ONE_MINUTE);
+                return 14 * MILLISECONDS_IN_ONE_HOUR + 10 * MILLISECONDS_IN_ONE_MINUTE;
             case 8:
-                return new Time(15 * MILLISECONDS_IN_ONE_HOUR + 10 * MILLISECONDS_IN_ONE_MINUTE);
+                return 15 * MILLISECONDS_IN_ONE_HOUR + 10 * MILLISECONDS_IN_ONE_MINUTE;
             case 9:
-                return new Time(16 * MILLISECONDS_IN_ONE_HOUR);
+                return 16 * MILLISECONDS_IN_ONE_HOUR;
             case 10:
-                return new Time(16 * MILLISECONDS_IN_ONE_HOUR + 50 * MILLISECONDS_IN_ONE_MINUTE);
+                return 16 * MILLISECONDS_IN_ONE_HOUR + 50 * MILLISECONDS_IN_ONE_MINUTE;
             case 11:
-                return new Time(18 * MILLISECONDS_IN_ONE_HOUR + 30 * MILLISECONDS_IN_ONE_MINUTE);
+                return 18 * MILLISECONDS_IN_ONE_HOUR + 30 * MILLISECONDS_IN_ONE_MINUTE;
             case 12:
-                return new Time(19 * MILLISECONDS_IN_ONE_HOUR + 30 * MILLISECONDS_IN_ONE_MINUTE);
+                return 19 * MILLISECONDS_IN_ONE_HOUR + 30 * MILLISECONDS_IN_ONE_MINUTE;
             case 13:
-                return new Time(20 * MILLISECONDS_IN_ONE_HOUR + 30 * MILLISECONDS_IN_ONE_MINUTE);
+                return 20 * MILLISECONDS_IN_ONE_HOUR + 30 * MILLISECONDS_IN_ONE_MINUTE;
             default:
-                return new Time(0);
+                return 0;
         }
     }
 

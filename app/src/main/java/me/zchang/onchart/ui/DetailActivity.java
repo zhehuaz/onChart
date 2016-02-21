@@ -1,25 +1,3 @@
-package me.zchang.onchart.ui;
-
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.transition.ArcMotion;
-import android.transition.ChangeBounds;
-import android.transition.ChangeImageTransform;
-import android.transition.TransitionSet;
-import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Interpolator;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import me.zchang.onchart.R;
-import me.zchang.onchart.config.MainApp;
-import me.zchang.onchart.config.PreferenceManager;
-import me.zchang.onchart.student.Course;
-import me.zchang.onchart.ui.utils.DialogToCard;
-
 /*
  *    Copyright 2015 Zhehua Chang
  *
@@ -36,8 +14,31 @@ import me.zchang.onchart.ui.utils.DialogToCard;
  *    limitations under the License.
  */
 
-public class DetailActivity extends AppCompatActivity {
+package me.zchang.onchart.ui;
 
+import android.animation.Animator;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.transition.ArcMotion;
+import android.transition.ChangeBounds;
+import android.transition.ChangeImageTransform;
+import android.transition.TransitionSet;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import me.zchang.onchart.R;
+import me.zchang.onchart.config.ConfigManager;
+import me.zchang.onchart.config.MainApp;
+import me.zchang.onchart.student.Course;
+import me.zchang.onchart.ui.utils.ChangeColor;
+
+public class DetailActivity extends AppCompatActivity {
     Intent retIntent;
     Intent intent;
     @Override
@@ -51,22 +52,22 @@ public class DetailActivity extends AppCompatActivity {
             ArcMotion arcMotion = new ArcMotion();
             arcMotion.setMinimumHorizontalAngle(50f);
             arcMotion.setMinimumVerticalAngle(50f);
-            Interpolator easeInOut = new AccelerateDecelerateInterpolator();
-            TransitionSet sharedEnterSet = new TransitionSet();
-            ChangeBounds sharedEnter = new ChangeBounds();
-            sharedEnter.setPathMotion(arcMotion);
-            sharedEnter.setInterpolator(easeInOut);
-            sharedEnterSet.addTransition(sharedEnter);
-            ChangeImageTransform imgTrans = new ChangeImageTransform();
-            imgTrans.addTarget(R.id.iv_label);
+	        ChangeImageTransform imgTrans = new ChangeImageTransform();
 
-            TransitionSet sharedExitSet = new TransitionSet();
-            DialogToCard sharedExit = new DialogToCard(startColor);
-            sharedExit.setPathMotion(arcMotion);
-            sharedExitSet.addTransition(sharedExit);
-            sharedExitSet.addTransition(imgTrans);
+	        TransitionSet sharedEnterSet = new TransitionSet();
+	        ChangeBounds changeBounds = new ChangeBounds();
+	        ChangeColor color = new ChangeColor(startColor, 0);
+	        changeBounds.setPathMotion(arcMotion);
+	        sharedEnterSet.addTransition(changeBounds);
+	        sharedEnterSet.addTransition(color);
+
+            TransitionSet sharedReturnSet = new TransitionSet();
+	        sharedReturnSet.addTransition(changeBounds);
+	        sharedReturnSet.addTransition(new ChangeColor(0, startColor));
+	        sharedReturnSet.addTransition(imgTrans);
+
             getWindow().setSharedElementEnterTransition(sharedEnterSet);
-            getWindow().setSharedElementReturnTransition(sharedExit);
+	        getWindow().setSharedElementReturnTransition(sharedReturnSet);
         }
 
         retIntent = new Intent();
@@ -80,26 +81,60 @@ public class DetailActivity extends AppCompatActivity {
             TextView classroomText = (TextView) findViewById(R.id.tv_classroom);
             TextView weekText = (TextView) findViewById(R.id.tv_week_cycle);
             TextView creditText = (TextView) findViewById(R.id.tv_credit);
-            final ImageView labelImage = (ImageView) findViewById(R.id.iv_label);
+	        ImageButton deleteButton = (ImageButton) findViewById(R.id.iv_delete);
+	        ImageButton editButton = (ImageButton) findViewById(R.id.iv_edit);
+	        final ImageView labelImage = (ImageView) findViewById(R.id.iv_label);
+            final ImageView backgroundImage = (ImageView) findViewById(R.id.iv_background);
 
             lessonNameText.setText(course.getName());
             teacherText.setText(course.getTeacher());
             classroomText.setText(course.getClassroom());
             weekText.setText(String.format(getString(R.string.detail_week_pattern), course.getStartWeek(), course.getEndWeek()));
-            creditText.setText(course.getCredit() + getString(R.string.detail_credit_unit));
-            labelImage.setImageResource(PreferenceManager.labelImgIndices[course.getLabelImgIndex()]);
+	        creditText.setText(String.format(getString(R.string.detail_credit), course.getCredit()));
+	        labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
+	        labelImage.setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View view, MotionEvent motionEvent) {
+					if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) // performance consideration
+							backgroundImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
+						course.setToNextLabelImg();
+						labelImage.setImageResource(ConfigManager.labelImgIndices[course.getLabelImgIndex()]);
+						// update local storage only.
+						((MainApp) getApplication()).getConfigManager().saveImgPathIndex(course.getId(), course.getLabelImgIndex());
 
-            labelImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    course.setToNextLabelImg();
-                    // update local storage only.
-                    ((MainApp) getApplication()).getPreferenceManager().saveImgPathIndex(course.getId(), course.getLabelImgIndex());
-                    labelImage.setImageResource(PreferenceManager.labelImgIndices[course.getLabelImgIndex()]);
-                    retIntent.putExtra(getString(R.string.intent_label_image_index), course.getLabelImgIndex());
-                    setResult(RESULT_OK, retIntent);
-                }
-            });
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+							Animator reveal = ViewAnimationUtils.createCircularReveal(
+									view,
+									(int) motionEvent.getX(),
+									(int) motionEvent.getY(),
+									0,
+									view.getLayoutParams().width + 300
+							);
+							reveal.start();
+						}
+
+						retIntent.putExtra(getString(R.string.intent_label_image_index), course.getLabelImgIndex());
+						setResult(RESULT_OK, retIntent);
+						return true;
+					}
+					return false;
+				}
+			});
+
+	        deleteButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+
+				}
+			});
+
+	        editButton.setOnClickListener(new View.OnClickListener() {
+		        @Override
+		        public void onClick(View view) {
+
+		        }
+	        });
         }
     }
 

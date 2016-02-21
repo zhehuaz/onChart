@@ -14,11 +14,19 @@
         android:transitionName="@string/trans_detail_item"
         android:id="@+id/ll_container"
         android:background="@color/white"
-        android:elevation="20dp">
+        android:elevation="5dp"
+        android:translationZ="5dp">
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="130dp">
 
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:id="@+id/iv_background"
+                android:scaleType="centerCrop"
+                android:clickable="false"
+                />
             <ImageView
                 android:id="@+id/iv_label"
                 android:src="@mipmap/little_label1"
@@ -26,17 +34,43 @@
                 android:layout_width="300dp"
                 android:layout_height="match_parent"
                 android:transitionName="@string/trans_detail_img"
-                android:clickable="true"/>
-            <TextView
+                android:clickable="true"
+                android:background="#0000"/>
+
+
+            <ImageButton
                 android:background="#0000"
+                android:clickable="true"
+                android:id="@+id/iv_delete"
+                android:padding="6dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_delete_white_24dp"
+                android:layout_gravity="right|end"
+                android:visibility="gone"/>
+
+            <ImageButton
+                android:background="#0000"
+                android:clickable="true"
+                android:id="@+id/iv_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="6dp"
+                android:layout_gravity="right|end"
+                android:src="@drawable/ic_edit_white_24dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginEnd="30dp"
+                android:visibility="gone"/>
+
+            <TextView
                 android:id="@+id/tv_lesson_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
                 android:text="Lesson Name"
                 android:layout_gravity="bottom|left"
                 android:padding="@dimen/activity_horizontal_margin"
                 android:textStyle="bold"
+                android:textColor="@color/white"
                 android:textSize="20sp"/>
         </FrameLayout>
 

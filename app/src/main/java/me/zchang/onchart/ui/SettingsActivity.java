@@ -8,11 +8,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.widget.Toast;
 
 import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
 import me.zchang.onchart.config.MainApp;
-import me.zchang.onchart.config.PreferenceManager;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -87,7 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ((MainApp)getActivity().getApplication())
-                                        .getPreferenceManager()
+                                        .getConfigManager()
                                         .deleteSchedule()
                                         .saveName("-")
                                         .saveStuNo("")
@@ -111,7 +111,10 @@ public class SettingsActivity extends AppCompatActivity {
                 intent.setAction(Intent.ACTION_SENDTO);
                 intent.setData(Uri.parse("mailto:" + getString(R.string.url_my_email)));
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Issue in onChart " + BuildConfig.VERSION_NAME);
-                startActivity(intent);
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null)
+                    startActivity(intent);
+                else
+                    Toast.makeText(getActivity(), getString(R.string.alert_no_email_app), Toast.LENGTH_LONG).show();
             }
             return false;
         }

@@ -27,11 +27,8 @@ import me.zchang.onchart.student.Exam;
  * A session to login and fetch interested information.
  */
 public abstract class Session{
-    protected SessionStartListener listener;
-
     protected String stuNum;
     protected String psw;
-
 
     protected boolean isStarted = false;
 
@@ -39,34 +36,27 @@ public abstract class Session{
         return isStarted;
     }
 
-    public void setListener(SessionStartListener listener) {
-        this.listener = listener;
-    }
-
     public Session() {}
-    public Session(SessionStartListener listener) {
-        this.listener = listener;
-    }
 
     /**
-     * Session starts asynchronously, the start over and start error response
-     * via callback interface {@link SessionStartListener]}.
-     * @return the HTTP request sent to start.
+     * Start the session.
      */
-    public abstract String start();
+    public abstract void start();
 
-    public abstract List<Course> fetchSchedule() throws IOException;
-    public abstract int fetchWeek() throws IOException;
-    public abstract String fetchName() throws IOException;
-    public abstract List<Exam> fetchExams() throws IOException;
+	public abstract void fetchSchedule(); //async
 
-    public interface SessionStartListener {
-        void onSessionStartOver();
-        void onSessionStartError(ErrorCode ec);
-    }
+	public abstract void fetchHomePage(); //async
+
+	public abstract String fetchName(); // sync
+
+	public abstract List<Exam> fetchExams() throws IOException; // sync
 
     public enum ErrorCode {
-        SESSION_EC_FAIL_TO_CONNECT
+	    SESSION_EC_FAIL_TO_CONNECT,
+	    SESSION_EC_INVALID_ACCOUNT,
+	    SESSION_EC_FETCH_SCHEDULE,
+	    SESSION_EC_FETCH_EXAM,
+	    SESSION_EC_FETCH_WEEK
     }
 
     public String getStuNum() {

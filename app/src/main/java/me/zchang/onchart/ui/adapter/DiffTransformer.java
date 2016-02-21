@@ -53,6 +53,6 @@ public class DiffTransformer implements ViewPager.PageTransformer {
         if (position <= 1)
             return ( position / 2 * pageWidth);
         else
-            return ( (2-position) / 2  * pageWidth);
+            return ((1 - position) / 2 * pageWidth);
     }
 }
