@@ -12,7 +12,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,8 +65,14 @@ public class StudentInfoParser {
                     Course baseCourse = new LabelCourse();
                     Elements lessonInfo = e.getAllElements();
 
-	                // TODO: 2/4/16 parse and add semester information
-	                baseCourse.setSemester("2015-2");
+                    Elements elements = doc.select("[selected=selected]");
+                    StringBuilder semester = new StringBuilder();
+                    if (!elements.isEmpty()) {
+                        semester.append(elements.first().text().split("-")[0])
+                                .append("-")
+                                .append(elements.last().text());
+                    }
+	                baseCourse.setSemester(semester.toString());
 	                baseCourse.setName(lessonInfo.get(1).text());
                     baseCourse.setCredit(Float.parseFloat(lessonInfo.get(2).text()));
                     baseCourse.setDepartment(lessonInfo.get(5).text());
@@ -135,6 +143,17 @@ public class StudentInfoParser {
         } else {
             return null;
         }
+    }
+
+    public static Map<String, String> parseParamsInCoursePage(String coursePageHtml) {
+        Map<String, String> params = new HashMap<>(5);
+
+        Document page = Jsoup.parse(coursePageHtml);
+        Elements paramEles = page.select("input");
+        for (Element element : paramEles) {
+            params.put(element.nodeName(), element.val());
+        }
+        return params;
     }
 
     /**

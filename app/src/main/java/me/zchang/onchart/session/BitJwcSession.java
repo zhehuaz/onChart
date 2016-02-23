@@ -1,7 +1,10 @@
 
 package me.zchang.onchart.session;
 
+import android.os.Parcelable;
+import android.support.annotation.MainThread;
 import android.util.Log;
+import android.util.Pair;
 
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
@@ -15,6 +18,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import me.zchang.onchart.parser.StudentInfoParser;
 import me.zchang.onchart.session.events.ScheduleFetchOverEvent;
@@ -23,6 +27,12 @@ import me.zchang.onchart.session.events.SessionStartOverEvent;
 import me.zchang.onchart.session.events.HomepageFetchOverEvent;
 import me.zchang.onchart.student.Exam;
 import me.zchang.onchart.ui.MainActivity;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -132,6 +142,83 @@ public class BitJwcSession extends Session{
 		    }
 	    }).start();
     }
+
+	public void fetchSchedule(final String year, final String semester) {
+        Observable.create(new Observable.OnSubscribe<Map<String, String>>() {
+            @Override
+            public void call(Subscriber<? super Map<String, String>> subscriber) {
+                String path = "/xskbcx.aspx?xh=" + stuNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121603";
+                if (loginUrl != null) {
+                    Request scheduleRequest = new Request.Builder()
+                            .addHeader("Referer", loginUrl)
+                            .get()
+                            .url(loginUrl.substring(0, 43) + path)
+                            .build();
+                    Response scheduleResponse = null;
+                    try {
+                        scheduleResponse = httpClient.newCall(scheduleRequest).execute();
+                        if (scheduleResponse.isSuccessful()) {
+                            subscriber.onNext(
+                                    StudentInfoParser.parseParamsInCoursePage(scheduleResponse.body().string())
+                            );
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        subscriber.onError(e);
+                    }
+                    subscriber.onCompleted();
+                }
+            }
+        })
+        .observeOn(Schedulers.io())
+        .flatMap(new Func1<Map<String, String>, Observable<String>>() {
+            @Override
+            public Observable<String> call(final Map<String, String> params) {
+
+                return Observable.create(new Observable.OnSubscribe<String>() {
+                    @Override
+                    public void call(Subscriber<? super String> subscriber) {
+                        FormEncodingBuilder builder =  new FormEncodingBuilder();
+                        for (Map.Entry<String, String> entry : params.entrySet()) {
+                            builder.add(entry.getKey(), entry.getValue());
+                        }
+                        builder.add("xnd", year)
+                                .add("xqd", semester);
+                        Request scheduleRequest = new Request.Builder()
+                                .addHeader("Referer", loginUrl)
+                                .post(builder.build())
+                                .build();
+                        try {
+                            Response response = httpClient.newCall(scheduleRequest).execute();
+                            subscriber.onNext(response.body().string());
+                            subscriber.onCompleted();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            subscriber.onError(e);
+                        }
+                    }
+                })
+                        .observeOn(Schedulers.io());
+            }
+        })
+        .subscribe(new Observer<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String s) {
+                EventBus.getDefault()
+                        .post(new ScheduleFetchOverEvent(StudentInfoParser.parseCourses(s)));
+            }
+        });
+	}
 
     /**
      * Fetch <a href="http://jwc.bit.edu.cn"/> homepage
