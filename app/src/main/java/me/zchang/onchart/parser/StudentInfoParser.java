@@ -57,6 +57,14 @@ public class StudentInfoParser {
         if(chartTable != null) {
             Elements lessonEles = chartTable.select("tr");
             List<Course> courses = new ArrayList<>();
+            Elements elements = doc.select("[selected=selected]");
+            StringBuilder semesterBuilder = new StringBuilder();
+            if (!elements.isEmpty()) {
+                semesterBuilder.append(elements.first().text().split("-")[0])
+                        .append("-")
+                        .append(elements.last().text());
+            }
+            String thisSemester = semesterBuilder.toString();
 
             List<Course> dupCourses = new ArrayList<>();
             for (Element e : lessonEles) {
@@ -65,14 +73,7 @@ public class StudentInfoParser {
                     Course baseCourse = new LabelCourse();
                     Elements lessonInfo = e.getAllElements();
 
-                    Elements elements = doc.select("[selected=selected]");
-                    StringBuilder semester = new StringBuilder();
-                    if (!elements.isEmpty()) {
-                        semester.append(elements.first().text().split("-")[0])
-                                .append("-")
-                                .append(elements.last().text());
-                    }
-	                baseCourse.setSemester(semester.toString());
+	                baseCourse.setSemester(thisSemester);
 	                baseCourse.setName(lessonInfo.get(1).text());
                     baseCourse.setCredit(Float.parseFloat(lessonInfo.get(2).text()));
                     baseCourse.setDepartment(lessonInfo.get(5).text());
@@ -176,15 +177,15 @@ public class StudentInfoParser {
         return -1;
     }
 
-	/**
-	 * Parse cur date from the homepage of jwc.
-	 *
-	 * @param htmlText The source html text.
-	 * @return The date.
-	 */
-	public static void parseDate(@NonNull String htmlText, Integer year, Integer month, Integer day) {
+    /**
+     * Parse cur date from the homepage of jwc.
+     *
+     * @param htmlText The source html text.
+     * @return The date.
+     */
+    public static void parseDate(@NonNull String htmlText, Integer year, Integer month, Integer day) {
 
-	}
+    }
 
 
     /**

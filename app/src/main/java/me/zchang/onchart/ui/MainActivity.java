@@ -504,7 +504,7 @@ public class MainActivity extends AppCompatActivity
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onSessionStartOverEvent(SessionStartOverEvent event) {
 		// session.fetchSchedule();
-        ((BitJwcSession) session).fetchSchedule("2014-2015", "2");
+        ((BitJwcSession) session).fetchSchedule("2014-2");
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
@@ -544,7 +544,7 @@ public class MainActivity extends AppCompatActivity
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
-	public void onWeekFetchOverEvent(HomepageFetchOverEvent event) {
+	public void onHomepageFetchOverEvent(HomepageFetchOverEvent event) {
 		int integer = event.getWeek();
 		if (integer == 0) {
 			Toast.makeText(MainActivity.this, "Unable to fetch week", Toast.LENGTH_SHORT).show();

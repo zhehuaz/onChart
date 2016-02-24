@@ -1,10 +1,7 @@
 
 package me.zchang.onchart.session;
 
-import android.os.Parcelable;
-import android.support.annotation.MainThread;
 import android.util.Log;
-import android.util.Pair;
 
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
@@ -21,10 +18,11 @@ import java.util.List;
 import java.util.Map;
 
 import me.zchang.onchart.parser.StudentInfoParser;
+import me.zchang.onchart.session.events.HomepageFetchOverEvent;
 import me.zchang.onchart.session.events.ScheduleFetchOverEvent;
 import me.zchang.onchart.session.events.SessionErrorEvent;
 import me.zchang.onchart.session.events.SessionStartOverEvent;
-import me.zchang.onchart.session.events.HomepageFetchOverEvent;
+import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.Exam;
 import me.zchang.onchart.ui.MainActivity;
 import rx.Observable;
@@ -130,7 +128,7 @@ public class BitJwcSession extends Session{
 					    scheduleResponse = httpClient.newCall(scheduleRequest).execute();
 					    if (scheduleResponse.isSuccessful()) {
 						    EventBus.getDefault().post(
-								    new ScheduleFetchOverEvent(StudentInfoParser.parseCourses(scheduleResponse.body().string()))
+								    new ScheduleFetchOverEvent(StudentInfoParser.parseCourses(scheduleResponse.body().string()), "default")
 						    );
 						    Log.i(MainActivity.TAG, "post schedule fetch over");
 					    }
@@ -143,7 +141,24 @@ public class BitJwcSession extends Session{
 	    }).start();
     }
 
-	public void fetchSchedule(final String year, final String semester) {
+    /**
+     * Fetch a schedule in the specific semester.
+     * @param yearSemester The format obeys "YYYY-N" according to {@link Course#semester}.
+     */
+    public void fetchSchedule(final String yearSemester) {
+        StringBuilder semesterBuilder = new StringBuilder();
+        String[] splitSemester = yearSemester.split("-");
+        if (splitSemester.length == 2) {
+            semesterBuilder.append(splitSemester[0])
+                    .append("-")
+                    .append(Integer.parseInt(splitSemester[0]) + 1);
+            //fetchSchedule(semesterBuilder.toString(), splitSemester[1]);
+        } else {
+            Log.i(TAG, "year semester parse error");
+            return ;
+        }
+        final String year = semesterBuilder.toString();
+        final String semester = splitSemester[1];
         Observable.create(new Observable.OnSubscribe<Map<String, String>>() {
             @Override
             public void call(Subscriber<? super Map<String, String>> subscriber) {
@@ -224,10 +239,10 @@ public class BitJwcSession extends Session{
             public void onNext(String s) {
                 Log.i(TAG, "get schedule");
                 EventBus.getDefault()
-                        .post(new ScheduleFetchOverEvent(StudentInfoParser.parseCourses(s)));
+                        .post(new ScheduleFetchOverEvent(StudentInfoParser.parseCourses(s), yearSemester));
             }
         });
-	}
+    }
 
     /**
      * Fetch <a href="http://jwc.bit.edu.cn"/> homepage

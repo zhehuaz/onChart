@@ -42,7 +42,6 @@ public class BounceList extends RecyclerView {
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-		Log.i(TAG, "Current motion is " + motionEvent.getActionMasked());
 		switch (motionEvent.getActionMasked()) {
 			case MotionEvent.ACTION_DOWN:
 				//Log.i(TAG, "ACTION DOWN");
@@ -73,13 +72,15 @@ public class BounceList extends RecyclerView {
 				//Log.i(TAG, "ACTION UP");
 				amountY = 0;
 				Interpolator interpolator = new AccelerateDecelerateInterpolator();
-				for (int i = 1; i < courseCount; i++) {
-					getChildAt(i)
-							.animate()
-							.translationY(0)
-							.setInterpolator(interpolator)
-							.setDuration(180)
-							.setStartDelay(50);
+				for (int i = 1; i < getChildCount(); i++) {
+					View childView = getChildAt(i);
+                        if (childView != null) {
+                            childView.animate()
+								.translationY(0)
+								.setInterpolator(interpolator)
+								.setDuration(180)
+								.setStartDelay(50);
+					}
 				}
 				break;
 		}
