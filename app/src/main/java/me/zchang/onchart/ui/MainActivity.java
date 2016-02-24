@@ -182,7 +182,6 @@ public class MainActivity extends AppCompatActivity
 		setupList();// ATTENTION, order of refresh and setup
 		fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 	}
 
 	@Override
@@ -504,7 +503,8 @@ public class MainActivity extends AppCompatActivity
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onSessionStartOverEvent(SessionStartOverEvent event) {
-		session.fetchSchedule();
+		// session.fetchSchedule();
+        ((BitJwcSession) session).fetchSchedule("2014-2015", "2");
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)

@@ -151,7 +151,7 @@ public class StudentInfoParser {
         Document page = Jsoup.parse(coursePageHtml);
         Elements paramEles = page.select("input");
         for (Element element : paramEles) {
-            params.put(element.nodeName(), element.val());
+            params.put(element.attr("name"), element.val());
         }
         return params;
     }

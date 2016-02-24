@@ -147,6 +147,7 @@ public class BitJwcSession extends Session{
         Observable.create(new Observable.OnSubscribe<Map<String, String>>() {
             @Override
             public void call(Subscriber<? super Map<String, String>> subscriber) {
+                Log.i(TAG, "trying to fetch params");
                 String path = "/xskbcx.aspx?xh=" + stuNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121603";
                 if (loginUrl != null) {
                     Request scheduleRequest = new Request.Builder()
@@ -170,14 +171,16 @@ public class BitJwcSession extends Session{
                 }
             }
         })
-        .observeOn(Schedulers.io())
+        .subscribeOn(Schedulers.io())
         .flatMap(new Func1<Map<String, String>, Observable<String>>() {
             @Override
             public Observable<String> call(final Map<String, String> params) {
 
+                Log.i(TAG, "params received.");
                 return Observable.create(new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(Subscriber<? super String> subscriber) {
+                        String path = "/xskbcx.aspx?xh=" + stuNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121603";
                         FormEncodingBuilder builder =  new FormEncodingBuilder();
                         for (Map.Entry<String, String> entry : params.entrySet()) {
                             builder.add(entry.getKey(), entry.getValue());
@@ -187,8 +190,10 @@ public class BitJwcSession extends Session{
                         Request scheduleRequest = new Request.Builder()
                                 .addHeader("Referer", loginUrl)
                                 .post(builder.build())
+                                .url(loginUrl.substring(0, 43) + path)
                                 .build();
                         try {
+                            Log.i(TAG, "fetch schedule request sent");
                             Response response = httpClient.newCall(scheduleRequest).execute();
                             subscriber.onNext(response.body().string());
                             subscriber.onCompleted();
@@ -198,9 +203,10 @@ public class BitJwcSession extends Session{
                         }
                     }
                 })
-                        .observeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io());
             }
         })
+        .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<String>() {
             @Override
             public void onCompleted() {
@@ -209,11 +215,14 @@ public class BitJwcSession extends Session{
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
+                Log.i(TAG, "fetch schedule error ");
+                EventBus.getDefault().post(new SessionErrorEvent(ErrorCode.SESSION_EC_FETCH_SCHEDULE));
             }
 
             @Override
             public void onNext(String s) {
+                Log.i(TAG, "get schedule");
                 EventBus.getDefault()
                         .post(new ScheduleFetchOverEvent(StudentInfoParser.parseCourses(s)));
             }
