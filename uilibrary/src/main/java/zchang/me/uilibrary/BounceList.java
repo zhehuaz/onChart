@@ -59,10 +59,12 @@ public class BounceList extends RecyclerView {
 						amountY += deltaY;
 						for (int i = 1; i < courseCount; i++) {
 							View childView = getChildAt(i);
-							int position = amountY > 0 ? i : courseCount - i;
-							float deltaYi =
-									((position / 6.f) * (float) Math.atan(amountY / getHeight() * 10f) * getHeight() / 1.6f);
-							childView.setTranslationY(deltaYi / 6.f);
+							if (childView != null) {
+								int position = amountY > 0 ? i : courseCount - i;
+								float deltaYi =
+										((position / 6.f) * (float) Math.atan(amountY / getHeight() * 10f) * getHeight() / 1.6f);
+								childView.setTranslationY(deltaYi / 6.f);
+							}
 						}
 					}
 				}

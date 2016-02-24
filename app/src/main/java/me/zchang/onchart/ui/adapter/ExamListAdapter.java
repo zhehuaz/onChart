@@ -87,8 +87,6 @@ public class ExamListAdapter extends RecyclerView.Adapter {
             if (previousMillis > 0) {
                 long previousDays = previousMillis / MainActivity.MILLISECONDS_IN_A_DAY;
                 if (previousDays <= 14) {
-                    //countdownText.setTextColor(Color.parseColor("#EE0000"));
-                    //dayText.setTextColor(Color.parseColor("#EE0000"));
                     cardView.setCardBackgroundColor(Color.parseColor("#EF5350"));
                     dateText.setTextColor(Color.parseColor("#EF5350"));
                     timeText.setTextColor(Color.parseColor("#EF5350"));

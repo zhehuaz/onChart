@@ -41,6 +41,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -165,9 +166,13 @@ public class MainActivity extends AppCompatActivity
 			}
 		});
 
-		ViewGroup.LayoutParams params = stuffImage.getLayoutParams();
-		params.height = getStatusBarHeight(this);
-		stuffImage.setLayoutParams(params);
+
+		if ((getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+				== WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS) {
+			ViewGroup.LayoutParams params = stuffImage.getLayoutParams();
+			params.height = getStatusBarHeight(this);
+			stuffImage.setLayoutParams(params);
+		}
 
 		numOfWeekdays = configManager.getNumOfWeekdays();
 
@@ -342,8 +347,8 @@ public class MainActivity extends AppCompatActivity
 	}
 
 	@Override
-	public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-		super.onPostCreate(savedInstanceState, persistentState);
+	public void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
 		drawerToggle.syncState();
 	}
 
