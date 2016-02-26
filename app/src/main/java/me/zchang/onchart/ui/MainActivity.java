@@ -31,6 +31,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -43,6 +44,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.DialerFilter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity
 	private boolean firstLaunch = true;
 
 	// debug
-	private boolean showAllFlag = true; // if show all the courses, for debug.
+	private boolean showAllFlag = false; // if show all the courses, for debug.
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -165,7 +167,6 @@ public class MainActivity extends AppCompatActivity
 				dialog.show(getSupportFragmentManager(), TAG);
 			}
 		});
-
 
 		if ((getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
 				== WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS) {
@@ -508,8 +509,7 @@ public class MainActivity extends AppCompatActivity
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onSessionStartOverEvent(SessionStartOverEvent event) {
-		// session.fetchSchedule();
-        ((BitJwcSession) session).fetchSchedule("2014-2");
+		 session.fetchSchedule();
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
