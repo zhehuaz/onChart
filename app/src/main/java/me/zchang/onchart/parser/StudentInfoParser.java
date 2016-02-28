@@ -170,8 +170,13 @@ public class StudentInfoParser {
             Element childElement;
             if (rootElement != null) {
                 childElement = rootElement.select("b").get(0);
-                if (childElement != null && childElement.text().length() > 0)
-                    return Integer.parseInt(childElement.text());
+                if (childElement != null) {
+                    try {
+                        return Integer.parseInt(childElement.text());
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         return -1;
