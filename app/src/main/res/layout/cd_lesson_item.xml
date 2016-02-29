@@ -12,8 +12,15 @@
         android:layout_gravity="left|top"
         android:text="13:20"
         android:layout_marginLeft="8dp"
-        android:textSize="10dp"
+        android:layout_marginStart="8dp"
+        android:textSize="10sp"
         android:id="@+id/tv_time"/>
+
+    <TextView
+        android:id="@+id/iv_background_indicator"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone" />
 
     <android.support.v7.widget.CardView
         android:layout_width="280dp"

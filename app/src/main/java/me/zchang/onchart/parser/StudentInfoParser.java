@@ -12,7 +12,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,6 +57,14 @@ public class StudentInfoParser {
         if(chartTable != null) {
             Elements lessonEles = chartTable.select("tr");
             List<Course> courses = new ArrayList<>();
+            Elements elements = doc.select("[selected=selected]");
+            StringBuilder semesterBuilder = new StringBuilder();
+            if (!elements.isEmpty()) {
+                semesterBuilder.append(elements.first().text().split("-")[0])
+                        .append("-")
+                        .append(elements.last().text());
+            }
+            String thisSemester = semesterBuilder.toString();
 
             List<Course> dupCourses = new ArrayList<>();
             for (Element e : lessonEles) {
@@ -63,8 +73,7 @@ public class StudentInfoParser {
                     Course baseCourse = new LabelCourse();
                     Elements lessonInfo = e.getAllElements();
 
-	                // TODO: 2/4/16 parse and add semester information
-	                baseCourse.setSemester("2015-2");
+	                baseCourse.setSemester(thisSemester);
 	                baseCourse.setName(lessonInfo.get(1).text());
                     baseCourse.setCredit(Float.parseFloat(lessonInfo.get(2).text()));
                     baseCourse.setDepartment(lessonInfo.get(5).text());
@@ -137,6 +146,17 @@ public class StudentInfoParser {
         }
     }
 
+    public static Map<String, String> parseParamsInCoursePage(String coursePageHtml) {
+        Map<String, String> params = new HashMap<>(5);
+
+        Document page = Jsoup.parse(coursePageHtml);
+        Elements paramEles = page.select("input");
+        for (Element element : paramEles) {
+            params.put(element.attr("name"), element.val());
+        }
+        return params;
+    }
+
     /**
      * Parse current week number.
      * @param htmlText the source html text.
@@ -150,22 +170,27 @@ public class StudentInfoParser {
             Element childElement;
             if (rootElement != null) {
                 childElement = rootElement.select("b").get(0);
-                if (childElement != null)
-                    return Integer.parseInt(childElement.text());
+                if (childElement != null) {
+                    try {
+                        return Integer.parseInt(childElement.text());
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         return -1;
     }
 
-	/**
-	 * Parse cur date from the homepage of jwc.
-	 *
-	 * @param htmlText The source html text.
-	 * @return The date.
-	 */
-	public static void parseDate(@NonNull String htmlText, Integer year, Integer month, Integer day) {
+    /**
+     * Parse cur date from the homepage of jwc.
+     *
+     * @param htmlText The source html text.
+     * @return The date.
+     */
+    public static void parseDate(@NonNull String htmlText, Integer year, Integer month, Integer day) {
 
-	}
+    }
 
 
     /**

@@ -23,7 +23,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -31,16 +30,16 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.transition.Explode;
-import android.transition.Slide;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -78,6 +77,7 @@ public class MainActivity extends AppCompatActivity
 	public final static int REQ_SETTING = 1;
 
 	public final static long MILLISECONDS_IN_A_DAY = 24 * 3600 * 1000;
+    public final static long MILLISECONDS_IN_A_WEEK = MILLISECONDS_IN_A_DAY * 7;
 
 	public final static String TAG = "MainActivity";
 	private Toolbar mainToolbar;
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity
 	private boolean firstLaunch = true;
 
 	// debug
-	private boolean showAllFlag = true; // if show all the courses, for debug.
+	private boolean showAllFlag = false; // if show all the courses, for debug.
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -165,16 +165,19 @@ public class MainActivity extends AppCompatActivity
 			}
 		});
 
-		ViewGroup.LayoutParams params = stuffImage.getLayoutParams();
-		params.height = getStatusBarHeight(this);
-		stuffImage.setLayoutParams(params);
+		if ((getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+				== WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS) {
+			ViewGroup.LayoutParams params = stuffImage.getLayoutParams();
+			params.height = getStatusBarHeight(this);
+			stuffImage.setLayoutParams(params);
+		}
 
 		numOfWeekdays = configManager.getNumOfWeekdays();
 
 		setupDrawer();
 
 		// if haven't refreshed week for a week.
-		if (Math.abs(configManager.getLastFetchWeekTime() - today.getTimeInMillis()) > 7 * MILLISECONDS_IN_A_DAY) {
+		if (Math.abs(configManager.getLastFetchWeekTime() - today.getTimeInMillis()) > MILLISECONDS_IN_A_WEEK) {
 			refreshWeek();
 		}
 
@@ -182,7 +185,6 @@ public class MainActivity extends AppCompatActivity
 		setupList();// ATTENTION, order of refresh and setup
 		fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 	}
 
 	@Override
@@ -251,8 +253,21 @@ public class MainActivity extends AppCompatActivity
 		}
 
 		// update week number
-		if (weekNumText != null)
-			weekNumText.setText(String.format(getString(R.string.weekday_week), curWeek));
+		if (weekNumText != null) {
+            weekNumText.setText(String.format(getString(R.string.weekday_week), curWeek));
+            weekNumText.setLongClickable(true);
+            weekNumText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    refreshWeek();
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Warning")
+                            .setMessage("This is a testing function, and the stability is not guaranteed.")
+                            .show();
+                    return false;
+                }
+            });
+        }
 	}
 
 	private void setupDrawer() {
@@ -343,8 +358,8 @@ public class MainActivity extends AppCompatActivity
 	}
 
 	@Override
-	public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-		super.onPostCreate(savedInstanceState, persistentState);
+	public void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
 		drawerToggle.syncState();
 	}
 
@@ -504,7 +519,7 @@ public class MainActivity extends AppCompatActivity
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onSessionStartOverEvent(SessionStartOverEvent event) {
-		session.fetchSchedule();
+		 session.fetchSchedule();
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
@@ -544,16 +559,17 @@ public class MainActivity extends AppCompatActivity
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
-	public void onWeekFetchOverEvent(HomepageFetchOverEvent event) {
+	public void onHomepageFetchOverEvent(HomepageFetchOverEvent event) {
 		int integer = event.getWeek();
 		if (integer == 0) {
 			Toast.makeText(MainActivity.this, "Unable to fetch week", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		// save the nearest past Monday
-		configManager.saveLastFetchWeekTime(
-				today.getTimeInMillis()
-						- ((today.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY) % 7) * MILLISECONDS_IN_A_DAY);
+        long onePastMonday = 946828800000L; // Jan.3rd, 2000.
+        long lastFetchTime = today.getTimeInMillis() -
+                (today.getTimeInMillis() - onePastMonday) % MILLISECONDS_IN_A_WEEK;
+		configManager.saveLastFetchWeekTime(lastFetchTime);
 
 		if (curWeek != integer && integer > 0) {
 			curWeek = integer;

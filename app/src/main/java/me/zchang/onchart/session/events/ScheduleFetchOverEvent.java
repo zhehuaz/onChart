@@ -10,13 +10,19 @@ import me.zchang.onchart.student.Course;
  */
 public class ScheduleFetchOverEvent {
 	List<Course> courses = new ArrayList<>();
+	String semester;
 
-	public ScheduleFetchOverEvent(List<Course> courses) {
+	public ScheduleFetchOverEvent(List<Course> courses, String semster) {
 		if (courses != null)
 			this.courses = courses;
+		this.semester = semster;
 	}
 
 	public List<Course> getCourses() {
 		return courses;
 	}
+
+    public String getSemester() {
+        return semester;
+    }
 }

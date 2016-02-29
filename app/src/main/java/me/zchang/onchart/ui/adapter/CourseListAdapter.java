@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
@@ -135,12 +135,14 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if(holder instanceof ViewHolder) {
+            ViewHolder viewHolder = (ViewHolder) holder;
             final LabelCourse course = (LabelCourse) courses.get(bitmap[position]);
-            final TextView nameText = ((ViewHolder) holder).nameText;
-            final TextView roomText = ((ViewHolder) holder).roomText;
-            final TextView timeText = ((ViewHolder) holder).timeText;
-            final ImageView nabImg = ((ViewHolder) holder).nabImg;
-            final CardView cardView = ((ViewHolder) holder).cardView;
+            final TextView nameText = viewHolder.nameText;
+            final TextView roomText = viewHolder.roomText;
+            final TextView timeText = viewHolder.timeText;
+            final ImageView nabImg = viewHolder.nabImg;
+            final CardView cardView = viewHolder.cardView;
+            final TextView backgroundIndicator = viewHolder.backgroundIndicator;
             nameText.setText(course.getName());
             roomText.setText(course.getClassroom());
             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
@@ -164,17 +166,21 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 Palette.Swatch vibrant = palette.getVibrantSwatch();
                                 if (cardView != null) {
                                     if (lightVibrant != null) {
-	                                    cardView.setBackground(new ColorDrawable(lightVibrant.getRgb()));
+                                        cardView.setCardBackgroundColor(lightVibrant.getRgb());
+                                        backgroundIndicator.setTextColor(lightVibrant.getRgb());
 	                                    nameText.setTextColor(lightVibrant.getTitleTextColor());
                                         roomText.setTextColor(lightVibrant.getBodyTextColor());
                                     } else if (vibrant != null) {
-	                                    cardView.setBackground(new ColorDrawable(vibrant.getRgb()));
+                                        cardView.setCardBackgroundColor(vibrant.getRgb());
+                                        backgroundIndicator.setTextColor(vibrant.getRgb());
 	                                    nameText.setTextColor(vibrant.getTitleTextColor());
                                         roomText.setTextColor(vibrant.getBodyTextColor());
                                     } else {
-	                                    cardView.setBackground(new ColorDrawable(ContextCompat.getColor(context, R.color.cardview_light_background)));
-	                                    nameText.setTextColor(ContextCompat.getColor(context, R.color.default_title));
-	                                    roomText.setTextColor(ContextCompat.getColor(context, R.color.default_title));
+                                        int defaultColor = ContextCompat.getColor(context, R.color.cardview_light_background);
+                                        cardView.setCardBackgroundColor(defaultColor);
+                                        backgroundIndicator.setTextColor(defaultColor);
+	                                    nameText.setTextColor(defaultColor);
+	                                    roomText.setTextColor(defaultColor);
                                     }
                                     if (vibrant != null)
                                         timeText.setTextColor(vibrant.getRgb());
@@ -194,10 +200,11 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     intent.putExtra(context.getString(R.string.intent_position), position);
                     intent.putExtra(context.getString(R.string.intent_lesson), course);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        intent.putExtra("color", ((ColorDrawable)cardView.getBackground()).getColor());
+                        intent.putExtra("color", backgroundIndicator.getTextColors().getDefaultColor());
                     else
                         intent.putExtra("color", 0xffffff);
-                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context,
+                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            (Activity) context,
                             Pair.create(v, context.getString(R.string.trans_detail_item)),
                             Pair.create(v.findViewById(R.id.iv_label), context.getString(R.string.trans_detail_img)));
                     ((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION, options.toBundle());
@@ -231,16 +238,18 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView roomText;
         ImageView nabImg;
         TextView timeText;
+        TextView backgroundIndicator;
 
         int cardHeight;
         public ViewHolder(View itemView) {
             super(itemView);
-            frame = (FrameLayout) itemView.findViewById(me.zchang.onchart.R.id.fl_frame);
-            cardView = (CardView) itemView.findViewById(me.zchang.onchart.R.id.cd_lesson_item);
-            nameText = (TextView) itemView.findViewById(me.zchang.onchart.R.id.tv_lesson_name);
-            roomText = (TextView) itemView.findViewById(me.zchang.onchart.R.id.tv_lesson_room);
-            timeText = (TextView) itemView.findViewById(me.zchang.onchart.R.id.tv_time);
-            nabImg = (ImageView) itemView.findViewById(me.zchang.onchart.R.id.iv_label);
+            frame = (FrameLayout) itemView.findViewById(R.id.fl_frame);
+            cardView = (CardView) itemView.findViewById(R.id.cd_lesson_item);
+            nameText = (TextView) itemView.findViewById(R.id.tv_lesson_name);
+            roomText = (TextView) itemView.findViewById(R.id.tv_lesson_room);
+            timeText = (TextView) itemView.findViewById(R.id.tv_time);
+            nabImg = (ImageView) itemView.findViewById(R.id.iv_label);
+            backgroundIndicator = (TextView) itemView.findViewById(R.id.iv_background_indicator);
 
             cardHeight = frame.getLayoutParams().height;
         }

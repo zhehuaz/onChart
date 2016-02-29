@@ -15,14 +15,22 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import me.zchang.onchart.parser.StudentInfoParser;
+import me.zchang.onchart.session.events.HomepageFetchOverEvent;
 import me.zchang.onchart.session.events.ScheduleFetchOverEvent;
 import me.zchang.onchart.session.events.SessionErrorEvent;
 import me.zchang.onchart.session.events.SessionStartOverEvent;
-import me.zchang.onchart.session.events.HomepageFetchOverEvent;
+import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.Exam;
 import me.zchang.onchart.ui.MainActivity;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /*
  *    Copyright 2015 Zhehua Chang
@@ -120,7 +128,7 @@ public class BitJwcSession extends Session{
 					    scheduleResponse = httpClient.newCall(scheduleRequest).execute();
 					    if (scheduleResponse.isSuccessful()) {
 						    EventBus.getDefault().post(
-								    new ScheduleFetchOverEvent(StudentInfoParser.parseCourses(scheduleResponse.body().string()))
+								    new ScheduleFetchOverEvent(StudentInfoParser.parseCourses(scheduleResponse.body().string()), "default")
 						    );
 						    Log.i(MainActivity.TAG, "post schedule fetch over");
 					    }
@@ -131,6 +139,109 @@ public class BitJwcSession extends Session{
 			    }
 		    }
 	    }).start();
+    }
+
+    /**
+     * Fetch a schedule in the specific semester.
+     * @param yearSemester The format obeys "YYYY-N" according to {@link Course#semester}.
+     */
+    public void fetchSchedule(final String yearSemester) {
+        StringBuilder semesterBuilder = new StringBuilder();
+        String[] splitSemester = yearSemester.split("-");
+        if (splitSemester.length == 2) {
+            semesterBuilder.append(splitSemester[0])
+                    .append("-")
+                    .append(Integer.parseInt(splitSemester[0]) + 1);
+            //fetchSchedule(semesterBuilder.toString(), splitSemester[1]);
+        } else {
+            Log.i(TAG, "year semester parse error");
+            return ;
+        }
+        final String year = semesterBuilder.toString();
+        final String semester = splitSemester[1];
+        Observable.create(new Observable.OnSubscribe<Map<String, String>>() {
+            @Override
+            public void call(Subscriber<? super Map<String, String>> subscriber) {
+                Log.i(TAG, "trying to fetch params");
+                String path = "/xskbcx.aspx?xh=" + stuNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121603";
+                if (loginUrl != null) {
+                    Request scheduleRequest = new Request.Builder()
+                            .addHeader("Referer", loginUrl)
+                            .get()
+                            .url(loginUrl.substring(0, 43) + path)
+                            .build();
+                    Response scheduleResponse = null;
+                    try {
+                        scheduleResponse = httpClient.newCall(scheduleRequest).execute();
+                        if (scheduleResponse.isSuccessful()) {
+                            subscriber.onNext(
+                                    StudentInfoParser.parseParamsInCoursePage(scheduleResponse.body().string())
+                            );
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        subscriber.onError(e);
+                    }
+                    subscriber.onCompleted();
+                }
+            }
+        })
+        .subscribeOn(Schedulers.io())
+        .flatMap(new Func1<Map<String, String>, Observable<String>>() {
+            @Override
+            public Observable<String> call(final Map<String, String> params) {
+
+                Log.i(TAG, "params received.");
+                return Observable.create(new Observable.OnSubscribe<String>() {
+                    @Override
+                    public void call(Subscriber<? super String> subscriber) {
+                        String path = "/xskbcx.aspx?xh=" + stuNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121603";
+                        FormEncodingBuilder builder =  new FormEncodingBuilder();
+                        for (Map.Entry<String, String> entry : params.entrySet()) {
+                            builder.add(entry.getKey(), entry.getValue());
+                        }
+                        builder.add("xnd", year)
+                                .add("xqd", semester);
+                        Request scheduleRequest = new Request.Builder()
+                                .addHeader("Referer", loginUrl)
+                                .post(builder.build())
+                                .url(loginUrl.substring(0, 43) + path)
+                                .build();
+                        try {
+                            Log.i(TAG, "fetch schedule request sent");
+                            Response response = httpClient.newCall(scheduleRequest).execute();
+                            subscriber.onNext(response.body().string());
+                            subscriber.onCompleted();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            subscriber.onError(e);
+                        }
+                    }
+                })
+                .subscribeOn(Schedulers.io());
+            }
+        })
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Observer<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                Log.i(TAG, "fetch schedule error ");
+                EventBus.getDefault().post(new SessionErrorEvent(ErrorCode.SESSION_EC_FETCH_SCHEDULE));
+            }
+
+            @Override
+            public void onNext(String s) {
+                Log.i(TAG, "get schedule");
+                EventBus.getDefault()
+                        .post(new ScheduleFetchOverEvent(StudentInfoParser.parseCourses(s), yearSemester));
+            }
+        });
     }
 
     /**
