@@ -77,7 +77,7 @@
     <string name="title_psw">Password</string>
     <string name="title_my_birthday" translatable="false">1995&#8211;06&#8211;12</string>
     <string name="text_days">days</string>
-    <string name="text_about_copyright">\u00a9 2016 Z.Chang, Apache License v2</string>
+    <string name="text_about_copyright" translatable="false">\u00a9 2016 Z.Chang, Apache License v2</string>
     <string name="version_name" translatable="false">1.0</string>
 
     <string name="title_course_name">Course name</string>
@@ -96,6 +96,7 @@
     <string name="alert_network_error">Connection error. Please Check your Intranet.</string>
     <string name="alert_invalid_account">Invalid student No. or password.</string>
     <string name="alert_no_email_app">No email app found. Click "About" to get my email, and send me email for feedback please.</string>
+    <string name="alert_refresh_test_function" translatable="false">This is a testing function, and the stability is not guaranteed.</string>
     <string name="alipay_account" translatable="false">zhehua_xiao@163.com</string>
 
     <string name="title_activity_exams">Exams</string>

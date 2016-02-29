@@ -29,13 +29,11 @@ import me.zchang.onchart.student.Course;
 public class ConfigManager {
     private static String SETTING_FILE;
 
-    final static String CHART_FILE_NAME = "chart.js";
-
     Context context;
     SharedPreferences sp;
     CourseSQLiteHelper courseSQLiteHelper;
 
-	OnConfigChangeListener configChangeListner;
+	OnConfigChangeListener configChangeListener;
 
     private boolean firstLaunch = false;
 
@@ -48,12 +46,12 @@ public class ConfigManager {
     };
 
 	public void registerListener(OnConfigChangeListener listener) {
-		configChangeListner = listener;
+		configChangeListener = listener;
 		sp.registerOnSharedPreferenceChangeListener(listener);
     }
 
 	public void unRegisterListener(OnConfigChangeListener listener) {
-		configChangeListner = null;
+		configChangeListener = null;
 		sp.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
@@ -89,14 +87,14 @@ public class ConfigManager {
 
     public boolean insertCourse(Course course) {
 	    boolean result = courseSQLiteHelper.insertCourse(course);
-        if (configChangeListner != null && result)
-            configChangeListner.onInsertCourse(course);
+        if (configChangeListener != null && result)
+            configChangeListener.onInsertCourse(course);
 	    return result;
     }
 
 	public void deleteCourse(long id) {
 		courseSQLiteHelper.deleteCourse(id);
-		configChangeListner.onDeleteCourse(id);
+		configChangeListener.onDeleteCourse(id);
 	}
 
 	public ConfigManager saveImgPathIndex(long key, int resIndex) {
@@ -174,7 +172,6 @@ public class ConfigManager {
 
 	public interface OnConfigChangeListener extends SharedPreferences.OnSharedPreferenceChangeListener {
 		void onInsertCourse(Course course);
-
 		void onDeleteCourse(long id);
 	}
 }
