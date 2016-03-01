@@ -12,6 +12,7 @@ import com.squareup.okhttp.Response;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +79,7 @@ public class BitJwcSession extends Session{
 				    RequestBody formBody = new FormEncodingBuilder()
 						    .add("__VIEWSTATE", "dDwtMjEzNzcwMzMxNTs7Pj9pP88cTsuxYpAH69XV04GPpkse")
 						    .add("TextBox1", stuNum)
-						    .add("TextBox2", pswToUnicode(psw))
+						    .add("TextBox2", psw)
 						    .add("RadioButtonList1", "%D1%A7%C9%FA")
 						    .add("Button1", "+%B5%C7+%C2%BC+")
 						    .build();
@@ -91,6 +92,7 @@ public class BitJwcSession extends Session{
 				    homeRequest = homeRequest.newBuilder().addHeader("Referer", loginUrl).build();
 				    Response homePage = httpClient.newCall(homeRequest).execute();
 				    startResponse = homePage.body().string();
+                    homePage.body().close();
 				    stuName = fetchName();
 				    if (stuName != null) {// name detected, as good as account validation.
 					    isStarted = true;
@@ -130,6 +132,7 @@ public class BitJwcSession extends Session{
 						    EventBus.getDefault().post(
 								    new ScheduleFetchOverEvent(StudentInfoParser.parseCourses(scheduleResponse.body().string()), "default")
 						    );
+                            scheduleResponse.body().close();
 						    Log.i(MainActivity.TAG, "post schedule fetch over");
 					    }
 				    } catch (IOException e) {
@@ -177,6 +180,7 @@ public class BitJwcSession extends Session{
                             subscriber.onNext(
                                     StudentInfoParser.parseParamsInCoursePage(scheduleResponse.body().string())
                             );
+                            scheduleResponse.body().close();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -211,6 +215,7 @@ public class BitJwcSession extends Session{
                             Log.i(TAG, "fetch schedule request sent");
                             Response response = httpClient.newCall(scheduleRequest).execute();
                             subscriber.onNext(response.body().string());
+                            response.body().close();
                             subscriber.onCompleted();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -264,6 +269,7 @@ public class BitJwcSession extends Session{
 				    weekResponse = httpClient.newCall(request).execute();
 				    if (weekResponse.isSuccessful()) {
 					    EventBus.getDefault().post(new HomepageFetchOverEvent(StudentInfoParser.parseWeek(weekResponse.body().string())));
+                        weekResponse.body().close();
 				    }
 			    } catch (IOException e) {
 				    EventBus.getDefault().post(new SessionErrorEvent(ErrorCode.SESSION_EC_FETCH_WEEK));
@@ -298,6 +304,7 @@ public class BitJwcSession extends Session{
         Response examResponse = httpClient.newCall(request).execute();
         if (examResponse.isSuccessful()) {
             String htmlRes = examResponse.body().string();
+            examResponse.body().close();
             return StudentInfoParser.parseExams(htmlRes);
         }
         return new ArrayList<>();
@@ -309,20 +316,20 @@ public class BitJwcSession extends Session{
      * @return coverted password
      */
     public String pswToUnicode(String psw) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int length = psw.length();
         char c;
         int temp;
         for (int i = 0;i < length;i ++) {
             c = psw.charAt(i);
-            if((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c <= 'a' && c >= 'z')) {
+            if((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c <= 'a' && c >= 'z')
+                    || c == '*' || c == '_' || c == '-' || c == '.') {
                 sb.append(c);
             } else {
                 temp = c;
-                sb.append("%" + String.format("%x", temp));
+                sb.append("%").append(String.format("%x", temp).toUpperCase());
             }
         }
-
         return sb.toString();
     }
 

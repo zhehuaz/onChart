@@ -56,7 +56,8 @@ public abstract class Session{
 	    SESSION_EC_INVALID_ACCOUNT,
 	    SESSION_EC_FETCH_SCHEDULE,
 	    SESSION_EC_FETCH_EXAM,
-	    SESSION_EC_FETCH_WEEK
+	    SESSION_EC_FETCH_WEEK,
+        SESSION_EC_SOCKET_TIMEOUT
     }
 
     public String getStuNum() {
