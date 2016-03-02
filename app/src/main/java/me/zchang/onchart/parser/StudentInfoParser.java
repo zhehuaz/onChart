@@ -93,7 +93,7 @@ public class StudentInfoParser {
                         else
                             dupCourses.get(j).setWeekDay(Utils.parseIndexFromWeekday(textTimes[j].charAt(1)));
 
-                        String pattern = "(\\d)+(?=,)|(\\d+)*(?=节)";
+                        String pattern = "(\\d)+(?=,)|(\\d+)*(?=小?节)";
                         Pattern reg = Pattern.compile(pattern);
                         Matcher m = reg.matcher(textTimes[j]);
                         if (m.find()) {

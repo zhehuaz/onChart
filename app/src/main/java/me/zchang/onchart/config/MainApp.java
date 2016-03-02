@@ -33,8 +33,4 @@ public class MainApp extends Application {
 	public ConfigManager getConfigManager() {
 		return configManager;
 	}
-
-	public void setConfigManager(ConfigManager configManager) {
-		this.configManager = configManager;
-	}
 }
