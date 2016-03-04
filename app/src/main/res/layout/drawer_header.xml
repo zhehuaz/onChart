@@ -3,8 +3,8 @@
              android:layout_width="match_parent"
              android:layout_height="152dp"
             android:background="@mipmap/drawer_header_bg"
+    android:fitsSystemWindows="false"
             >
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

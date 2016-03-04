@@ -68,13 +68,13 @@
 
     </RelativeLayout>
     <android.support.design.widget.NavigationView
+        android:fitsSystemWindows="false"
         android:id="@+id/nv_drawer"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start|left"
         app:headerLayout="@layout/drawer_header"
-        app:menu="@menu/drawer"
-        app:theme="@style/ThemeOverlay.AppCompat.Light">
+        app:menu="@menu/drawer">
     </android.support.design.widget.NavigationView>
 
 
