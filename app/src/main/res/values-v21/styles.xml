@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:colorForeground">@android:color/white</item>
-        <item name="android:colorPrimaryDark">#00796B</item>
-        <item name="android:colorPrimary">#009688</item>
-        <item name="android:colorAccent">#FF5722</item>
+        <item name="android:colorPrimaryDark">#388E3C</item>
+        <item name="android:colorPrimary">#4CAF50</item>
+        <item name="android:colorAccent">#FF5252</item>
+        <item name="colorAccent">#FF5252</item>
+        <item name="colorPrimary">#4CAF50</item>
+        <item name="colorPrimaryDark">#388E3C</item>
         <item name="android:textColorPrimary">#212121</item>
         <item name="android:textColorSecondary">#727272</item>
         <item name="android:colorControlNormal">#c5c5c5</item>

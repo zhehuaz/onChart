@@ -6,26 +6,28 @@
     android:padding="16dp"
     android:theme="@style/AppTheme"
     android:orientation="vertical">
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:hint="@string/title_account"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_num"
+            android:inputType="number"
+            android:layout_gravity="top"/>
+    </android.support.design.widget.TextInputLayout>
 
-    <EditText
-        android:drawableLeft="@drawable/ic_account_circle_black_24dp"
-        android:drawableStart="@drawable/ic_account_circle_black_24dp"
-        android:hint="@string/title_account"
-        android:layout_width="fill_parent"
+    <android.support.design.widget.TextInputLayout
         android:layout_height="wrap_content"
-        android:id="@+id/et_num"
-        android:inputType="number"
-        android:layout_gravity="top"/>
-
-    <EditText
-        android:drawableLeft="@drawable/ic_lock_black_24dp"
-        android:drawableStart="@drawable/ic_lock_black_24dp"
-        android:hint="@string/title_psw"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/et_pwd"
-        android:inputType="textPassword"
-        android:imeOptions="actionDone"
-        />
-
+        android:layout_width="match_parent">
+        <EditText
+            android:hint="@string/title_psw"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_pwd"
+            android:inputType="textPassword"
+            android:imeOptions="actionDone"
+            />
+    </android.support.design.widget.TextInputLayout>
 </LinearLayout>
