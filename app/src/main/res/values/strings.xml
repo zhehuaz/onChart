@@ -17,7 +17,7 @@
     <string name="weekday_Fri">Fri</string>
     <string name="weekday_Sat">Sat</string>
     <string name="weekday_Sun">Sun</string>
-    <string name="weekday_null">(null)</string>
+    <string name="weekday_null" translatable="false">(null)</string>
     <string name="title_login">Login</string>
     <string name="login_submit">Login</string>
     <string name="message_logout">Are you sure to logout?</string>
@@ -97,6 +97,7 @@
     <string name="alert_invalid_account">Invalid student No. or password.</string>
     <string name="alert_no_email_app">No email app found. Click "About" to get my email, and send me email for feedback please.</string>
     <string name="alert_refresh_test_function" translatable="false">This is a testing function, and the stability is not guaranteed.</string>
+    <string name="alert_refresh_week_over">Refresh week successfully!</string>
     <string name="alipay_account" translatable="false">zhehua_xiao@163.com</string>
 
     <string name="title_activity_exams">Exams</string>

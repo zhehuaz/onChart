@@ -122,7 +122,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_HEADER:
-                return new HeaderViewHolder(LayoutInflater.from(context).inflate(me.zchang.onchart.R.layout.blank, parent, false));
+                return new HeaderViewHolder(new View(context));
             case VIEW_TYPE_LIST:
                 return new ViewHolder(LayoutInflater.from(context).inflate(me.zchang.onchart.R.layout.cd_lesson_item, parent, false));
             case VIEW_TYPE_SUBTITLE:
