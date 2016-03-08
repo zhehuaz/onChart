@@ -59,8 +59,7 @@
                 app:tabIndicatorColor="@android:color/background_light"
                 app:tabTextColor="#AAFFFFFF"
                 app:tabSelectedTextColor="@android:color/background_light"
-                app:theme="@style/ThemeOverlay.AppCompat.Light"
-                />
+                app:theme="@style/ThemeOverlay.AppCompat.Light" />
         </android.support.design.widget.AppBarLayout>
     </android.support.design.widget.CoordinatorLayout>
 
