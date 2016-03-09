@@ -15,12 +15,17 @@
         android:paddingBottom="0dp"
         tools:context=".ui.MainActivity">
 
+        <zchang.me.uilibrary.SideBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <android.support.v4.view.ViewPager
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/vp_lessons"
-            android:layout_alignParentBottom="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:layout_alignParentBottom="true" />
+        </zchang.me.uilibrary.SideBarLayout
+            >
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_add_course"
             android:layout_width="wrap_content"

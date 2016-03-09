@@ -37,11 +37,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +51,7 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -199,6 +202,8 @@ public class MainActivity extends AppCompatActivity
 		super.onStop();
 	}
 
+	int move;
+
 	private void setupFragments() {
 		fragments = new ArrayList<>();
 		for (int i = 0; i < Math.abs(numOfWeekdays); i++) {
@@ -210,6 +215,43 @@ public class MainActivity extends AppCompatActivity
 		mainListPager.setAdapter(mainListAdapter);
 		mainListPager.setClipChildren(false);
 		mainListPager.setClipToPadding(false);
+
+		mainListPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+			@Override
+			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+				if (position == mainListAdapter.getCount() - 1) {
+					//Log.i(TAG, String.format("sum: %d, position: %d, positionOffset: %f, posiOffPix: %d", mainListAdapter.getCount(), position, positionOffset, positionOffsetPixels));
+					move = position;
+				} else {
+					move = 0;
+				}
+			}
+
+			@Override
+			public void onPageSelected(int position) {
+
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int state) {
+
+			}
+		});
+
+
+		mainListPager.setOnTouchListener(new View.OnTouchListener() {
+			float startPos;
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+					if (move != 0) {
+					}
+				} else if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+					startPos = event.getX();
+				}
+				return false;
+			}
+		});
 
 		weekdayTabs.setupWithViewPager(mainListPager);
 		weekdayTabs.setTabsFromPagerAdapter(mainListAdapter);

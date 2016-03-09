@@ -19,8 +19,8 @@
 
         <item
             android:id="@+id/item_share"
-            app:actionLayout="@layout/nav_action_item"
-            />
+            android:title="@string/action_share"
+            android:icon="@drawable/ic_share_black_24dp"/>
         <item
             android:id="@+id/item_donate"
             android:title="@string/action_donate"
