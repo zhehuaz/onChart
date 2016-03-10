@@ -71,6 +71,7 @@ import me.zchang.onchart.session.events.HomepageFetchOverEvent;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.ui.adapter.CoursePagerAdapter;
 import me.zchang.onchart.ui.adapter.DiffTransformer;
+import zchang.me.uilibrary.SideBarLayout;
 
 public class MainActivity extends AppCompatActivity
 		implements LoginFragment.LoginListener,
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity
 	private NavigationView drawerView;
 	private AppBarLayout toolbarContainer;
 	private FloatingActionButton addButton;
+	private SideBarLayout weekSelectLayout;
 
 	private Session session;
 	private ConfigManager configManager;
@@ -135,6 +137,7 @@ public class MainActivity extends AppCompatActivity
 		drawerView = (NavigationView) findViewById(R.id.nv_drawer);
 		toolbarContainer = (AppBarLayout) findViewById(R.id.appb_container);
 		addButton = (FloatingActionButton) findViewById(R.id.fab_add_course);
+		weekSelectLayout = (SideBarLayout) findViewById(R.id.sbl_week_num);
 		drawerHeader = (ViewGroup) drawerView.getHeaderView(0);
 		nameText = (TextView) drawerHeader.findViewById(R.id.tv_stu_name);
 		weekNumText = (TextView) drawerHeader.findViewById(R.id.tv_week);
@@ -146,9 +149,6 @@ public class MainActivity extends AppCompatActivity
 			addButton.setAlpha(0.f);
 		}
 
-		if (versionText != null)
-			versionText.setText(BuildConfig.VERSION_NAME);
-
 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -158,6 +158,9 @@ public class MainActivity extends AppCompatActivity
 						.commit();
 			}
 		});
+
+		if (versionText != null)
+			versionText.setText(BuildConfig.VERSION_NAME);
 
 		nameText.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -178,6 +181,8 @@ public class MainActivity extends AppCompatActivity
 		numOfWeekdays = configManager.getNumOfWeekdays();
 
 		setupDrawer();
+
+		weekSelectLayout.setHeader(getLayoutInflater().inflate(R.layout.header_week_num, null));
 
 		// if haven't refreshed week for a week.
 		if (Math.abs(configManager.getLastFetchWeekTime() - today.getTimeInMillis()) > MILLISECONDS_IN_A_WEEK) {
@@ -241,6 +246,7 @@ public class MainActivity extends AppCompatActivity
 
 		mainListPager.setOnTouchListener(new View.OnTouchListener() {
 			float startPos;
+
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {

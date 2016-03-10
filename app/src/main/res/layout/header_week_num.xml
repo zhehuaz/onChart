@@ -8,33 +8,33 @@
         android:id="@+id/fab_0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/activity_horizontal_margin"
         app:pressedTranslationZ="10dp"
         android:clickable="true"
         android:src="@drawable/ic_add_white_24dp"
         android:elevation="12dp"
-        android:translationZ="12dp"/>
+        android:translationZ="12dp"
+        android:layout_margin="20dp"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/activity_horizontal_margin"
         app:pressedTranslationZ="10dp"
         android:clickable="true"
         android:src="@drawable/ic_add_white_24dp"
         android:elevation="12dp"
-        android:translationZ="12dp"/>
+        android:translationZ="12dp"
+        android:layout_margin="20dp"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/activity_horizontal_margin"
         app:pressedTranslationZ="10dp"
         android:clickable="true"
         android:src="@drawable/ic_add_white_24dp"
         android:elevation="12dp"
-        android:translationZ="12dp"/>
+        android:translationZ="12dp"
+        android:layout_margin="20dp" />
 
 </LinearLayout>

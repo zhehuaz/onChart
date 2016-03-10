@@ -265,7 +265,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView subTitle;
         public SubtitleViewHolder(View itemView) {
             super(itemView);
-            subTitle = (TextView) itemView.findViewById(me.zchang.onchart.R.id.tv_subtitle);
+            subTitle = (TextView) itemView.findViewById(R.id.tv_subtitle);
         }
     }
 
@@ -278,5 +278,9 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return VIEW_TYPE_SUBTITLE;
         else
             return VIEW_TYPE_LIST;
+    }
+
+    public void onScroll(int dy) {
+
     }
 }

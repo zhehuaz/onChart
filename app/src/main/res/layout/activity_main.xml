@@ -16,6 +16,7 @@
         tools:context=".ui.MainActivity">
 
         <zchang.me.uilibrary.SideBarLayout
+            android:id="@+id/sbl_week_num"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
