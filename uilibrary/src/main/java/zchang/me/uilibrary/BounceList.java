@@ -44,20 +44,22 @@ public class BounceList extends RecyclerView {
 	public boolean dispatchTouchEvent(MotionEvent motionEvent) {
 		switch (motionEvent.getActionMasked()) {
 			case MotionEvent.ACTION_DOWN:
-				//Log.i(TAG, "ACTION DOWN");
+				Log.i(TAG, "ACTION DOWN");
 				courseCount = getChildCount();
 				break;
 			case MotionEvent.ACTION_MOVE:
-				//Log.i(TAG, "ACTION MOVE");
+				Log.i(TAG, "ACTION MOVE " + ((LinearLayoutManager) getLayoutManager()).findFirstCompletelyVisibleItemPosition());
 				if (((LinearLayoutManager) getLayoutManager()).findLastCompletelyVisibleItemPosition() == getAdapter().getItemCount() - 1
-						|| ((LinearLayoutManager) getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0) {
+						|| ((LinearLayoutManager) getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 1) {
+					Log.i(TAG, "reach the bound");
 					if (motionEvent.getHistorySize() > 0) {
+						Log.i(TAG, "reach the bound, cal");
 						// is moving
 						// add deltaY to amountY
 						deltaY = motionEvent.getY(motionEvent.getActionIndex())
 								- motionEvent.getHistoricalY(motionEvent.getActionIndex(), motionEvent.getHistorySize() - 1);
 						amountY += deltaY;
-						for (int i = 1; i < courseCount; i++) {
+						for (int i = 1; i < getChildCount(); i++) {
 							View childView = getChildAt(i);
 							if (childView != null) {
 								int position = amountY > 0 ? i : courseCount - i;
@@ -71,7 +73,7 @@ public class BounceList extends RecyclerView {
 				break;
 			case MotionEvent.ACTION_CANCEL:
 			case MotionEvent.ACTION_UP:
-				//Log.i(TAG, "ACTION UP");
+				Log.i(TAG, "ACTION UP");
 				amountY = 0;
 				Interpolator interpolator = new AccelerateDecelerateInterpolator();
 				for (int i = 1; i < getChildCount(); i++) {

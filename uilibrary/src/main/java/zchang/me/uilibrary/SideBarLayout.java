@@ -18,7 +18,7 @@ package zchang.me.uilibrary;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,7 +29,7 @@ public class SideBarLayout extends LinearLayout {
 
     private TextView testTextView;
     private boolean loadOnce = false;
-    LinearLayout header;
+    View header;
 
     public SideBarLayout(Context context) {
         super(context, null);
@@ -38,7 +38,7 @@ public class SideBarLayout extends LinearLayout {
     public SideBarLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-         header = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.header_week_num, null);
+         //header = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.header_week_num, null);
 //        testTextView = new TextView(context);
 //        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 //        testTextView.setLayoutParams(layoutParams);
@@ -49,6 +49,10 @@ public class SideBarLayout extends LinearLayout {
         setOrientation(VERTICAL);
     }
 
+    public void setHeader(View header) {
+        this.header = header;
+    }
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
@@ -57,7 +61,8 @@ public class SideBarLayout extends LinearLayout {
 //            layoutParams.topMargin = 0;
 //            layoutParams.height = 50;
 //            testTextView.setLayoutParams(layoutParams);
-            addView(header, 0);
+            if (header != null)
+                addView(header, 0);
             loadOnce = true;
         }
     }
