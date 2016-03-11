@@ -580,6 +580,9 @@ public class MainActivity extends AppCompatActivity
 				Toast.makeText(MainActivity.this, getString(R.string.alert_invalid_account), Toast.LENGTH_SHORT).show();
 				break;
 		}
+
+		if (refreshProgress != null)
+            refreshProgress.setVisibility(View.GONE);
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
