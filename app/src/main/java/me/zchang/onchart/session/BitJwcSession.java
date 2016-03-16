@@ -3,16 +3,9 @@ package me.zchang.onchart.session;
 
 import android.util.Log;
 
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +19,11 @@ import me.zchang.onchart.session.events.SessionStartOverEvent;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.Exam;
 import me.zchang.onchart.ui.MainActivity;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -70,13 +68,13 @@ public class BitJwcSession extends Session{
 			    Response response = null;
 			    try {
 				    response = httpClient.newCall(request).execute();
-				    loginUrl = response.request().urlString();
+				    loginUrl = response.request().url().toString();
 				    if (loginUrl == null
 						    || loginUrl.length() == 0
 						    || !response.isSuccessful()
 						    || loginUrl.length() < 42)
 					    throw new IOException("Intranet connection error");
-				    RequestBody formBody = new FormEncodingBuilder()
+				    RequestBody formBody = new FormBody.Builder()
 						    .add("__VIEWSTATE", "dDwtMjEzNzcwMzMxNTs7Pj9pP88cTsuxYpAH69XV04GPpkse")
 						    .add("TextBox1", stuNum)
 						    .add("TextBox2", psw)
@@ -200,7 +198,7 @@ public class BitJwcSession extends Session{
                     @Override
                     public void call(Subscriber<? super String> subscriber) {
                         String path = "/xskbcx.aspx?xh=" + stuNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121603";
-                        FormEncodingBuilder builder =  new FormEncodingBuilder();
+                        FormBody.Builder builder =  new FormBody.Builder();
                         for (Map.Entry<String, String> entry : params.entrySet()) {
                             builder.add(entry.getKey(), entry.getValue());
                         }
