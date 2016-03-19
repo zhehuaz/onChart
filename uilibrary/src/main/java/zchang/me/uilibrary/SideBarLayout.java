@@ -17,8 +17,14 @@
 package zchang.me.uilibrary;
 
 import android.content.Context;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,7 +32,7 @@ import android.widget.TextView;
  * Created by Administrator on 2016/3/9.
  */
 public class SideBarLayout extends LinearLayout {
-
+    public final static String TAG = "SideBarLayout";
     private TextView testTextView;
     private boolean loadOnce = false;
     View header;
@@ -56,14 +62,48 @@ public class SideBarLayout extends LinearLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        if (changed && !loadOnce) {
-//            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) testTextView.getLayoutParams();
-//            layoutParams.topMargin = 0;
-//            layoutParams.height = 50;
-//            testTextView.setLayoutParams(layoutParams);
-            if (header != null)
-                addView(header, 0);
-            loadOnce = true;
+        if (changed) {
+            if (!loadOnce) {
+                if (header != null) {
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.topMargin = -200;
+                    header.setLayoutParams(params);
+                    addView(header, 0);
+
+//                View view = getChildAt(1);
+//                if (view instanceof ViewPager) {
+//                    for (int i = 0;i < ((ViewPager) view).getChildCount(); i ++) {
+//                        RecyclerView list = (RecyclerView) ((FrameLayout) ((ViewPager) view).getChildAt(i)).getChildAt(0);
+//                        list.setOnTouchListener(this);
+//                    }
+//                } else {
+//                    Log.i(TAG, "not view pager");
+//                }
+
+                    loadOnce = true;
+
+                }
+            } else {
+                ViewGroup.LayoutParams layoutParams = header.getLayoutParams();
+                if (layoutParams != null)
+                    Log.i(TAG, "header height: " + layoutParams.height);
+            }
         }
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        Log.i(TAG, "layout touch event");
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_MOVE:
+                if (event.getHistorySize() > 0) {
+                    float deltaY = event.getY() - event.getHistoricalY(event.getActionIndex());
+                    LinearLayout.LayoutParams params = (LayoutParams) header.getLayoutParams();
+                    params.topMargin += deltaY;
+                    header.setLayoutParams(params);
+                }
+                break;
+        }
+        return super.onInterceptTouchEvent(event);
     }
 }

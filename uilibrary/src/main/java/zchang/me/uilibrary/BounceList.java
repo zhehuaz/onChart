@@ -38,22 +38,21 @@ public class BounceList extends RecyclerView {
 
 	float deltaY = 0;
 	float amountY = 0;
-	int courseCount = 0;
 
 	@Override
-	public boolean dispatchTouchEvent(MotionEvent motionEvent) {
+	public boolean onTouchEvent(MotionEvent motionEvent) {
+//		Log.i(TAG, "on touch event");
 		switch (motionEvent.getActionMasked()) {
 			case MotionEvent.ACTION_DOWN:
-				Log.i(TAG, "ACTION DOWN");
-				courseCount = getChildCount();
+//				Log.i(TAG, "ACTION DOWN");
 				break;
 			case MotionEvent.ACTION_MOVE:
-				Log.i(TAG, "ACTION MOVE " + ((LinearLayoutManager) getLayoutManager()).findFirstCompletelyVisibleItemPosition());
+//				Log.i(TAG, "ACTION MOVE " + ((LinearLayoutManager) getLayoutManager()).findFirstCompletelyVisibleItemPosition());
 				if (((LinearLayoutManager) getLayoutManager()).findLastCompletelyVisibleItemPosition() == getAdapter().getItemCount() - 1
 						|| ((LinearLayoutManager) getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 1) {
-					Log.i(TAG, "reach the bound");
+//					Log.i(TAG, "reach the bound");
 					if (motionEvent.getHistorySize() > 0) {
-						Log.i(TAG, "reach the bound, cal");
+//						Log.i(TAG, "reach the bound, cal");
 						// is moving
 						// add deltaY to amountY
 						deltaY = motionEvent.getY(motionEvent.getActionIndex())
@@ -62,7 +61,7 @@ public class BounceList extends RecyclerView {
 						for (int i = 1; i < getChildCount(); i++) {
 							View childView = getChildAt(i);
 							if (childView != null) {
-								int position = amountY > 0 ? i : courseCount - i;
+								int position = amountY > 0 ? i : getChildCount() - i;
 								float deltaYi =
 										((position / 6.f) * (float) Math.atan(amountY / getHeight() * 10f) * getHeight() / 1.6f);
 								childView.setTranslationY(deltaYi / 6.f);
@@ -73,13 +72,13 @@ public class BounceList extends RecyclerView {
 				break;
 			case MotionEvent.ACTION_CANCEL:
 			case MotionEvent.ACTION_UP:
-				Log.i(TAG, "ACTION UP");
+//				Log.i(TAG, "ACTION UP");
 				amountY = 0;
 				Interpolator interpolator = new AccelerateDecelerateInterpolator();
 				for (int i = 1; i < getChildCount(); i++) {
 					View childView = getChildAt(i);
-                        if (childView != null) {
-                            childView.animate()
+					if (childView != null) {
+						childView.animate()
 								.translationY(0)
 								.setInterpolator(interpolator)
 								.setDuration(180)
@@ -88,7 +87,7 @@ public class BounceList extends RecyclerView {
 				}
 				break;
 		}
-		return super.dispatchTouchEvent(motionEvent);
+		return super.onTouchEvent(motionEvent);
 	}
 
 	@Override
