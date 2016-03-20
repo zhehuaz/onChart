@@ -16,24 +16,21 @@
 
 package zchang.me.uilibrary;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 /**
  * Created by Administrator on 2016/3/9.
  */
 public class SideBarLayout extends LinearLayout {
     public final static String TAG = "SideBarLayout";
-    private TextView testTextView;
     private boolean loadOnce = false;
     View header;
 
@@ -43,15 +40,6 @@ public class SideBarLayout extends LinearLayout {
 
     public SideBarLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-         //header = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.header_week_num, null);
-//        testTextView = new TextView(context);
-//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//        testTextView.setLayoutParams(layoutParams);
-//
-//        testTextView.setText("Hello");
-        //layoutParams.rightMargin = -10;
-        //testTextView.setLayoutParams(layoutParams);
         setOrientation(VERTICAL);
     }
 
@@ -66,19 +54,9 @@ public class SideBarLayout extends LinearLayout {
             if (!loadOnce) {
                 if (header != null) {
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.topMargin = -200;
+                    params.topMargin = -220;
                     header.setLayoutParams(params);
                     addView(header, 0);
-
-//                View view = getChildAt(1);
-//                if (view instanceof ViewPager) {
-//                    for (int i = 0;i < ((ViewPager) view).getChildCount(); i ++) {
-//                        RecyclerView list = (RecyclerView) ((FrameLayout) ((ViewPager) view).getChildAt(i)).getChildAt(0);
-//                        list.setOnTouchListener(this);
-//                    }
-//                } else {
-//                    Log.i(TAG, "not view pager");
-//                }
 
                     loadOnce = true;
 
@@ -91,16 +69,59 @@ public class SideBarLayout extends LinearLayout {
         }
     }
 
+    private final static int DRAG_THRESHOLD = -150;
+    private final static int DRAG_THRESHOLD_UP = -70;
+    private final static int MOTION_THRESHOLD_DOWN = -175;
+    private final static int MOTION_THRESHOLD_UP = -55;
+
+
+    float deltaY = 0;
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        Log.i(TAG, "layout touch event");
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_MOVE:
                 if (event.getHistorySize() > 0) {
-                    float deltaY = event.getY() - event.getHistoricalY(event.getActionIndex());
+                    deltaY = (event.getY() - event.getHistoricalY(event.getActionIndex())) / 3;
                     LinearLayout.LayoutParams params = (LayoutParams) header.getLayoutParams();
-                    params.topMargin += deltaY;
-                    header.setLayoutParams(params);
+                    if (params.topMargin + deltaY <= DRAG_THRESHOLD && deltaY > 0) {
+                        params.topMargin += deltaY;
+                        header.setLayoutParams(params);
+                    } else if (params.topMargin + deltaY > DRAG_THRESHOLD_UP && deltaY < 0) {
+                        params.topMargin += deltaY;
+                        header.setLayoutParams(params);
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                final LinearLayout.LayoutParams params = (LayoutParams) header.getLayoutParams();
+                if (deltaY > 0 && params.topMargin >= MOTION_THRESHOLD_DOWN) {
+                    ValueAnimator animator = ValueAnimator.ofInt(params.topMargin, 0);
+                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            params.topMargin = (int) animation.getAnimatedValue();
+                            header.setLayoutParams(params);
+                        }
+                    });
+                    animator.setInterpolator(new AccelerateInterpolator(3));
+                    animator.setDuration(300);
+                    animator.setTarget(header);
+                    animator.start();
+                } else if (deltaY < 0 && params.topMargin < MOTION_THRESHOLD_UP) {
+                    ValueAnimator animator = ValueAnimator.ofInt(params.topMargin, -200);
+                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            params.topMargin = (int) animation.getAnimatedValue();
+                            header.setLayoutParams(params);
+                        }
+                    });
+                    animator.setInterpolator(new AccelerateInterpolator(3));
+                    animator.setDuration(300);
+                    animator.setTarget(header);
+                    animator.start();
                 }
                 break;
         }
