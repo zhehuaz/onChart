@@ -2,41 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="100dp"
     android:background="#ff0000"
     android:elevation="5dp">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_0"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:pressedTranslationZ="10dp"
-        android:clickable="true"
-        android:src="@drawable/ic_add_white_24dp"
-        android:elevation="12dp"
-        android:translationZ="12dp"
-        android:layout_margin="20dp"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:pressedTranslationZ="10dp"
-        android:clickable="true"
-        android:src="@drawable/ic_add_white_24dp"
-        android:elevation="12dp"
-        android:translationZ="12dp"
-        android:layout_margin="20dp"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:pressedTranslationZ="10dp"
-        android:clickable="true"
-        android:src="@drawable/ic_add_white_24dp"
-        android:elevation="12dp"
-        android:translationZ="12dp"
-        android:layout_margin="20dp" />
 
 </LinearLayout>

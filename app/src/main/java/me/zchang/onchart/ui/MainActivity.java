@@ -184,7 +184,8 @@ public class MainActivity extends AppCompatActivity
 
 		setupDrawer();
 
-		weekSelectLayout.setHeader(getLayoutInflater().inflate(R.layout.header_week_num, null));
+        View header = getLayoutInflater().inflate(R.layout.header_week_num, weekSelectLayout, false);
+		weekSelectLayout.setHeader(header);
 
 		// if haven't refreshed week for a week.
 		if (Math.abs(configManager.getLastFetchWeekTime() - today.getTimeInMillis()) > MILLISECONDS_IN_A_WEEK) {

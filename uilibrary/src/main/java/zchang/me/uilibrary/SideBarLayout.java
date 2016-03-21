@@ -22,15 +22,14 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 
 public class SideBarLayout extends LinearLayout {
     public final static String TAG = "SideBarLayout";
+    protected Context context;
     private boolean loadOnce = false;
     View header;
 
@@ -41,10 +40,13 @@ public class SideBarLayout extends LinearLayout {
     public SideBarLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setOrientation(VERTICAL);
+        this.context = context;
     }
 
     public void setHeader(View header) {
-        this.header = header;
+        if (this.header == null) {
+            this.header = header;
+        }
     }
 
     @Override
@@ -53,28 +55,25 @@ public class SideBarLayout extends LinearLayout {
         if (changed) {
             if (!loadOnce) {
                 if (header != null) {
-                    LinearLayout.LayoutParams params =
-                            new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.topMargin = -HEIGHT;
-                    header.setLayoutParams(params);
                     addView(header, 0);
-
+                    LinearLayout.LayoutParams layoutParams = (LayoutParams) header.getLayoutParams();
+                    if (layoutParams != null) {
+                        HEIGHT = layoutParams.height;
+                        MOTION_THRESHOLD_DOWN = -HEIGHT / 5 * 4;
+                        MOTION_THRESHOLD_UP = -HEIGHT / 5;
+                        layoutParams.topMargin = -HEIGHT;
+                        header.setLayoutParams(layoutParams);
+                    }
                     loadOnce = true;
-
                 }
             }
-//            } else {
-//                ViewGroup.LayoutParams layoutParams = header.getLayoutParams();
-//                if (layoutParams != null)
-//                    Log.i(TAG, "header height: " + layoutParams.height);
-//            }
         }
     }
 
-    private final static int HEIGHT = 280;
+    private int HEIGHT = 280;
 
-    private final static int MOTION_THRESHOLD_DOWN = -225;
-    private final static int MOTION_THRESHOLD_UP = -50;
+    private int MOTION_THRESHOLD_DOWN = -225;
+    private int MOTION_THRESHOLD_UP = -50;
 
     public final static int STATE_VISIBLE = 0x0;
     public final static int STATE_INVISIBLE = 0x1;
@@ -82,13 +81,11 @@ public class SideBarLayout extends LinearLayout {
     public final static int DELAY_SHORT = 50;
     public final static int DELAY_LONG = 310;
 
-
     float deltaY = 0;
     float amountY = 0;
     int newPos;
 
     int state = STATE_INVISIBLE;
-    boolean fixed = false;
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
@@ -100,9 +97,9 @@ public class SideBarLayout extends LinearLayout {
                     Log.i(TAG, "deltaY is " + deltaY);
                     amountY += deltaY;
                     if (state == STATE_INVISIBLE) {
-                        newPos = (int) (80 * Math.atan(amountY / 500)) - HEIGHT;
+                        newPos = (int) (HEIGHT / 3.5 * Math.atan(amountY / HEIGHT)) - HEIGHT;
                     } else if (state == STATE_VISIBLE) {
-                        newPos = (int) (200 * Math.atan(amountY / 200));
+                        newPos = (int) (HEIGHT / 1.4 * Math.atan(amountY / HEIGHT * 1.4));
                     }
                     if (validRange(newPos)) {
                         params.topMargin = newPos;
