@@ -20,13 +20,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <android.support.v4.view.ViewPager
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/vp_lessons"
-            android:layout_alignParentBottom="true" />
-        </zchang.me.uilibrary.SideBarLayout
-            >
+            <android.support.v4.view.ViewPager
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/vp_lessons"
+                android:layout_alignParentBottom="true" />
+        </zchang.me.uilibrary.SideBarLayout>
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_add_course"
             android:layout_width="wrap_content"
@@ -45,7 +45,8 @@
             android:layout_width="match_parent"
             android:background="@mipmap/main_tb_bg"
             android:layout_height="@dimen/toolbar_height"
-            android:id="@+id/appb_container">
+            android:id="@+id/appb_container"
+            android:elevation="8dp">
             <ImageView
                 android:id="@+id/iv_stuff"
                 android:layout_width="match_parent"

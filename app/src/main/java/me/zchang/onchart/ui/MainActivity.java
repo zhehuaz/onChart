@@ -143,7 +143,9 @@ public class MainActivity extends AppCompatActivity
 		weekNumText = (TextView) drawerHeader.findViewById(R.id.tv_week);
 		versionText = (TextView) drawerHeader.findViewById(R.id.tv_version);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && firstLaunch) {
-			toolbarContainer.setTranslationY(-toolbarContainer.getLayoutParams().height);
+            // FIXME translation doesn't work
+//			toolbarContainer.setTranslationY(- toolbarContainer.getLayoutParams().height);
+//			toolbarContainer.setTranslationY(-100);
 			addButton.setScaleX(0.f);
 			addButton.setScaleY(0.f);
 			addButton.setAlpha(0.f);
@@ -242,7 +244,6 @@ public class MainActivity extends AppCompatActivity
 
 			}
 		});
-
 
 		mainListPager.setOnTouchListener(new View.OnTouchListener() {
 			float startPos;
@@ -455,11 +456,11 @@ public class MainActivity extends AppCompatActivity
 	@Override
 	public void onEnterAnimationComplete() {
 		super.onEnterAnimationComplete();
-		toolbarContainer.animate()
-				.translationY(0)
-				.setStartDelay(50)
-				.setDuration(200)
-				.setInterpolator(new AccelerateDecelerateInterpolator());
+//		toolbarContainer.animate()
+//				.translationY(0)
+//				.setStartDelay(50)
+//				.setDuration(200)
+//				.setInterpolator(new AccelerateDecelerateInterpolator());
 		RecyclerView recyclerView = fragments.get(mainListPager.getCurrentItem()).getCourseRecyclerView();
         if (recyclerView != null && firstLaunch) {
             recyclerView.scheduleLayoutAnimation();

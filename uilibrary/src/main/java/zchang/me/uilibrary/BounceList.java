@@ -72,8 +72,8 @@ public class BounceList extends RecyclerView {
 			case MotionEvent.ACTION_CANCEL:
 			case MotionEvent.ACTION_UP:
 //				Log.i(TAG, "ACTION UP");
-				amountY = 0;
 				Interpolator interpolator = new AccelerateDecelerateInterpolator();
+
 				for (int i = 1; i < getChildCount(); i++) {
 					View childView = getChildAt(i);
 					if (childView != null) {
@@ -81,9 +81,10 @@ public class BounceList extends RecyclerView {
 								.translationY(0)
 								.setInterpolator(interpolator)
 								.setDuration(180)
-								.setStartDelay(50);
+								.setStartDelay(100);
 					}
 				}
+				amountY = 0;
 				break;
 		}
 		return super.onTouchEvent(motionEvent);
