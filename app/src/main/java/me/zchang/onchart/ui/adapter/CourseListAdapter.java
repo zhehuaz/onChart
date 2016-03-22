@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
@@ -185,7 +184,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     if (vibrant != null)
                                         timeText.setTextColor(vibrant.getRgb());
                                     else
-                                        timeText.setTextColor(context.getResources().getColor(R.color.default_title));
+                                        timeText.setTextColor(ContextCompat.getColor(context, R.color.default_title));
                                 }
                             }
 
@@ -278,9 +277,5 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return VIEW_TYPE_SUBTITLE;
         else
             return VIEW_TYPE_LIST;
-    }
-
-    public void onScroll(int dy) {
-
     }
 }

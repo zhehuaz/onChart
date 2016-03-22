@@ -82,14 +82,6 @@ public class LessonListFragment extends Fragment {
             courseList.setLayoutAnimation(
                     AnimationUtils.loadLayoutAnimation(getActivity(), R.anim.main_recycler_view_layout));
         }
-
-        courseList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                Log.i(TAG, String.format("dx: %d, dy: %d", dx, dy));
-                adapter.onScroll(dy);
-            }
-        });
         return rootView;
     }
 

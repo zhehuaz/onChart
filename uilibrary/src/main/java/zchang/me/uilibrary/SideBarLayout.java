@@ -18,6 +18,7 @@ package zchang.me.uilibrary;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -74,6 +75,7 @@ public class SideBarLayout extends LinearLayout {
 
     private int MOTION_THRESHOLD_DOWN = -225;
     private int MOTION_THRESHOLD_UP = -50;
+    private int MOTION_THRESHOLD_MOVE = 30;
 
     public final static int STATE_VISIBLE = 0x0;
     public final static int STATE_INVISIBLE = 0x1;
@@ -82,48 +84,64 @@ public class SideBarLayout extends LinearLayout {
     public final static int DELAY_LONG = 310;
 
     float deltaY = 0;
+    float deltaX = 0;
     float amountY = 0;
     int newPos;
 
     int state = STATE_INVISIBLE;
+    AccelerateDecelerateInterpolator accelerateDecelerateInterpolator = new AccelerateDecelerateInterpolator();
+    LinearInterpolator linearInterpolator = new LinearInterpolator();
+
+    boolean flag = false;
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
+    public boolean onInterceptTouchEvent(@NonNull MotionEvent event) {
+        Log.i(TAG, "event masked: " + event.getActionMasked() + " event:" + event.getAction());
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_MOVE:
                 if (event.getHistorySize() > 0) {
                     LinearLayout.LayoutParams params = (LayoutParams) header.getLayoutParams();
-                    deltaY = (event.getY() - event.getHistoricalY(event.getActionIndex()));
-                    Log.i(TAG, "deltaY is " + deltaY);
+                    if (params.topMargin == 0)
+                        flag = true;
+                    deltaY = event.getY() - event.getHistoricalY(event.getActionIndex());
+                    deltaX = event.getX() - event.getHistoricalX(event.getActionIndex());
+                    if (Math.abs(deltaX / deltaY) > 1.5)
+                        break;
+//                    Log.i(TAG, "deltaY is " + deltaY);
                     amountY += deltaY;
-                    if (state == STATE_INVISIBLE) {
-                        newPos = (int) (HEIGHT / 3.5 * Math.atan(amountY / HEIGHT)) - HEIGHT;
-                    } else if (state == STATE_VISIBLE) {
-                        newPos = (int) (HEIGHT / 1.4 * Math.atan(amountY / HEIGHT * 1.4));
+                    if (amountY > MOTION_THRESHOLD_MOVE || amountY < -MOTION_THRESHOLD_MOVE) {
+                        if (state == STATE_INVISIBLE) {
+                            newPos = (int) (HEIGHT / 3.5 * Math.atan(amountY / HEIGHT)) - HEIGHT;
+                        } else if (state == STATE_VISIBLE) {
+                            newPos = (int) (HEIGHT / 1.5 * Math.atan(amountY / HEIGHT * 1.5));
+                        }
+                        if (validRange(newPos)) {
+                            params.topMargin = newPos;
+                            header.setLayoutParams(params);
+                        }
                     }
-                    if (validRange(newPos)) {
-                        params.topMargin = newPos;
-                        header.setLayoutParams(params);
-                    }
+                    return flag;
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 final LinearLayout.LayoutParams params = (LayoutParams) header.getLayoutParams();
-                if (amountY > 0) {
+                if (amountY > MOTION_THRESHOLD_MOVE) {
                     if (params.topMargin >= MOTION_THRESHOLD_DOWN) {
-                        headerMarginAnimation(params, params.topMargin, 0, new AccelerateDecelerateInterpolator());
+                        headerMarginAnimation(params, params.topMargin, 0, accelerateDecelerateInterpolator);
                         state = STATE_VISIBLE;
                     } else {
-                        headerMarginAnimation(params, params.topMargin, -HEIGHT, new AccelerateDecelerateInterpolator());
+                        headerMarginAnimation(params, params.topMargin, -HEIGHT, accelerateDecelerateInterpolator);
                         state = STATE_INVISIBLE;
+                        flag = false;
                     }
-                } else if (amountY < 0) {
+                } else if (amountY < -MOTION_THRESHOLD_MOVE) {
                     if (params.topMargin < MOTION_THRESHOLD_UP) {
-                        headerMarginAnimation(params, params.topMargin, -HEIGHT, new LinearInterpolator());
+                        headerMarginAnimation(params, params.topMargin, -HEIGHT, linearInterpolator);
                         state = STATE_INVISIBLE;
+                        flag = false;
                     } else {
-                        headerMarginAnimation(params, params.topMargin, 0, new AccelerateDecelerateInterpolator());
+                        headerMarginAnimation(params, params.topMargin, 0, accelerateDecelerateInterpolator);
                         state = STATE_VISIBLE;
                     }
                 }
@@ -131,6 +149,62 @@ public class SideBarLayout extends LinearLayout {
                 break;
         }
         return super.onInterceptTouchEvent(event);
+    }
+
+    @Override
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
+        Log.i(TAG, "Touch event masked: " + event.getActionMasked() + " event:" + event.getAction());
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_MOVE:
+                if (event.getHistorySize() > 0) {
+                    LinearLayout.LayoutParams params = (LayoutParams) header.getLayoutParams();
+
+                    deltaY = event.getY() - event.getHistoricalY(event.getActionIndex());
+                    deltaX = event.getX() - event.getHistoricalX(event.getActionIndex());
+                    if (Math.abs(deltaX / deltaY) > 1.5)
+                        return super.onTouchEvent(event);
+    //                    Log.i(TAG, "deltaY is " + deltaY);
+                    amountY += deltaY;
+                    if (amountY > MOTION_THRESHOLD_MOVE || amountY < -MOTION_THRESHOLD_MOVE) {
+                        if (state == STATE_INVISIBLE) {
+                            newPos = (int) (HEIGHT / 3.5 * Math.atan(amountY / HEIGHT)) - HEIGHT;
+                        } else if (state == STATE_VISIBLE) {
+                            newPos = (int) (HEIGHT / 1.5 * Math.atan(amountY / HEIGHT * 1.5));
+                        }
+                        if (validRange(newPos)) {
+                            params.topMargin = newPos;
+                            header.setLayoutParams(params);
+                        }
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                final LinearLayout.LayoutParams params = (LayoutParams) header.getLayoutParams();
+                if (amountY > MOTION_THRESHOLD_MOVE) {
+                    if (params.topMargin >= MOTION_THRESHOLD_DOWN) {
+                        headerMarginAnimation(params, params.topMargin, 0, accelerateDecelerateInterpolator);
+                        state = STATE_VISIBLE;
+                    } else {
+                        headerMarginAnimation(params, params.topMargin, -HEIGHT, accelerateDecelerateInterpolator);
+                        state = STATE_INVISIBLE;
+                        flag = false;
+                    }
+                } else if (amountY < -MOTION_THRESHOLD_MOVE) {
+                    if (params.topMargin < MOTION_THRESHOLD_UP) {
+                        headerMarginAnimation(params, params.topMargin, -HEIGHT, linearInterpolator);
+                        state = STATE_INVISIBLE;
+                        flag = false;
+                    } else {
+                        headerMarginAnimation(params, params.topMargin, 0, accelerateDecelerateInterpolator);
+                        state = STATE_VISIBLE;
+                    }
+                }
+                amountY = 0;
+                break;
+
+        }
+        return super.onTouchEvent(event);
     }
 
     private void headerMarginAnimation(final LinearLayout.LayoutParams params, int from, int to, Interpolator interpolator) {
