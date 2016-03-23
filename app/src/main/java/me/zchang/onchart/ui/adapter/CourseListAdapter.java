@@ -157,58 +157,87 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             Drawable nab = nabImg.getDrawable();
             if(nab != null) {
-                new Palette.Builder(((BitmapDrawable) nab).getBitmap())
-                        .generate(new Palette.PaletteAsyncListener() {
-                            @Override
-                            public void onGenerated(Palette palette) {
-                                Palette.Swatch lightVibrant = palette.getLightVibrantSwatch();
-                                Palette.Swatch vibrant = palette.getVibrantSwatch();
-                                if (cardView != null) {
-                                    if (lightVibrant != null) {
-                                        cardView.setCardBackgroundColor(lightVibrant.getRgb());
-                                        backgroundIndicator.setTextColor(lightVibrant.getRgb());
-	                                    nameText.setTextColor(lightVibrant.getTitleTextColor());
-                                        roomText.setTextColor(lightVibrant.getBodyTextColor());
-                                    } else if (vibrant != null) {
-                                        cardView.setCardBackgroundColor(vibrant.getRgb());
-                                        backgroundIndicator.setTextColor(vibrant.getRgb());
-	                                    nameText.setTextColor(vibrant.getTitleTextColor());
-                                        roomText.setTextColor(vibrant.getBodyTextColor());
-                                    } else {
-                                        int defaultColor = ContextCompat.getColor(context, R.color.cardview_light_background);
-                                        cardView.setCardBackgroundColor(defaultColor);
-                                        backgroundIndicator.setTextColor(defaultColor);
-	                                    nameText.setTextColor(defaultColor);
-	                                    roomText.setTextColor(defaultColor);
-                                    }
-                                    if (vibrant != null)
-                                        timeText.setTextColor(vibrant.getRgb());
-                                    else
-                                        timeText.setTextColor(ContextCompat.getColor(context, R.color.default_title));
-                                }
-                            }
+                if ((course.getThemeColor()
+                        | course.getTimeColor()
+                        | course.getTitleColor()
+                        | course.getSubTitleColor()) == 0) {
+                    new Palette.Builder(((BitmapDrawable) nab).getBitmap())
+                            .generate(new Palette.PaletteAsyncListener() {
+                                @Override
+                                public void onGenerated(Palette palette) {
+                                    Palette.Swatch lightVibrant = palette.getLightVibrantSwatch();
+                                    Palette.Swatch vibrant = palette.getVibrantSwatch();
+                                    if (cardView != null) {
+                                        if (lightVibrant != null) {
+                                            cardView.setCardBackgroundColor(lightVibrant.getRgb());
+                                            backgroundIndicator.setTextColor(lightVibrant.getRgb());
+                                            nameText.setTextColor(lightVibrant.getTitleTextColor());
+                                            roomText.setTextColor(lightVibrant.getBodyTextColor());
 
-                        });
+                                            course.setThemeColor(lightVibrant.getRgb())
+                                                    .setTitleColor(lightVibrant.getTitleTextColor())
+                                                    .setSubTitleColor(lightVibrant.getBodyTextColor());
+                                        } else if (vibrant != null) {
+                                            cardView.setCardBackgroundColor(vibrant.getRgb());
+                                            backgroundIndicator.setTextColor(vibrant.getRgb());
+                                            nameText.setTextColor(vibrant.getTitleTextColor());
+                                            roomText.setTextColor(vibrant.getBodyTextColor());
+
+                                            course.setThemeColor(vibrant.getRgb())
+                                                    .setTitleColor(vibrant.getTitleTextColor())
+                                                    .setSubTitleColor(vibrant.getBodyTextColor());
+                                        } else {
+                                            int defaultColor = ContextCompat.getColor(context, R.color.cardview_light_background);
+                                            cardView.setCardBackgroundColor(defaultColor);
+                                            backgroundIndicator.setTextColor(defaultColor);
+                                            nameText.setTextColor(defaultColor);
+                                            roomText.setTextColor(defaultColor);
+
+                                            course.setThemeColor(defaultColor)
+                                                    .setTitleColor(defaultColor)
+                                                    .setSubTitleColor(defaultColor);
+                                        }
+                                        if (vibrant != null) {
+                                            timeText.setTextColor(vibrant.getRgb());
+                                            course.setTimeColor(vibrant.getRgb());
+                                        } else {
+                                            timeText.setTextColor(ContextCompat.getColor(context, R.color.default_title));
+                                            course.setTimeColor(ContextCompat.getColor(context, R.color.default_title));
+                                        }
+                                    }
+                                }
+
+                            });
+                } else if (cardView != null) {
+                    cardView.setCardBackgroundColor(course.getThemeColor());
+                    backgroundIndicator.setTextColor(course.getThemeColor());
+                    nameText.setTextColor(course.getTitleColor());
+                    roomText.setTextColor(course.getSubTitleColor());
+                    timeText.setTextColor(course.getTimeColor());
+                }
+
             }
 
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, DetailActivity.class);
-                    intent.putExtra(context.getString(R.string.intent_frag_index), fragId);
-                    intent.putExtra(context.getString(R.string.intent_position), position);
-                    intent.putExtra(context.getString(R.string.intent_lesson), course);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        intent.putExtra("color", backgroundIndicator.getTextColors().getDefaultColor());
-                    else
-                        intent.putExtra("color", 0xffffff);
-                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                            (Activity) context,
-                            Pair.create(v, context.getString(R.string.trans_detail_item)),
-                            Pair.create(v.findViewById(R.id.iv_label), context.getString(R.string.trans_detail_img)));
-                    ((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION, options.toBundle());
-                }
-            });
+            if (cardView != null) {
+                cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, DetailActivity.class);
+                        intent.putExtra(context.getString(R.string.intent_frag_index), fragId);
+                        intent.putExtra(context.getString(R.string.intent_position), position);
+                        intent.putExtra(context.getString(R.string.intent_lesson), course);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                            intent.putExtra("color", backgroundIndicator.getTextColors().getDefaultColor());
+                        else
+                            intent.putExtra("color", 0xffffff);
+                        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                (Activity) context,
+                                Pair.create(v, context.getString(R.string.trans_detail_item)),
+                                Pair.create(v.findViewById(R.id.iv_label), context.getString(R.string.trans_detail_img)));
+                        ((Activity) context).startActivityForResult(intent, MainActivity.REQ_POSITION, options.toBundle());
+                    }
+                });
+            }
         } else if(holder instanceof SubtitleViewHolder) {
             if (MORNING_FLAG == bitmap[position]) {
                 ((SubtitleViewHolder) holder).subTitle.setText(context.getResources().getString(me.zchang.onchart.R.string.subtitle_morning));

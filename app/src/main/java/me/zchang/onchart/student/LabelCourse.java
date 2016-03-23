@@ -23,12 +23,27 @@ import me.zchang.onchart.config.ConfigManager;
 
 public class LabelCourse extends Course implements Parcelable{
 
+    private int themeColor;
+    private int timeColor;
+    private int titleColor;
+    private int subTitleColor;
+
     public LabelCourse(Course course) {
         super(course);
+        resetColors();
+    }
+
+    public LabelCourse(LabelCourse course) {
+        super(course);
+        themeColor = course.themeColor;
+        timeColor = course.timeColor;
+        titleColor = course.titleColor;
+        subTitleColor = course.subTitleColor;
     }
 
     public LabelCourse() {
         super();
+        resetColors();
     }
 
     public void setToNextLabelImg() {
@@ -73,4 +88,54 @@ public class LabelCourse extends Course implements Parcelable{
             return new Course[0];
         }
     };
+
+    public int getThemeColor() {
+        return themeColor;
+    }
+
+    public LabelCourse setThemeColor(int themeColor) {
+        this.themeColor = themeColor;
+        return this;
+    }
+
+    public int getTimeColor() {
+        return timeColor;
+    }
+
+    public LabelCourse setTimeColor(int timeColor) {
+        this.timeColor = timeColor;
+        return this;
+    }
+
+    public int getTitleColor() {
+        return titleColor;
+    }
+
+    public LabelCourse setTitleColor(int titleColor) {
+        this.titleColor = titleColor;
+        return this;
+    }
+
+    public int getSubTitleColor() {
+        return subTitleColor;
+    }
+
+    public LabelCourse setSubTitleColor(int subTitleColor) {
+        this.subTitleColor = subTitleColor;
+        return this;
+    }
+
+    public void setColors(int themeColor, int timeColor, int titleColor, int subTitleColor) {
+        this.themeColor = themeColor;
+        this.timeColor = timeColor;
+        this.titleColor = titleColor;
+        this.subTitleColor = subTitleColor;
+    }
+
+    public void resetColors() {
+        this.themeColor = 0;
+        this.timeColor = 0;
+        this.titleColor = 0;
+        this.subTitleColor = 0;
+    }
 }

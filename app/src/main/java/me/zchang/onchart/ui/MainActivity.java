@@ -69,6 +69,7 @@ import me.zchang.onchart.session.events.SessionErrorEvent;
 import me.zchang.onchart.session.events.SessionStartOverEvent;
 import me.zchang.onchart.session.events.HomepageFetchOverEvent;
 import me.zchang.onchart.student.Course;
+import me.zchang.onchart.student.LabelCourse;
 import me.zchang.onchart.ui.adapter.CoursePagerAdapter;
 import me.zchang.onchart.ui.adapter.DiffTransformer;
 import zchang.me.uilibrary.SideBarLayout;
@@ -522,9 +523,10 @@ public class MainActivity extends AppCompatActivity
 				int pos = data.getIntExtra(getString(R.string.intent_position), 0);
 
 				if (resultCode == RESULT_OK) {
-					Course course = curFragment.findCourseById(data.getLongExtra(getString(R.string.intent_course_id), -1));
+					LabelCourse course = (LabelCourse) curFragment.findCourseById(data.getLongExtra(getString(R.string.intent_course_id), -1));
 					if (course != null) {
 						course.setLabelImgIndex(data.getIntExtra(getString(R.string.intent_label_image_index), 0));
+                        course.resetColors();
 						curFragment.adapter
 								.notifyItemChanged(pos);
 					}
