@@ -56,8 +56,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tb_main"
                 app:theme="@style/Theme.AppCompat"
-                app:popupTheme="@style/Theme.AppCompat.Light"
-                app:layout_scrollFlags="scroll|enterAlways"/>
+                app:popupTheme="@style/Theme.AppCompat.Light"/>
             <android.support.design.widget.TabLayout
                 android:id="@+id/tl_weekday"
                 android:layout_width="match_parent"

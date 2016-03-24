@@ -41,9 +41,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +49,6 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,10 +61,10 @@ import me.zchang.onchart.config.ConfigManager;
 import me.zchang.onchart.config.MainApp;
 import me.zchang.onchart.session.BitJwcSession;
 import me.zchang.onchart.session.Session;
+import me.zchang.onchart.session.events.HomepageFetchOverEvent;
 import me.zchang.onchart.session.events.ScheduleFetchOverEvent;
 import me.zchang.onchart.session.events.SessionErrorEvent;
 import me.zchang.onchart.session.events.SessionStartOverEvent;
-import me.zchang.onchart.session.events.HomepageFetchOverEvent;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.LabelCourse;
 import me.zchang.onchart.ui.adapter.CoursePagerAdapter;
@@ -145,7 +142,7 @@ public class MainActivity extends AppCompatActivity
 		versionText = (TextView) drawerHeader.findViewById(R.id.tv_version);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && firstLaunch) {
             // FIXME translation doesn't work
-//			toolbarContainer.setTranslationY(- toolbarContainer.getLayoutParams().height);
+			toolbarContainer.setTranslationY(- toolbarContainer.getLayoutParams().height);
 //			toolbarContainer.setTranslationY(-100);
 			addButton.setScaleX(0.f);
 			addButton.setScaleY(0.f);
@@ -211,8 +208,6 @@ public class MainActivity extends AppCompatActivity
 		super.onStop();
 	}
 
-	int move;
-
 	private void setupFragments() {
 		fragments = new ArrayList<>();
 		for (int i = 0; i < Math.abs(numOfWeekdays); i++) {
@@ -224,43 +219,6 @@ public class MainActivity extends AppCompatActivity
 		mainListPager.setAdapter(mainListAdapter);
 		mainListPager.setClipChildren(false);
 		mainListPager.setClipToPadding(false);
-
-		mainListPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-			@Override
-			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-				if (position == mainListAdapter.getCount() - 1) {
-					//Log.i(TAG, String.format("sum: %d, position: %d, positionOffset: %f, posiOffPix: %d", mainListAdapter.getCount(), position, positionOffset, positionOffsetPixels));
-					move = position;
-				} else {
-					move = 0;
-				}
-			}
-
-			@Override
-			public void onPageSelected(int position) {
-
-			}
-
-			@Override
-			public void onPageScrollStateChanged(int state) {
-
-			}
-		});
-
-		mainListPager.setOnTouchListener(new View.OnTouchListener() {
-			float startPos;
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
-					if (move != 0) {
-					}
-				} else if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-					startPos = event.getX();
-				}
-				return false;
-			}
-		});
 
 		weekdayTabs.setupWithViewPager(mainListPager);
 		weekdayTabs.setTabsFromPagerAdapter(mainListAdapter);
@@ -393,19 +351,6 @@ public class MainActivity extends AppCompatActivity
 
 		refreshProgress = (ProgressBar) menu.findItem(R.id.item_refresh).getActionView().findViewById(R.id.pb_refresh);
 		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-
-		if (drawerToggle.onOptionsItemSelected(item)) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
