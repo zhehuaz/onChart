@@ -5,6 +5,8 @@
     android:layout_height="100dp"
     android:background="#ff0000"
     android:elevation="5dp">
-
-
+    <RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rv_week_num_options"/>
 </LinearLayout>

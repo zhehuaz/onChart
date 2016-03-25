@@ -32,6 +32,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -69,6 +70,7 @@ import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.LabelCourse;
 import me.zchang.onchart.ui.adapter.CoursePagerAdapter;
 import me.zchang.onchart.ui.adapter.DiffTransformer;
+import me.zchang.onchart.ui.adapter.WeekNumListAdapter;
 import zchang.me.uilibrary.SideBarLayout;
 
 public class MainActivity extends AppCompatActivity
@@ -181,9 +183,7 @@ public class MainActivity extends AppCompatActivity
 		numOfWeekdays = configManager.getNumOfWeekdays();
 
 		setupDrawer();
-
-        View header = getLayoutInflater().inflate(R.layout.header_week_num, weekSelectLayout, false);
-		weekSelectLayout.setHeader(header);
+		setupSideBar();
 
 		// if haven't refreshed week for a week.
 		if (Math.abs(configManager.getLastFetchWeekTime() - today.getTimeInMillis()) > MILLISECONDS_IN_A_WEEK) {
@@ -324,6 +324,31 @@ public class MainActivity extends AppCompatActivity
 		drawerLayout.setDrawerListener(drawerToggle);
 		drawerToggle.syncState();
 		updateDrawer();
+	}
+
+	private void setupSideBar() {
+		View header = getLayoutInflater().inflate(R.layout.header_week_num, weekSelectLayout, false);
+		weekSelectLayout.setHeader(header);
+		RecyclerView weekNumList = (RecyclerView) header.findViewById(R.id.rv_week_num_options);
+        RecyclerView.Adapter adapter = new WeekNumListAdapter();
+        weekNumList.setAdapter(adapter);
+        weekNumList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+		weekNumList.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+			@Override
+			public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+				return false;
+			}
+
+			@Override
+			public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+			}
+
+			@Override
+			public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+			}
+		});
 	}
 
 	public void refreshWeek() {
