@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity
 		versionText = (TextView) drawerHeader.findViewById(R.id.tv_version);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && firstLaunch) {
             // FIXME translation doesn't work
-			toolbarContainer.setTranslationY(- toolbarContainer.getLayoutParams().height);
+//			toolbarContainer.setTranslationY(- toolbarContainer.getLayoutParams().height);
 //			toolbarContainer.setTranslationY(-100);
 			addButton.setScaleX(0.f);
 			addButton.setScaleY(0.f);
@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity
 		View header = getLayoutInflater().inflate(R.layout.header_week_num, weekSelectLayout, false);
 		weekSelectLayout.setHeader(header);
 		RecyclerView weekNumList = (RecyclerView) header.findViewById(R.id.rv_week_num_options);
-        RecyclerView.Adapter adapter = new WeekNumListAdapter();
+        RecyclerView.Adapter adapter = new WeekNumListAdapter(MainActivity.this);
         weekNumList.setAdapter(adapter);
         weekNumList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 		weekNumList.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {

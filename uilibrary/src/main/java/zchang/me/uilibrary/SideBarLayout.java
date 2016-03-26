@@ -18,6 +18,7 @@ package zchang.me.uilibrary;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -96,7 +97,14 @@ public class SideBarLayout extends LinearLayout {
 
     @Override
     public boolean onInterceptTouchEvent(@NonNull MotionEvent event) {
+//        int[] location = new int[2];
+//        Rect rect = new Rect();
+//        header.getGlobalVisibleRect(rect);
+//        header.getLocationOnScreen(location);
+        //Log.i(TAG, String.format("Header rect is %d %d, and the touch is %f", header.getTop(), header.getBottom(), event.getY()));
         Log.i(TAG, "event masked: " + event.getActionMasked() + " event:" + event.getAction());
+        if (state == STATE_VISIBLE && header.getTop() < event.getY() && header.getBottom() > event.getY())
+            Log.i(TAG, "inside");
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_MOVE:
                 if (event.getHistorySize() > 0) {

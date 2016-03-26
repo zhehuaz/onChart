@@ -21,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class WeekNumListAdapter extends RecyclerView.Adapter {
 
@@ -33,12 +34,13 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new WeekNumViewHolder(new LinearLayout(context));
+        return new WeekNumViewHolder(new TextView(context));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        WeekNumViewHolder holder = (WeekNumViewHolder) viewHolder;
+        holder.text.setText(position + "");
     }
 
     @Override
@@ -47,9 +49,10 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
     }
 
     private class WeekNumViewHolder extends RecyclerView.ViewHolder {
-
+        TextView text;
         public WeekNumViewHolder(View itemView) {
             super(itemView);
+            text = (TextView) itemView;
         }
     }
 }
