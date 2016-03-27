@@ -18,10 +18,18 @@ package me.zchang.onchart.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.w3c.dom.Text;
+
+import java.util.jar.Attributes;
+
+import me.zchang.onchart.session.events.SwitchWeekNumEvent;
 
 public class WeekNumListAdapter extends RecyclerView.Adapter {
 
@@ -34,13 +42,29 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new WeekNumViewHolder(new TextView(context));
+        TextView newTextView = new TextView(context);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        newTextView.setLayoutParams(params);
+        return new WeekNumViewHolder(newTextView);
     }
 
+    int lastSelectPos = -1;
+
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         WeekNumViewHolder holder = (WeekNumViewHolder) viewHolder;
         holder.text.setText(position + "");
+        holder.text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new SwitchWeekNumEvent(position));
+//                v.setBackgroundColor(0xcd898989);
+//                if (lastSelectPos != -1) {
+//
+//                }
+//                lastSelectPos = position;
+            }
+        });
     }
 
     @Override
@@ -53,6 +77,9 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
         public WeekNumViewHolder(View itemView) {
             super(itemView);
             text = (TextView) itemView;
+            text.setTextSize(30);
+            text.setTextColor(0xcddddddd);
+            text.setPadding(20, 20, 20, 20);
         }
     }
 }

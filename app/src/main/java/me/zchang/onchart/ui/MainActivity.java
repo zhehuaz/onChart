@@ -66,6 +66,7 @@ import me.zchang.onchart.session.events.HomepageFetchOverEvent;
 import me.zchang.onchart.session.events.ScheduleFetchOverEvent;
 import me.zchang.onchart.session.events.SessionErrorEvent;
 import me.zchang.onchart.session.events.SessionStartOverEvent;
+import me.zchang.onchart.session.events.SwitchWeekNumEvent;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.LabelCourse;
 import me.zchang.onchart.ui.adapter.CoursePagerAdapter;
@@ -333,22 +334,22 @@ public class MainActivity extends AppCompatActivity
         RecyclerView.Adapter adapter = new WeekNumListAdapter(MainActivity.this);
         weekNumList.setAdapter(adapter);
         weekNumList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-		weekNumList.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-			@Override
-			public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-				return false;
-			}
-
-			@Override
-			public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-			}
-
-			@Override
-			public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-			}
-		});
+//		weekNumList.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+//            @Override
+//            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+//
+//            }
+//
+//            @Override
+//            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+//
+//            }
+//        });
 	}
 
 	public void refreshWeek() {
@@ -603,4 +604,17 @@ public class MainActivity extends AppCompatActivity
 		if (refreshProgress != null)
 			refreshProgress.setVisibility(View.INVISIBLE);
 	}
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSwitchWeekNum(SwitchWeekNumEvent event) {
+        int curNumBak = curWeek;
+        if (event.getWeekNum() > 0 && event.getWeekNum() != curWeek) {
+            curWeek = event.getWeekNum();
+        }
+        Log.i(TAG, "switch week num");
+//        setupFragments();
+        setupList();
+
+        curWeek = curNumBak;
+    }
 }
