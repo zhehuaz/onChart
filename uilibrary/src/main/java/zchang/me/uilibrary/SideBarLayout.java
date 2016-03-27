@@ -76,7 +76,7 @@ public class SideBarLayout extends LinearLayout {
 
     private int MOTION_THRESHOLD_DOWN = -225;
     private int MOTION_THRESHOLD_UP = -50;
-    private int MOTION_THRESHOLD_MOVE = 30;
+    private int MOTION_THRESHOLD_MOVE = 10;
 
     public final static int STATE_VISIBLE = 0x0;
     public final static int STATE_INVISIBLE = 0x1;
@@ -97,14 +97,9 @@ public class SideBarLayout extends LinearLayout {
 
     @Override
     public boolean onInterceptTouchEvent(@NonNull MotionEvent event) {
-//        int[] location = new int[2];
-//        Rect rect = new Rect();
-//        header.getGlobalVisibleRect(rect);
-//        header.getLocationOnScreen(location);
-        //Log.i(TAG, String.format("Header rect is %d %d, and the touch is %f", header.getTop(), header.getBottom(), event.getY()));
         Log.i(TAG, "event masked: " + event.getActionMasked() + " event:" + event.getAction());
         if (state == STATE_VISIBLE && header.getTop() < event.getY() && header.getBottom() > event.getY())
-            Log.i(TAG, "inside");
+            return false;
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_MOVE:
                 if (event.getHistorySize() > 0) {
