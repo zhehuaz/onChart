@@ -17,18 +17,15 @@
 package me.zchang.onchart.ui.adapter;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
-import org.w3c.dom.Text;
 
-import java.util.jar.Attributes;
-
+import me.zchang.onchart.R;
 import me.zchang.onchart.session.events.SwitchWeekNumEvent;
 
 public class WeekNumListAdapter extends RecyclerView.Adapter {
@@ -48,8 +45,6 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
         return new WeekNumViewHolder(newTextView);
     }
 
-    int lastSelectPos = -1;
-
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         WeekNumViewHolder holder = (WeekNumViewHolder) viewHolder;
@@ -58,11 +53,6 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View v) {
                 EventBus.getDefault().post(new SwitchWeekNumEvent(position));
-//                v.setBackgroundColor(0xcd898989);
-//                if (lastSelectPos != -1) {
-//
-//                }
-//                lastSelectPos = position;
             }
         });
     }
@@ -80,6 +70,9 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
             text.setTextSize(30);
             text.setTextColor(0xcddddddd);
             text.setPadding(20, 20, 20, 20);
+            TypedArray array = context.obtainStyledAttributes(new int[]{R.attr.selectableItemBackgroundBorderless});
+            text.setBackground(array.getDrawable(0));
+            array.recycle();
         }
     }
 }
