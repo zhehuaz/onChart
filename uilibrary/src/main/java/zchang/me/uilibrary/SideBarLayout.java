@@ -98,19 +98,22 @@ public class SideBarLayout extends LinearLayout {
     @Override
     public boolean onInterceptTouchEvent(@NonNull MotionEvent event) {
         Log.i(TAG, "event masked: " + event.getActionMasked() + " event:" + event.getAction());
-        if (state == STATE_VISIBLE && header.getTop() < event.getY() && header.getBottom() > event.getY())
+        if (state == STATE_VISIBLE && header.getTop() < event.getY() && header.getBottom() > event.getY()) {
+            Log.i(TAG, "return false in Intercept");
             return false;
+        }
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_MOVE:
                 if (event.getHistorySize() > 0) {
                     LinearLayout.LayoutParams params = (LayoutParams) header.getLayoutParams();
-                    if (params.topMargin == 0)
+                    if (params.topMargin == 0) {
                         flag = true;
+                    }
                     deltaY = event.getY() - event.getHistoricalY(event.getActionIndex());
                     deltaX = event.getX() - event.getHistoricalX(event.getActionIndex());
-                    if (Math.abs(deltaX / deltaY) > 1.5)
-                        break;
-//                    Log.i(TAG, "deltaY is " + deltaY);
+                    if (Math.abs(deltaY) < 1E-3 || Math.abs(deltaX / deltaY) > 1.5) {
+                        return false;
+                    }
                     amountY += deltaY;
                     if (amountY > MOTION_THRESHOLD_MOVE || amountY < -MOTION_THRESHOLD_MOVE) {
                         if (state == STATE_INVISIBLE) {

@@ -18,7 +18,9 @@ package me.zchang.onchart.ui.adapter;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -27,6 +29,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import me.zchang.onchart.R;
 import me.zchang.onchart.session.events.SwitchWeekNumEvent;
+import zchang.me.uilibrary.CircleBackgroundDrawable;
 
 public class WeekNumListAdapter extends RecyclerView.Adapter {
 
@@ -40,7 +43,7 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         TextView newTextView = new TextView(context);
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(180, 180);
         newTextView.setLayoutParams(params);
         return new WeekNumViewHolder(newTextView);
     }
@@ -68,11 +71,10 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
             super(itemView);
             text = (TextView) itemView;
             text.setTextSize(30);
-            text.setTextColor(0xcddddddd);
+            text.setTextColor(0xFFCCCCCC);
             text.setPadding(20, 20, 20, 20);
-            TypedArray array = context.obtainStyledAttributes(new int[]{R.attr.selectableItemBackgroundBorderless});
-            text.setBackground(array.getDrawable(0));
-            array.recycle();
+            text.setGravity(Gravity.CENTER);
+            text.setBackground(new CircleBackgroundDrawable(0xCD66BBBC));
         }
     }
 }
