@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity
 
 		setupFragments();
 		setupList();// ATTENTION, order of refresh and setup
+        updateWeekNumDisplay();
 		fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
@@ -261,9 +262,10 @@ public class MainActivity extends AppCompatActivity
 		if (curWeekDay < mainListAdapter.getCount()) {
 			mainListPager.setCurrentItem(curWeekDay);
 		}
+	}
 
-		// update week number
-		if (weekNumText != null) {
+    private void updateWeekNumDisplay() {
+        if (weekNumText != null) {
             weekNumText.setText(String.format(getString(R.string.weekday_week), curWeek));
             weekNumText.setLongClickable(true);
             weekNumText.setOnLongClickListener(new View.OnLongClickListener() {
@@ -278,7 +280,7 @@ public class MainActivity extends AppCompatActivity
                 }
             });
         }
-	}
+    }
 
 	private void setupDrawer() {
 		drawerView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -464,6 +466,7 @@ public class MainActivity extends AppCompatActivity
 		super.onActivityResult(requestCode, resultCode, data);
 
 		switch (requestCode) {
+            // returned result from Settings Activity
 			case REQ_SETTING:
 				if (resultCode == RESULT_OK) {
 					int returnWeekday = data.getIntExtra(getString(R.string.key_num_of_weekday), -1);
@@ -494,6 +497,7 @@ public class MainActivity extends AppCompatActivity
 									break;
 								case 2:
 									setupList();
+                                    updateWeekNumDisplay();
 									break;
 								default:
 									break;
@@ -537,6 +541,7 @@ public class MainActivity extends AppCompatActivity
 		if (key.equals(getString(R.string.pref_week_num))) {
 			// TODO update changed items
 			setupList();
+            updateWeekNumDisplay();
 		}
 	}
 
@@ -581,6 +586,7 @@ public class MainActivity extends AppCompatActivity
 			configManager.saveStuNo(session.getStuNum());
 			configManager.savePassword(session.getPsw());
 			setupList();
+            //updateWeekNumDisplay();
 		}
 
 		String stuName = null;
@@ -627,7 +633,6 @@ public class MainActivity extends AppCompatActivity
         Log.i(TAG, "switch week num");
 //        setupFragments();
         setupList();
-
         curWeek = curNumBak;
     }
 }

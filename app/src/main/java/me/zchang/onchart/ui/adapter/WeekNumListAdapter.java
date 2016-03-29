@@ -17,8 +17,11 @@
 package me.zchang.onchart.ui.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RippleDrawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
@@ -27,6 +30,7 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
+import me.zchang.onchart.BuildConfig;
 import me.zchang.onchart.R;
 import me.zchang.onchart.session.events.SwitchWeekNumEvent;
 import zchang.me.uilibrary.CircleBackgroundDrawable;
@@ -35,15 +39,17 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
 
     private final static int WEEK_COUNT = 32;
     Context context;
+    float screenDensity;
 
     public WeekNumListAdapter(Context context) {
         this.context = context;
+        screenDensity = context.getResources().getDisplayMetrics().density;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         TextView newTextView = new TextView(context);
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(180, 180);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams((int) (screenDensity * 60), (int) (screenDensity * 60));
         newTextView.setLayoutParams(params);
         return new WeekNumViewHolder(newTextView);
     }
@@ -74,7 +80,10 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
             text.setTextColor(0xFFCCCCCC);
             text.setPadding(20, 20, 20, 20);
             text.setGravity(Gravity.CENTER);
-            text.setBackground(new CircleBackgroundDrawable(0xCD66BBBC));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                text.setBackground(new RippleDrawable(ColorStateList.valueOf(0xCD66BBBC), new CircleBackgroundDrawable(0xCD66BBBC), null));
+            else
+                text.setBackground(new CircleBackgroundDrawable(0xCD66BBBC));
         }
     }
 }
