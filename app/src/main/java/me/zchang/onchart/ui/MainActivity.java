@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity
 	private AppBarLayout toolbarContainer;
 	private FloatingActionButton addButton;
 	private SideBarLayout weekSelectLayout;
+	private TextView thisWeekText;
 
 	private Session session;
 	private ConfigManager configManager;
@@ -336,22 +337,6 @@ public class MainActivity extends AppCompatActivity
         RecyclerView.Adapter adapter = new WeekNumListAdapter(MainActivity.this);
         weekNumList.setAdapter(adapter);
         weekNumList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-//		weekNumList.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-//            @Override
-//            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-//
-//            }
-//
-//            @Override
-//            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-//
-//            }
-//        });
 	}
 
 	public void refreshWeek() {
@@ -536,6 +521,10 @@ public class MainActivity extends AppCompatActivity
 		return fragments.get(mainListPager.getCurrentItem());
 	}
 
+    public void onClickThisWeek(View view) {
+        setupList();
+    }
+
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		if (key.equals(getString(R.string.pref_week_num))) {
@@ -586,7 +575,6 @@ public class MainActivity extends AppCompatActivity
 			configManager.saveStuNo(session.getStuNum());
 			configManager.savePassword(session.getPsw());
 			setupList();
-            //updateWeekNumDisplay();
 		}
 
 		String stuName = null;
@@ -631,7 +619,6 @@ public class MainActivity extends AppCompatActivity
             curWeek = event.getWeekNum();
         }
         Log.i(TAG, "switch week num");
-//        setupFragments();
         setupList();
         curWeek = curNumBak;
     }

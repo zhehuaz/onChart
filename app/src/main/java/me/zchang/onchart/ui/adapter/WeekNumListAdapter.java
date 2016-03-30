@@ -57,11 +57,11 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         WeekNumViewHolder holder = (WeekNumViewHolder) viewHolder;
-        holder.text.setText(position + "");
+        holder.text.setText((position + 1) + "");
         holder.text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new SwitchWeekNumEvent(position));
+                EventBus.getDefault().post(new SwitchWeekNumEvent(position + 1));
             }
         });
     }

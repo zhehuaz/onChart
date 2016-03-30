@@ -76,6 +76,7 @@
     <string name="title_account">Stud. No.</string>
     <string name="title_psw">Password</string>
     <string name="title_my_birthday" translatable="false">1995&#8211;06&#8211;12</string>
+    <string name="title_week_option">Week</string>
     <string name="text_days">days</string>
     <string name="text_about_copyright" translatable="false">\u00a9 2016 Z.Chang, Apache License v2</string>
     <string name="version_name" translatable="false">1.0</string>

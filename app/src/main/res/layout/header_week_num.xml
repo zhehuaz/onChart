@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="60dp"
     android:background="#3E4F4F"
     android:elevation="5dp">
+
     <android.support.v7.widget.RecyclerView
+        android:paddingLeft="38dp"
+        android:paddingStart="38dp"
+        android:clipToPadding="false"
         android:layout_gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rv_week_num_options"/>
-</LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_this_week"
+        android:gravity="center"
+        android:elevation="3dp"
+        android:clickable="true"
+        android:layout_width="38dp"
+        android:layout_height="match_parent"
+        android:text="@string/title_week_option"
+        android:background="#486866"
+        android:textColor="#CCCCCC"
+        android:onClick="onClickThisWeek"/>
+</FrameLayout>
