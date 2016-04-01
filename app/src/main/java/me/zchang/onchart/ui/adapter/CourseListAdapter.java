@@ -16,6 +16,7 @@
 
 package me.zchang.onchart.ui.adapter;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -28,9 +29,11 @@ import android.support.v4.util.Pair;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -69,11 +72,18 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     Context context;
     private int fragId;
 
+    private int screenWidth;
+
     public CourseListAdapter(Context context, List<Course> courses, int fragId) {
         bitmap = new byte[20];
         this.courses = courses;
         this.context = context;
         this.fragId = fragId;
+
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        screenWidth = metrics.widthPixels;
 
         processLessons();
     }
@@ -149,7 +159,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             timeText.setText(dateFormat.format(course.getStartTime()));
 
             ViewGroup.LayoutParams params = ((ViewHolder) holder).frame.getLayoutParams();
-            params.height =(((ViewHolder) holder).cardHeight >> 1 ) *
+            params.height = (viewHolder.cardHeight >> 1 ) *
                     (((int) course.getEndTime() - (int) course.getStartTime()) / Utils.MILLISECONDS_IN_ONE_CLASS + 1);
             ((ViewHolder) holder).frame.setLayoutParams(params);
 
@@ -278,6 +288,9 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             timeText = (TextView) itemView.findViewById(R.id.tv_time);
             nabImg = (ImageView) itemView.findViewById(R.id.iv_label);
             backgroundIndicator = (TextView) itemView.findViewById(R.id.iv_background_indicator);
+            ViewGroup.LayoutParams params = cardView.getLayoutParams();
+            params.width = (int) (screenWidth * 0.78);
+            cardView.setLayoutParams(params);
 
             cardHeight = frame.getLayoutParams().height;
         }
