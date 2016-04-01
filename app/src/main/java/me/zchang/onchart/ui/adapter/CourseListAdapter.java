@@ -16,7 +16,6 @@
 
 package me.zchang.onchart.ui.adapter;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -312,7 +311,6 @@ public class CourseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        //Log.d(TAG, "Get Items.");
         if(position == 0)
             return VIEW_TYPE_HEADER;
         else if(bitmap[position] < 0)

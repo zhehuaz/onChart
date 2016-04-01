@@ -38,7 +38,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -102,7 +101,6 @@ public class MainActivity extends AppCompatActivity
 	private AppBarLayout toolbarContainer;
 	private FloatingActionButton addButton;
 	private SideBarLayout weekSelectLayout;
-	private TextView thisWeekText;
 
 	private Session session;
 	private ConfigManager configManager;
