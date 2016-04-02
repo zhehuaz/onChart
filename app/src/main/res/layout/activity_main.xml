@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/dl_drawer">
+
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/rl_main"
         android:layout_width="match_parent"
@@ -68,6 +69,16 @@
                 app:theme="@style/ThemeOverlay.AppCompat.Light" />
         </android.support.design.widget.AppBarLayout>
     </android.support.design.widget.CoordinatorLayout>
+
+    <TextView
+        android:id="@+id/tv_popup_week"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="Week 1"
+        android:textStyle="bold"
+        android:textSize="50sp"
+        android:visibility="gone"/>
 
     <android.support.design.widget.NavigationView
         android:fitsSystemWindows="false"
