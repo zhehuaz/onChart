@@ -16,7 +16,11 @@
 
 package me.zchang.onchart.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,6 +45,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -101,6 +109,7 @@ public class MainActivity extends AppCompatActivity
 	private AppBarLayout toolbarContainer;
 	private FloatingActionButton addButton;
 	private SideBarLayout weekSelectLayout;
+	private TextView popupWeekText;
 
 	private Session session;
 	private ConfigManager configManager;
@@ -138,6 +147,7 @@ public class MainActivity extends AppCompatActivity
 		toolbarContainer = (AppBarLayout) findViewById(R.id.appb_container);
 		addButton = (FloatingActionButton) findViewById(R.id.fab_add_course);
 		weekSelectLayout = (SideBarLayout) findViewById(R.id.sbl_week_num);
+		popupWeekText = (TextView) findViewById(R.id.tv_popup_week);
 		drawerHeader = (ViewGroup) drawerView.getHeaderView(0);
 		nameText = (TextView) drawerHeader.findViewById(R.id.tv_stu_name);
 		weekNumText = (TextView) drawerHeader.findViewById(R.id.tv_week);
@@ -195,6 +205,8 @@ public class MainActivity extends AppCompatActivity
         updateWeekNumDisplay();
 		fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 	}
 
 	@Override
@@ -257,9 +269,11 @@ public class MainActivity extends AppCompatActivity
 
 		// change to page of this day
 		int curWeekDay = today.get(Calendar.DAY_OF_WEEK);
-		curWeekDay = (curWeekDay - 2) % 7;
+		curWeekDay = (curWeekDay + 5) % 7;
 		if (curWeekDay < mainListAdapter.getCount()) {
 			mainListPager.setCurrentItem(curWeekDay);
+		} else {
+			mainListPager.setCurrentItem(mainListAdapter.getCount() - 1);
 		}
 	}
 
@@ -268,15 +282,15 @@ public class MainActivity extends AppCompatActivity
             weekNumText.setText(String.format(getString(R.string.weekday_week), curWeek));
             weekNumText.setLongClickable(true);
             weekNumText.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    refreshWeek();
-                    new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("Warning")
-                            .setMessage("This is a testing function, and the stability is not guaranteed.")
-                            .show();
-                    return false;
-                }
+	            @Override
+	            public boolean onLongClick(View v) {
+		            refreshWeek();
+		            new AlertDialog.Builder(MainActivity.this)
+				            .setTitle("Warning")
+				            .setMessage("This is a testing function, and the stability is not guaranteed.")
+				            .show();
+		            return false;
+	            }
             });
         }
     }
@@ -520,7 +534,8 @@ public class MainActivity extends AppCompatActivity
 	}
 
     public void onClickThisWeek(View view) {
-        setupList();
+	    popupThisWeek(curWeek);
+	    setupList();
     }
 
 	@Override
@@ -543,6 +558,47 @@ public class MainActivity extends AppCompatActivity
 	@Override
 	public void onDeleteCourse(long id) {
 
+	}
+
+	private void popupThisWeek(int weekNum) {
+		popupWeekText.setText(String.format(getString(R.string.weekday_week), weekNum));
+		popupWeekText.setVisibility(View.VISIBLE);
+		popupWeekText.setScaleX(.3f);
+		popupWeekText.setScaleY(.3f);
+		popupWeekText.setAlpha(.7f);
+		Animator scaleAnimator = ObjectAnimator.ofFloat(popupWeekText, "scaleX", 1f);
+		Animator scaleAnimator2 = ObjectAnimator.ofFloat(popupWeekText, "scaleY", 1f);
+		scaleAnimator.setDuration(150);
+		scaleAnimator2.setDuration(150);
+		Animator alphaAnimator = ObjectAnimator.ofFloat(popupWeekText, "alpha", 0f);
+		alphaAnimator.setStartDelay(120);
+		alphaAnimator.setDuration(500);
+		AnimatorSet animatorSet = new AnimatorSet();
+		animatorSet.play(scaleAnimator)
+				.with(scaleAnimator2)
+				.with(alphaAnimator);
+		animatorSet.addListener(new Animator.AnimatorListener() {
+			@Override
+			public void onAnimationStart(Animator animation) {
+
+			}
+
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				popupWeekText.setVisibility(View.GONE);
+			}
+
+			@Override
+			public void onAnimationCancel(Animator animation) {
+
+			}
+
+			@Override
+			public void onAnimationRepeat(Animator animation) {
+
+			}
+		});
+		animatorSet.start();
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
@@ -613,8 +669,10 @@ public class MainActivity extends AppCompatActivity
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSwitchWeekNum(SwitchWeekNumEvent event) {
         int curNumBak = curWeek;
-        if (event.getWeekNum() > 0 && event.getWeekNum() != curWeek) {
-            curWeek = event.getWeekNum();
+	    if (event.getWeekNum() > 0) {
+		    if (event.getWeekNum() != curWeek)
+			    curWeek = event.getWeekNum();
+		    popupThisWeek(curWeek);
         }
         Log.i(TAG, "switch week num");
         setupList();
