@@ -269,9 +269,11 @@ public class MainActivity extends AppCompatActivity
 
 		// change to page of this day
 		int curWeekDay = today.get(Calendar.DAY_OF_WEEK);
-		curWeekDay = (curWeekDay - 2) % 7;
+		curWeekDay = (curWeekDay + 5) % 7;
 		if (curWeekDay < mainListAdapter.getCount()) {
 			mainListPager.setCurrentItem(curWeekDay);
+		} else {
+			mainListPager.setCurrentItem(mainListAdapter.getCount() - 1);
 		}
 	}
 
@@ -563,18 +565,18 @@ public class MainActivity extends AppCompatActivity
 		popupWeekText.setVisibility(View.VISIBLE);
 		popupWeekText.setScaleX(.3f);
 		popupWeekText.setScaleY(.3f);
-		popupWeekText.setAlpha(1f);
+		popupWeekText.setAlpha(.7f);
 		Animator scaleAnimator = ObjectAnimator.ofFloat(popupWeekText, "scaleX", 1f);
 		Animator scaleAnimator2 = ObjectAnimator.ofFloat(popupWeekText, "scaleY", 1f);
 		scaleAnimator.setDuration(150);
 		scaleAnimator2.setDuration(150);
 		Animator alphaAnimator = ObjectAnimator.ofFloat(popupWeekText, "alpha", 0f);
-		alphaAnimator.setStartDelay(50);
+		alphaAnimator.setStartDelay(120);
 		alphaAnimator.setDuration(500);
 		AnimatorSet animatorSet = new AnimatorSet();
 		animatorSet.play(scaleAnimator)
 				.with(scaleAnimator2)
-				.before(alphaAnimator);
+				.with(alphaAnimator);
 		animatorSet.addListener(new Animator.AnimatorListener() {
 			@Override
 			public void onAnimationStart(Animator animation) {

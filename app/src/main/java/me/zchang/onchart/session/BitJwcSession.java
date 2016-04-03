@@ -192,7 +192,6 @@ public class BitJwcSession extends Session{
         .flatMap(new Func1<Map<String, String>, Observable<String>>() {
             @Override
             public Observable<String> call(final Map<String, String> params) {
-
                 Log.i(TAG, "params received.");
                 return Observable.create(new Observable.OnSubscribe<String>() {
                     @Override
