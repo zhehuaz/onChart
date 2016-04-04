@@ -78,18 +78,13 @@ public class SideBarLayout extends LinearLayout {
     private int MOTION_THRESHOLD_UP = -50;
     private int MOTION_THRESHOLD_MOVE = 10;
 
-    public final static int STATE_VISIBLE = 0x0;
-    public final static int STATE_INVISIBLE = 0x1;
-
-    public final static int DELAY_SHORT = 50;
-    public final static int DELAY_LONG = 310;
-
     float deltaY = 0;
     float deltaX = 0;
     float amountY = 0;
     int newPos;
 
-    int state = STATE_INVISIBLE;
+    int stage = 0;
+
     AccelerateDecelerateInterpolator accelerateDecelerateInterpolator = new AccelerateDecelerateInterpolator();
     LinearInterpolator linearInterpolator = new LinearInterpolator();
 
@@ -98,7 +93,7 @@ public class SideBarLayout extends LinearLayout {
     @Override
     public boolean onInterceptTouchEvent(@NonNull MotionEvent event) {
         Log.i(TAG, "event masked: " + event.getActionMasked() + " event:" + event.getAction());
-        if (state == STATE_VISIBLE && header.getTop() < event.getY() && header.getBottom() > event.getY()) {
+        if (stage == 0 && header.getTop() < event.getY() && header.getBottom() > event.getY()) {
             Log.i(TAG, "return false in Intercept");
             return false;
         }
@@ -116,9 +111,9 @@ public class SideBarLayout extends LinearLayout {
                     }
                     amountY += deltaY;
                     if (amountY > MOTION_THRESHOLD_MOVE || amountY < -MOTION_THRESHOLD_MOVE) {
-                        if (state == STATE_INVISIBLE) {
+                        if (stage == 0) {
                             newPos = (int) (HEIGHT / 3.5 * Math.atan(amountY / HEIGHT)) - HEIGHT;
-                        } else if (state == STATE_VISIBLE) {
+                        } else if (stage == 1) {
                             newPos = (int) (HEIGHT / 1.5 * Math.atan(amountY / HEIGHT * 1.5));
                         }
                         if (validRange(newPos)) {
@@ -135,20 +130,20 @@ public class SideBarLayout extends LinearLayout {
                 if (amountY > MOTION_THRESHOLD_MOVE) {
                     if (params.topMargin >= MOTION_THRESHOLD_DOWN) {
                         headerMarginAnimation(params, params.topMargin, 0, accelerateDecelerateInterpolator);
-                        state = STATE_VISIBLE;
+                        stage = 1;
                     } else {
                         headerMarginAnimation(params, params.topMargin, -HEIGHT, accelerateDecelerateInterpolator);
-                        state = STATE_INVISIBLE;
+                        stage = 0;
                         flag = false;
                     }
                 } else if (amountY < -MOTION_THRESHOLD_MOVE) {
                     if (params.topMargin < MOTION_THRESHOLD_UP) {
                         headerMarginAnimation(params, params.topMargin, -HEIGHT, linearInterpolator);
-                        state = STATE_INVISIBLE;
+                        stage = 0;
                         flag = false;
                     } else {
                         headerMarginAnimation(params, params.topMargin, 0, accelerateDecelerateInterpolator);
-                        state = STATE_VISIBLE;
+                        stage = 1;
                     }
                 }
                 amountY = 0;
@@ -169,12 +164,11 @@ public class SideBarLayout extends LinearLayout {
                     deltaX = event.getX() - event.getHistoricalX(event.getActionIndex());
                     if (Math.abs(deltaX / deltaY) > 1.5)
                         return super.onTouchEvent(event);
-    //                    Log.i(TAG, "deltaY is " + deltaY);
                     amountY += deltaY;
                     if (amountY > MOTION_THRESHOLD_MOVE || amountY < -MOTION_THRESHOLD_MOVE) {
-                        if (state == STATE_INVISIBLE) {
+                        if (stage == 0) {
                             newPos = (int) (HEIGHT / 3.5 * Math.atan(amountY / HEIGHT)) - HEIGHT;
-                        } else if (state == STATE_VISIBLE) {
+                        } else if (stage == 1) {
                             newPos = (int) (HEIGHT / 1.5 * Math.atan(amountY / HEIGHT * 1.5));
                         }
                         if (validRange(newPos)) {
@@ -190,20 +184,20 @@ public class SideBarLayout extends LinearLayout {
                 if (amountY > MOTION_THRESHOLD_MOVE) {
                     if (params.topMargin >= MOTION_THRESHOLD_DOWN) {
                         headerMarginAnimation(params, params.topMargin, 0, accelerateDecelerateInterpolator);
-                        state = STATE_VISIBLE;
+                        stage = 1;
                     } else {
                         headerMarginAnimation(params, params.topMargin, -HEIGHT, accelerateDecelerateInterpolator);
-                        state = STATE_INVISIBLE;
+                        stage = 0;
                         flag = false;
                     }
                 } else if (amountY < -MOTION_THRESHOLD_MOVE) {
                     if (params.topMargin < MOTION_THRESHOLD_UP) {
                         headerMarginAnimation(params, params.topMargin, -HEIGHT, linearInterpolator);
-                        state = STATE_INVISIBLE;
+                        stage = 0;
                         flag = false;
                     } else {
                         headerMarginAnimation(params, params.topMargin, 0, accelerateDecelerateInterpolator);
-                        state = STATE_VISIBLE;
+                        stage = 1;
                     }
                 }
                 amountY = 0;
