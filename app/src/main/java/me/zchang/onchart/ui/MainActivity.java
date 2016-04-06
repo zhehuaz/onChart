@@ -282,16 +282,16 @@ public class MainActivity extends AppCompatActivity
             weekNumText.setText(String.format(getString(R.string.weekday_week), curWeek));
             weekNumText.setLongClickable(true);
             weekNumText.setOnLongClickListener(new View.OnLongClickListener() {
-	            @Override
-	            public boolean onLongClick(View v) {
-		            refreshWeek();
-		            new AlertDialog.Builder(MainActivity.this)
-				            .setTitle("Warning")
-				            .setMessage("This is a testing function, and the stability is not guaranteed.")
-				            .show();
-		            return false;
-	            }
-            });
+				@Override
+				public boolean onLongClick(View v) {
+					refreshWeek();
+					new AlertDialog.Builder(MainActivity.this)
+							.setTitle("Warning")
+							.setMessage("This is a testing function, and the stability is not guaranteed.")
+							.show();
+					return false;
+				}
+			});
         }
     }
 
@@ -563,18 +563,21 @@ public class MainActivity extends AppCompatActivity
 	private void popupThisWeek(int weekNum) {
 		popupWeekText.setText(String.format(getString(R.string.weekday_week), weekNum));
 		popupWeekText.setVisibility(View.VISIBLE);
-		popupWeekText.setScaleX(.3f);
-		popupWeekText.setScaleY(.3f);
-		popupWeekText.setAlpha(.7f);
+		popupWeekText.setScaleX(.8f);
+		popupWeekText.setScaleY(.8f);
+		popupWeekText.setAlpha(.3f);
 		Animator scaleAnimator = ObjectAnimator.ofFloat(popupWeekText, "scaleX", 1f);
 		Animator scaleAnimator2 = ObjectAnimator.ofFloat(popupWeekText, "scaleY", 1f);
-		scaleAnimator.setDuration(150);
-		scaleAnimator2.setDuration(150);
+		Animator alphaAnimator2 = ObjectAnimator.ofFloat(popupWeekText, "alpha", .7f);
+		scaleAnimator.setDuration(350);
+		scaleAnimator2.setDuration(350);
+		alphaAnimator2.setDuration(50);
 		Animator alphaAnimator = ObjectAnimator.ofFloat(popupWeekText, "alpha", 0f);
-		alphaAnimator.setStartDelay(120);
-		alphaAnimator.setDuration(500);
+		alphaAnimator.setStartDelay(50);
+		alphaAnimator.setDuration(600);
 		AnimatorSet animatorSet = new AnimatorSet();
 		animatorSet.play(scaleAnimator)
+				.with(alphaAnimator2)
 				.with(scaleAnimator2)
 				.with(alphaAnimator);
 		animatorSet.addListener(new Animator.AnimatorListener() {
