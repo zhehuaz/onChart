@@ -19,6 +19,8 @@ import me.zchang.onchart.session.events.SessionStartOverEvent;
 import me.zchang.onchart.student.Course;
 import me.zchang.onchart.student.Exam;
 import me.zchang.onchart.ui.MainActivity;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -225,24 +227,24 @@ public class BitJwcSession extends Session{
         })
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<String>() {
-            @Override
-            public void onCompleted() {
+	        @Override
+	        public void onCompleted() {
 
-            }
+	        }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                Log.i(TAG, "fetch schedule error ");
-                EventBus.getDefault().post(new SessionErrorEvent(ErrorCode.SESSION_EC_FETCH_SCHEDULE));
-            }
+	        @Override
+	        public void onError(Throwable e) {
+		        e.printStackTrace();
+		        Log.i(TAG, "fetch schedule error ");
+		        EventBus.getDefault().post(new SessionErrorEvent(ErrorCode.SESSION_EC_FETCH_SCHEDULE));
+	        }
 
-            @Override
-            public void onNext(String s) {
-                Log.i(TAG, "get schedule");
-                EventBus.getDefault()
-                        .post(new ScheduleFetchOverEvent(StudentInfoParser.parseCourses(s), yearSemester));
-            }
+	        @Override
+	        public void onNext(String s) {
+		        Log.i(TAG, "get schedule");
+		        EventBus.getDefault()
+				        .post(new ScheduleFetchOverEvent(StudentInfoParser.parseCourses(s), yearSemester));
+	        }
         });
     }
 
@@ -307,6 +309,29 @@ public class BitJwcSession extends Session{
         return new ArrayList<>();
     }
 
+	public void fetchSemesterList() {
+		String path = "/xskbcx.aspx?xh=" + stuNum + "&xm=%D5%C5%D5%DC%BB%AA&gnmkdm=N121603";
+		if (loginUrl != null) {
+			Request semesterListRequest = new Request.Builder()
+					.addHeader("Referer", loginUrl)
+					.get()
+					.url(loginUrl.substring(0, 43) + path)
+					.build();
+
+			httpClient.newCall(semesterListRequest).enqueue(new Callback() {
+				@Override
+				public void onFailure(Call call, IOException e) {
+
+				}
+
+				@Override
+				public void onResponse(Call call, Response response) throws IOException {
+					response.body().string();
+				}
+			});
+		}
+	}
+
     /**
      * Utility to covert the symbols in the password into unicode.
      * @param psw the input password.
@@ -334,7 +359,6 @@ public class BitJwcSession extends Session{
     public void setPsw(String psw) {
         this.psw = psw;
     }
-
 
     /**
      * Get session id from the redirected URL.

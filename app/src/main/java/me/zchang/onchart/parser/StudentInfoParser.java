@@ -192,6 +192,12 @@ public class StudentInfoParser {
 
     }
 
+	public static List<String> parseSemesterList(@NonNull String htmlText) {
+		Document doc = Jsoup.parse(htmlText);
+
+		return null;
+	}
+
 
     /**
      * Parse student name.
