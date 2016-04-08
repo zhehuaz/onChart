@@ -194,10 +194,20 @@ public class StudentInfoParser {
 
 	public static List<String> parseSemesterList(@NonNull String htmlText) {
 		Document doc = Jsoup.parse(htmlText);
+        Elements yearElements = doc.select("select#xnd");
+        List<String> semesters = new ArrayList<>();
+        if (!yearElements.isEmpty()) {
+            for (Element element : yearElements.get(0).children()) {
+                semesters.add(element.val());
+            }
+        }
 
-		return null;
+        Elements semesterElements = doc.select("select#xqd");
+        if (!semesterElements.isEmpty()) {
+
+        }
+		return semesters;
 	}
-
 
     /**
      * Parse student name.
