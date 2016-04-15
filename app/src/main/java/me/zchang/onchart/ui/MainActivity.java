@@ -217,6 +217,7 @@ public class MainActivity extends AppCompatActivity
 
 	@Override
 	protected void onStop() {
+		Log.i(TAG, "onStop()");
 		EventBus.getDefault().unregister(this);
 		super.onStop();
 	}
@@ -606,7 +607,9 @@ public class MainActivity extends AppCompatActivity
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onSessionStartOverEvent(SessionStartOverEvent event) {
-		 session.fetchSchedule();
+         if (event.getTarget().equals(TAG)) {
+             session.fetchSchedule();
+         }
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)

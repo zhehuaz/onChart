@@ -96,7 +96,7 @@ public class BitJwcSession extends Session{
 				    stuName = fetchName();
 				    if (stuName != null) {// name detected, as good as account validation.
 					    isStarted = true;
-					    EventBus.getDefault().post(new SessionStartOverEvent());
+					    EventBus.getDefault().post(new SessionStartOverEvent(MainActivity.TAG));
 				    } else {
 					    EventBus.getDefault().post(new SessionErrorEvent(ErrorCode.SESSION_EC_INVALID_ACCOUNT));
 				    }

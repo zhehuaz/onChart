@@ -3,6 +3,7 @@ package me.zchang.onchart.config;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ import me.zchang.onchart.student.Course;
  */
 
 public class ConfigManager {
+    private final static String TAG = "ConfigManager";
     private static String SETTING_FILE;
 
     Context context;
@@ -72,6 +74,7 @@ public class ConfigManager {
     }
 
 	public ConfigManager saveSchedule(List<Course> courses) {
+        Log.i(TAG, "Add courses");
 		courseSQLiteHelper.addCourses(courses);
         return this;
     }
