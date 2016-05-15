@@ -48,8 +48,6 @@ import me.zchang.onchart.session.events.SessionStartOverEvent;
 import me.zchang.onchart.student.Exam;
 import me.zchang.onchart.ui.adapter.ExamListAdapter;
 
-
-
 public class ExamsActivity extends AppCompatActivity {
 
     public static final String TAG = "ExamsActivity";
@@ -65,6 +63,7 @@ public class ExamsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+		Log.i(TAG, "exam oncreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exams);
 
@@ -82,7 +81,6 @@ public class ExamsActivity extends AppCompatActivity {
         ViewGroup.LayoutParams params = stuffImage.getLayoutParams();
         params.height = MainActivity.getStatusBarHeight(this);
         stuffImage.setLayoutParams(params);
-
 
         configManager = ((MainApp) getApplication()).getConfigManager();
 	    session = new BitJwcSession();

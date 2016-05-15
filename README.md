@@ -10,11 +10,11 @@ Now in the [Wandoujia](http://www.wandoujia.com/apps/me.zchang.onchart),
 and the preview version in [fir.im](http://fir.im/onchart).
 
 ### Build Environment
-*   Android Studio: 1.5.0
+*   Android Studio: 2.0
 
 *   Build tools version: 23.0.2
 
-*   Gradle version: 1.3.0
+*   Gradle version: 2.0.0
 
 ### Features
 *   Fetch current week num from the [academic affairs office](http://jwc.bit.edu.cn), and show
