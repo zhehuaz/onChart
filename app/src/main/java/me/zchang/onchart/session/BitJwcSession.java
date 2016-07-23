@@ -53,7 +53,10 @@ import rx.schedulers.Schedulers;
  * Session to <a href="http://jwc.bit.edu.cn"/>
  */
 public class BitJwcSession extends Session{
-    private String TAG = "BitJwcSession";
+    private final static String TAG = "BitJwcSession";
+    private final static String JWC_URL = "http://jwc.bit.edu.cn";
+    private final static String JWC_PORTAL_URL = "http://10.5.2.80";
+
     private String loginUrl;
     private final OkHttpClient httpClient = new OkHttpClient();
     private String startResponse = null;
@@ -65,7 +68,7 @@ public class BitJwcSession extends Session{
 		    @Override
 		    public void run() {
 			    Request request = new Request.Builder()
-					    .url("http://10.5.2.80")
+					    .url(JWC_PORTAL_URL)
 					    .build();
 			    Response response = null;
 			    try {
@@ -257,10 +260,8 @@ public class BitJwcSession extends Session{
 	    new Thread(new Runnable() {
 		    @Override
 		    public void run() {
-			    String path = "http://10.0.6.51";
-
 			    Request request = new Request.Builder()
-					    .url(path)
+					    .url(JWC_URL)
 					    .get()
 					    .build();
 			    Response weekResponse = null;

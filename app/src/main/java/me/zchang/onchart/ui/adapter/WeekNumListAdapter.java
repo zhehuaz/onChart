@@ -19,6 +19,7 @@ package me.zchang.onchart.ui.adapter;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
@@ -49,7 +50,7 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         TextView newTextView = new TextView(context);
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams((int) (screenDensity * 60), (int) (screenDensity * 60));
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams((int) (screenDensity * 48), (int) (screenDensity * 48));
         newTextView.setLayoutParams(params);
         return new WeekNumViewHolder(newTextView);
     }
@@ -76,12 +77,11 @@ public class WeekNumListAdapter extends RecyclerView.Adapter {
         public WeekNumViewHolder(View itemView) {
             super(itemView);
             text = (TextView) itemView;
-            text.setTextSize(30);
+            text.setTextSize(28);
             text.setTextColor(0xFFCCCCCC);
-            text.setPadding(20, 20, 20, 20);
             text.setGravity(Gravity.CENTER);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                text.setBackground(new RippleDrawable(ColorStateList.valueOf(0xCD66BBBC), new CircleBackgroundDrawable(0xCD66BBBC), null));
+                text.setBackground(new RippleDrawable(ColorStateList.valueOf(0xCD66BBBC), null, null));
             else
                 text.setBackground(new CircleBackgroundDrawable(0xCD66BBBC));
         }

@@ -45,6 +45,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -205,8 +206,6 @@ public class MainActivity extends AppCompatActivity
         updateWeekNumDisplay();
 		fragments.get(mainListPager.getCurrentItem()).setSlideAnimFlag(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
 	}
 
 	@Override
@@ -567,19 +566,19 @@ public class MainActivity extends AppCompatActivity
 		popupWeekText.setScaleX(.8f);
 		popupWeekText.setScaleY(.8f);
 		popupWeekText.setAlpha(.3f);
-		Animator scaleAnimator = ObjectAnimator.ofFloat(popupWeekText, "scaleX", 1f);
-		Animator scaleAnimator2 = ObjectAnimator.ofFloat(popupWeekText, "scaleY", 1f);
+//		Animator scaleAnimator = ObjectAnimator.ofFloat(popupWeekText, "scaleX", 1f);
+//		Animator scaleAnimator2 = ObjectAnimator.ofFloat(popupWeekText, "scaleY", 1f);
 		Animator alphaAnimator2 = ObjectAnimator.ofFloat(popupWeekText, "alpha", .7f);
-		scaleAnimator.setDuration(350);
-		scaleAnimator2.setDuration(350);
+//		scaleAnimator.setDuration(350);
+//		scaleAnimator2.setDuration(350);
 		alphaAnimator2.setDuration(50);
 		Animator alphaAnimator = ObjectAnimator.ofFloat(popupWeekText, "alpha", 0f);
 		alphaAnimator.setStartDelay(50);
-		alphaAnimator.setDuration(600);
+		alphaAnimator.setDuration(1300);
 		AnimatorSet animatorSet = new AnimatorSet();
-		animatorSet.play(scaleAnimator)
-				.with(alphaAnimator2)
-				.with(scaleAnimator2)
+		animatorSet.play(alphaAnimator2)
+//				.with(scaleAnimator)
+//				.with(scaleAnimator2)
 				.with(alphaAnimator);
 		animatorSet.addListener(new Animator.AnimatorListener() {
 			@Override

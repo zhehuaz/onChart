@@ -76,7 +76,6 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="Week 1"
-        android:textStyle="bold"
         android:textSize="75sp"
         android:visibility="gone"/>
 

@@ -92,7 +92,7 @@ public class SideBarLayout extends LinearLayout {
 
     @Override
     public boolean onInterceptTouchEvent(@NonNull MotionEvent event) {
-        Log.i(TAG, "event masked: " + event.getActionMasked() + " event:" + event.getAction());
+        Log.i(TAG, "onIntercept event masked: " + event.getActionMasked() + " event:" + event.getAction());
         if (stage == 0 && header.getTop() < event.getY() && header.getBottom() > event.getY()) {
             Log.i(TAG, "return false in Intercept");
             return false;
@@ -154,7 +154,7 @@ public class SideBarLayout extends LinearLayout {
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-        Log.i(TAG, "Touch event masked: " + event.getActionMasked() + " event:" + event.getAction());
+        Log.i(TAG, "onTouch event masked: " + event.getActionMasked() + " event:" + event.getAction());
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_MOVE:
                 if (event.getHistorySize() > 0) {
