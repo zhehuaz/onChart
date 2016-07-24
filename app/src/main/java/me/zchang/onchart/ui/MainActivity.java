@@ -125,9 +125,13 @@ public class MainActivity extends AppCompatActivity
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		if (savedInstanceState != null)
+		if (savedInstanceState != null) {
 			firstLaunch = false;
+		} else {
+            setTheme(R.style.MainTheme);
+        }
+		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_main);
 
 		configManager = ((MainApp) getApplication()).getConfigManager();

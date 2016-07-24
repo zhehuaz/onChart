@@ -17,6 +17,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="SplashTheme" parent="MainTheme">
+        <item name="android:windowBackground">@mipmap/splash_1080p</item>
+    </style>
+
     <style name="ActionBarTheme" parent="AppTheme">
         <item name="windowActionBar">true</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
