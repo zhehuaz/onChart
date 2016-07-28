@@ -355,7 +355,7 @@ public class MainActivity extends AppCompatActivity
         weekNumList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 	}
 
-	public void refreshWeek() {
+	void refreshWeek() {
 		if (refreshProgress != null)
 			refreshProgress.setVisibility(View.VISIBLE);
 		session.fetchHomePage();
@@ -570,19 +570,13 @@ public class MainActivity extends AppCompatActivity
 		popupWeekText.setScaleX(.8f);
 		popupWeekText.setScaleY(.8f);
 		popupWeekText.setAlpha(.3f);
-//		Animator scaleAnimator = ObjectAnimator.ofFloat(popupWeekText, "scaleX", 1f);
-//		Animator scaleAnimator2 = ObjectAnimator.ofFloat(popupWeekText, "scaleY", 1f);
 		Animator alphaAnimator2 = ObjectAnimator.ofFloat(popupWeekText, "alpha", .7f);
-//		scaleAnimator.setDuration(350);
-//		scaleAnimator2.setDuration(350);
 		alphaAnimator2.setDuration(50);
 		Animator alphaAnimator = ObjectAnimator.ofFloat(popupWeekText, "alpha", 0f);
 		alphaAnimator.setStartDelay(50);
 		alphaAnimator.setDuration(1300);
 		AnimatorSet animatorSet = new AnimatorSet();
 		animatorSet.play(alphaAnimator2)
-//				.with(scaleAnimator)
-//				.with(scaleAnimator2)
 				.with(alphaAnimator);
 		animatorSet.addListener(new Animator.AnimatorListener() {
 			@Override
@@ -661,13 +655,16 @@ public class MainActivity extends AppCompatActivity
 			Toast.makeText(MainActivity.this, "Unable to fetch week", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		// save the nearest past Monday
+		// save the latest past Monday
         long onePastMonday = 946828800000L; // Jan.3rd, 2000.
         long lastFetchTime = today.getTimeInMillis() -
                 (today.getTimeInMillis() - onePastMonday) % MILLISECONDS_IN_A_WEEK;
 		configManager.saveLastFetchWeekTime(lastFetchTime);
 
 		if (curWeek != integer && integer > 0) {
+            if (curWeek > integer) {// new semester
+
+            }
 			curWeek = integer;
 			configManager.saveWeek(curWeek);
 		}

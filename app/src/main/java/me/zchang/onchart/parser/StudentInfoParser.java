@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -160,19 +161,34 @@ public class StudentInfoParser {
     /**
      * Parse current week number.
      * @param htmlText the source html text.
-     * @return the week number.
+     * @return the week number. +100 in summer holiday, +200 in winter holiday
      */
     public static int parseWeek(@NonNull String htmlText) {
         Document doc = Jsoup.parse(htmlText);
         Elements rootElements = doc.select("a.black");
+        int weekNum = 0;
+        try {
+            String decodedHtml = new String(htmlText.getBytes(), "UTF-8");
+            Log.i(TAG, decodedHtml);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         if (rootElements.size() > 0) {
             Element rootElement = rootElements.get(0);
+            if (rootElement.text().matches("(.*)暑(.*)")) {
+                weekNum += 100;
+            } else if (rootElement.text().matches("寒假")) {
+                weekNum += 200;
+            }
+
+
             Element childElement;
             if (rootElement != null) {
                 childElement = rootElement.select("b").get(0);
                 if (childElement != null) {
                     try {
-                        return Integer.parseInt(childElement.text());
+                        weekNum += Integer.parseInt(childElement.text());
+                        return weekNum;
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }

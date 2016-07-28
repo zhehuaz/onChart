@@ -5,7 +5,9 @@ import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,6 +152,7 @@ public class BitJwcSession extends Session{
     /**
      * Fetch a schedule in the specific semester.
      * @param yearSemester The format obeys "YYYY-N" according to {@link Course#semester}.
+     * @see Course#semester
      */
     public void fetchSchedule(final String yearSemester) {
         StringBuilder semesterBuilder = new StringBuilder();
@@ -268,8 +271,7 @@ public class BitJwcSession extends Session{
 			    try {
 				    weekResponse = httpClient.newCall(request).execute();
 				    if (weekResponse.isSuccessful()) {
-					    EventBus.getDefault().post(new HomepageFetchOverEvent(StudentInfoParser.parseWeek(weekResponse.body().string())));
-                        weekResponse.body().close();
+					    EventBus.getDefault().post(new HomepageFetchOverEvent(StudentInfoParser.parseWeek(decodeResponse(weekResponse, "gb2312"))));
 				    }
 			    } catch (IOException e) {
 				    EventBus.getDefault().post(new SessionErrorEvent(ErrorCode.SESSION_EC_FETCH_WEEK));
@@ -374,5 +376,14 @@ public class BitJwcSession extends Session{
         return startResponse;
     }
 
-
+    private String decodeResponse(Response response, String charset) throws IOException {
+        StringBuilder buffer = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response.body().byteStream(), charset));
+        String line;
+        while((line = reader.readLine()) != null) {
+            buffer.append(line);
+        }
+        response.body().close();
+        return buffer.toString();
+    }
 }
